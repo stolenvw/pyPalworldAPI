@@ -3,7 +3,6 @@ services:
     container_name: palapi-mysql
     image: mysql:8.0.36
     restart: unless-stopped
-    env_file: ./api/.env
     networks:
       - dockerinternal
     volumes:
