@@ -3,6 +3,12 @@ services:
     container_name: palapi-mysql
     image: mysql:8.0.36
     restart: unless-stopped
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - SQL_PORT=${SQL_PORT}
+      - MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}
     networks:
       - dockerinternal
     volumes:
@@ -12,6 +18,12 @@ services:
     depends_on:
       - db
     container_name: palapi-fast_api
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - SQL_PORT=${SQL_PORT}
+      - SQL_HOST=${SQL_HOST}
     build: .
     restart: unless-stopped
     networks:
