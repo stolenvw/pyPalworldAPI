@@ -1,0 +1,27 @@
+services:
+  db:
+    container_name: palapi-mysql
+    image: mysql:8.0.36
+    restart: unless-stopped
+    env_file: ./api/.env
+    networks:
+      - dockerinternal
+    volumes:
+      - ./mysqldb:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+  api:
+    depends_on:
+      - db
+    container_name: palapi-fast_api
+    build: .
+    restart: unless-stopped
+    networks:
+      - dockerinternal
+#    ports:
+#      - 8000:8000
+
+networks:
+  dockerinternal:
+
+volumes:
+  db-data:

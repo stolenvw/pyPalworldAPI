@@ -1,0 +1,10 @@
+.vscode
+*/__pycache__/
+__pycache__/
+dev/*
+# Log files
+*.log
+*.log.[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]
+.env
+dev.env
+.venv
