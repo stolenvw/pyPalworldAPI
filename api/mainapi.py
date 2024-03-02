@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import Page, add_pagination
@@ -9,6 +12,8 @@ import utils.querydb as Q
 from utils.customresponses import responses
 from utils.database import engine
 
+load_dotenv(dotenv_path=".env")
+
 app = FastAPI(
     title="Palworld API",
     description=D.description,
@@ -19,7 +24,10 @@ app = FastAPI(
     },
     openapi_tags=D.tags_metadata,
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
+    docs_url=os.getenv("DOCS_URL"),
+    redoc_url=os.getenv("REDOC_URL"),
 )
+
 add_pagination(app)
 app.mount("/public", StaticFiles(directory="public"), name="public")
 
@@ -28,6 +36,16 @@ async def get_session():
     async with AsyncSession(engine) as session:
         yield session
 
+@app.get(
+    "/health",
+    tags=["healthcheck"],
+    summary="Perform a Health Check",
+    response_description="Return HTTP Status Code 200 (OK)",
+    status_code=status.HTTP_200_OK,
+    response_model=M.HealthCheck,
+)
+def get_health() -> M.HealthCheck:
+    return M.HealthCheck(status="OK")
 
 @app.get(
     "/items/",
@@ -271,11 +289,14 @@ async def getsickness(
     responses=responses,
 )
 async def gettech(
-    name: str,
+    name: str | None = None,
+    level: int | None = Query(None, ge=1, le=50),
     db: AsyncSession = Depends(get_session),
 ):
     if name:
         item = await Q.get_tech(db, name)
+    elif level:
+        item = await Q.get_tech_by_level(db, level)
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

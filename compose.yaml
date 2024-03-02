@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   db:
     container_name: palapi-mysql
@@ -14,6 +15,13 @@ services:
     volumes:
       - ./mysqldb:/docker-entrypoint-initdb.d
       - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin -u ${MYSQL_USER} -p$${MYSQL_PASSWORD} ping -P ${MYSQL_PORT} | grep 'mysqld is alive' || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 2m
+
   api:
     depends_on:
       - db
@@ -24,12 +32,24 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - SQL_PORT=${MYSQL_PORT}
       - SQL_HOST=${SQL_HOST}
-    build: .
+      - DOCS_URL=${DOCS_URL}
+      - REDOC_URL=${REDOC_URL}
+      - HTTP_PORT=${HTTP_PORT}
+    build:
+      context: .
+      args:
+        - HTTP_PORT=${HTTP_PORT}
     restart: unless-stopped
     networks:
       - dockerinternal
-#    ports:
-#      - 8000:8000
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+    healthcheck:
+      test: ["CMD-SHELL", "curl --include --request GET http://localhost:${HTTP_PORT}/health || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 2m
 
 networks:
   dockerinternal:

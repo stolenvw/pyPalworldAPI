@@ -4,6 +4,8 @@ from pydantic import ConfigDict
 from sqlalchemy import Column, String
 from sqlmodel import JSON, Field, SQLModel
 
+class HealthCheck(SQLModel):
+    status: str = "OK"
 
 class Items(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)

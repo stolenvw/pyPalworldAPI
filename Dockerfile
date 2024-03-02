@@ -10,7 +10,7 @@ COPY ./api /api
 
 ARG HTTP_PORT
 
-# CMD ["uvicorn", "mainapi:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT"]
 
 # If running behind a proxy like Nginx or Traefik add --proxy-headers
-CMD ["uvicorn", "mainapi:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT --proxy-headers"]
