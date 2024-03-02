@@ -7,7 +7,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - SQL_PORT=${SQL_PORT}
+      - MYSQL_PORT=${MYSQL_PORT}
       - MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}
     networks:
       - dockerinternal
@@ -22,7 +22,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - SQL_PORT=${SQL_PORT}
+      - MYSQL_PORT=${MYSQL_PORT}
       - SQL_HOST=${SQL_HOST}
     build: .
     restart: unless-stopped
@@ -33,6 +33,7 @@ services:
 
 networks:
   dockerinternal:
+    name: dockerinternal
 
 volumes:
   db-data:
