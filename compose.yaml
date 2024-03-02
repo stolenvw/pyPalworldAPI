@@ -20,7 +20,7 @@ services:
       interval: 1m30s
       timeout: 5s
       retries: 3
-      start_period: 2m
+      start_period: 1m
 
   api:
     depends_on:
@@ -42,14 +42,14 @@ services:
     restart: unless-stopped
     networks:
       - dockerinternal
-    ports:
-      - ${HTTP_PORT}:${HTTP_PORT}
+    #ports:
+    #  - ${HTTP_PORT}:${HTTP_PORT}
     healthcheck:
       test: ["CMD-SHELL", "curl --include --request GET http://localhost:${HTTP_PORT}/health || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
-      start_period: 2m
+      start_period: 1m
 
 networks:
   dockerinternal:
