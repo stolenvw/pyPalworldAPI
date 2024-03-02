@@ -75,3 +75,6 @@ async def get_sickness(db: AsyncSession, name: str):
 
 async def get_tech(db: AsyncSession, name: str):
     return await paginate(db, select(TechTree).where(TechTree.Name == name))
+
+async def get_tech_by_level(db: AsyncSession, level: int):
+    return await paginate(db, select(TechTree).where(TechTree.LevelCap == level))
