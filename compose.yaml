@@ -16,7 +16,7 @@ services:
       - ./mysqldb:/docker-entrypoint-initdb.d
       - db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin -u ${MYSQL_USER} -p$${MYSQL_PASSWORD} ping -P ${MYSQL_PORT} | grep 'mysqld is alive' || exit 1"]
+      test: ["CMD-SHELL", "MYSQL_PWD=$MYSQL_PASSWORD mysqladmin -u ${MYSQL_USER} ping -P ${MYSQL_PORT} | grep 'mysqld is alive' || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
@@ -45,7 +45,7 @@ services:
     #ports:
     #  - ${HTTP_PORT}:${HTTP_PORT}
     healthcheck:
-      test: ["CMD-SHELL", "curl --include --request GET http://localhost:${HTTP_PORT}/health || exit 1"]
+      test: ["CMD-SHELL", "curl -i http://localhost:${HTTP_PORT}/health 2>/dev/null || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
