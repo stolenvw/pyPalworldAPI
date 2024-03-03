@@ -13,4 +13,4 @@ ARG HTTP_PORT
 # CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT"]
 
 # If running behind a proxy like Nginx or Traefik add --proxy-headers
-CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT --proxy-headers"]
+CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT --proxy-headers --forwarded-allow-ips='*'"]
