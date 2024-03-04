@@ -195,3 +195,20 @@ class SickPal(SQLModel, table=True):
     MoveSpeed: int
     SatietyDecrease: int
     Description: str
+
+class BuildMaterial(SQLModel):
+    Name: str = Field(sa_type=String(50))
+    Amount: int
+
+class BuidObjects(SQLModel, table=True):
+    ID: Optional[int] = Field(default=None, primary_key=True)
+    MapObjectId: str = Field(sa_type=String(50))
+    Name: str = Field(index=True, sa_type=String(50))
+    Description: str
+    Image: Optional[str] = Field(sa_type=String(100))
+    Material: list[BuildMaterial] = Field(sa_column=Column(JSON))
+    Category: str = Field(index=True, sa_type=String(25), description="TypeA")
+    RequiredBuildWorkAmount: float
+    InstallNeighborThreshold: float
+    IsInstallOnlyOnBase: bool
+    IsInstallOnlyHubAround: bool

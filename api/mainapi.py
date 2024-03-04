@@ -280,6 +280,7 @@ async def getsickness(
             status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
         )
 
+
 @app.get(
     "/tech/",
     response_model=Page[M.TechTree],
@@ -301,6 +302,36 @@ async def gettech(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing one of the (name) params.",
+        )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
+    "/build/",
+    response_model=Page[M.BuidObjects],
+    response_model_exclude_none=True,
+    summary="Lookup Build Objects Information",
+    tags=["Items"],
+    responses=responses,
+)
+async def getbuild(
+    name: str | None = None,
+    category: str | None = None,
+    db: AsyncSession = Depends(get_session),
+):
+    if name:
+        item = await Q.get_build(db, name)
+    elif category:
+        item = await Q.get_build_by_category(db, category)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing one of the (name, category) params.",
         )
     if len(item.items) != 0:
         return item
