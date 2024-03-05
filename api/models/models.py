@@ -10,6 +10,7 @@ class HealthCheck(SQLModel):
 class Items(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
     Name: str = Field(index=True, sa_type=String(50))
+    DevName: str = Field(sa_type=String(50))
     Image: Optional[str] = Field(sa_type=String(100))
     Type: str = Field(index=True, sa_type=String(45))
     Rank: int
@@ -25,6 +26,7 @@ class Items(SQLModel, table=True):
     MagicAttackValue: Optional[int]
     MagicDefenseValue: Optional[int]
     Descripition: str
+    ItemActorClass: Optional[str] = Field(sa_type=String(50))
 
 
 class Crafting(SQLModel, table=True):
@@ -141,6 +143,36 @@ class Pals(SQLModel, table=True):
     Size: str = Field(sa_type=String(2), description="EPalSizeType")
     Maps: dict[str, str] = Field(sa_column=Column(JSON))
     Breeding: PalBreeding = Field(sa_column=Column(JSON))
+    AIResponse: str = Field(sa_type=String(20))
+    Nocturnal: bool
+    Predator: bool
+    NooseTrap: bool
+
+
+class BossPals(SQLModel, table=True):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
+    ID: Optional[int] = Field(default=None, primary_key=True)
+    DexKey: str = Field(sa_type=String(4), description="ZukanIndex")
+    Image: str = Field(sa_type=String(100))
+    Name: str = Field(index=True, sa_type=String(50))
+    Wiki: str = Field(sa_type=String(100))
+    WikiImage: str = Field(sa_type=String(100))
+    Types: list[PalTypes] = Field(sa_column=Column(JSON))
+    Suitability: list[PalSuitability] = Field(sa_column=Column(JSON))
+    Drops: list[PalDrops] = Field(sa_column=Column(JSON))
+    Aura: PalAura = Field(sa_column=Column(JSON))
+    Description: str
+    Skills: list[PalSkills] = Field(sa_column=Column(JSON))
+    Stats: PalStats = Field(sa_column=Column(JSON))
+    Asset: str = Field(sa_type=String(50), description="BPClass")
+    Genus: str = Field(sa_type=String(50), description="GenusCategory")
+    Rarity: int
+    Price: int
+    Size: str = Field(sa_type=String(2), description="EPalSizeType")
+    BattleBGM: str = Field(sa_type=String(50), description="Boss battle location.")
     AIResponse: str = Field(sa_type=String(20))
     Nocturnal: bool
     Predator: bool

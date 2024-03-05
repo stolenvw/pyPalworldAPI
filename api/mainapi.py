@@ -201,6 +201,41 @@ async def getpal(
 
 
 @app.get(
+    "/bosspals/",
+    response_model=Page[M.BossPals],
+    response_model_exclude_none=True,
+    summary="Lookup Boss Pal[s] Information",
+    tags=["Pals"],
+    responses=responses,
+)
+async def getbosspal(
+    request: Request,
+    name: str | None = Query(None, description="Pal name."),
+    typename: str | None = Query(None, alias="type"),
+    suitability: str | None = None,
+    db: AsyncSession = Depends(get_session),
+):
+    params = request.query_params
+    if name:
+        item = await Q.get_bosspal(db, name)
+    elif typename:
+        item = await Q.get_bosspal_by_type(db, typename)
+    elif suitability:
+        item = await Q.get_bosspal_by_suitability(db, suitability)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing one of the (name, dexkey, typename, suitability, drop, skill) params.",
+        )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
     "/foodeffect/",
     response_model=Page[M.FoodEffect],
     response_model_exclude_none=True,

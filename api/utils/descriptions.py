@@ -7,8 +7,8 @@ _Parsed game data v0.1.5.1_
 
 ## TODO:
 
-* **Boss Pals** (_not implemented_).
-* **Finish Docs/Meta data** (_not implemented_).
+* **Make github readme**
+* **Finish Docs/Meta data**.
 """
 
 tags_metadata = [

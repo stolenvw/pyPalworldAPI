@@ -13,6 +13,7 @@ from models.models import (
     SickPal,
     TechTree,
     BuidObjects,
+    BossPals
 )
 
 
@@ -35,6 +36,10 @@ async def get_pal(db: AsyncSession, name: str):
     return await paginate(db, select(Pals).where(Pals.Name == name))
 
 
+async def get_bosspal(db: AsyncSession, name: str):
+    return await paginate(db, select(BossPals).where(BossPals.Name == name))
+
+
 async def get_pal_by_dexid(db: AsyncSession, idx: str):
     return await paginate(db, select(Pals).where(Pals.DexKey == idx))
 
@@ -48,8 +53,26 @@ async def get_pal_by_type(db: AsyncSession, name: str):
     return await paginate(db, statement)
 
 
+async def get_bosspal_by_type(db: AsyncSession, name: str):
+    statement = select(BossPals).where(
+        text("JSON_SEARCH(Types, 'one', :name COLLATE utf8mb4_general_ci)").bindparams(
+            name=name
+        )
+    )
+    return await paginate(db, statement)
+
+
 async def get_pal_by_suitability(db: AsyncSession, name: str):
     statement = select(Pals).where(
+        text(
+            "JSON_SEARCH(Suitability, 'one', :name COLLATE utf8mb4_general_ci)"
+        ).bindparams(name=name)
+    )
+    return await paginate(db, statement)
+
+
+async def get_bosspal_by_suitability(db: AsyncSession, name: str):
+    statement = select(BossPals).where(
         text(
             "JSON_SEARCH(Suitability, 'one', :name COLLATE utf8mb4_general_ci)"
         ).bindparams(name=name)
