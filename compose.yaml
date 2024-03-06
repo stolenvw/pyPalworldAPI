@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-  db:
-    container_name: palapi-mysql
+  palapidb:
+    container_name: palapidb
     image: mysql:8.0.36
     restart: unless-stopped
     environment:
@@ -22,10 +22,10 @@ services:
       retries: 3
       start_period: 1m
 
-  api:
+  pypalworldapi:
     depends_on:
-      - db
-    container_name: palapi-fast_api
+      - palapidb
+    container_name: pypalworldapi
     environment:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
