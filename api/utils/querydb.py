@@ -4,7 +4,9 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models.models import (
+    BossPals,
     Breeding,
+    BuidObjects,
     Crafting,
     FoodEffect,
     Gear,
@@ -12,8 +14,7 @@ from models.models import (
     Pals,
     SickPal,
     TechTree,
-    BuidObjects,
-    BossPals
+    PassiveSkills
 )
 
 
@@ -131,3 +132,6 @@ async def get_build_by_category(db: AsyncSession, category: str):
     return await paginate(
         db, select(BuidObjects).where(BuidObjects.Category == category)
     )
+
+async def get_passive(db: AsyncSession, name: str):
+    return await paginate(db, select(PassiveSkills).where(PassiveSkills.Name == name))

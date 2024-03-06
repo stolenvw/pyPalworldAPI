@@ -36,6 +36,7 @@ async def get_session():
     async with AsyncSession(engine) as session:
         yield session
 
+
 @app.get(
     "/health",
     tags=["healthcheck"],
@@ -47,9 +48,12 @@ async def get_session():
 def get_health() -> M.HealthCheck:
     return M.HealthCheck(status="OK")
 
+
 @app.get(
     "/items/",
-    response_model=Page[M.Items],
+    response_model=Page.with_custom_options(
+        module=M.Items, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Items Information",
     tags=["Items"],
@@ -76,7 +80,7 @@ async def getitems(
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, variety) params.",
+            detail="Missing one of the (name, type) params.",
         )
     if len(item.items) != 0:
         return item
@@ -88,7 +92,9 @@ async def getitems(
 
 @app.get(
     "/crafting/",
-    response_model=Page[M.Crafting],
+    response_model=Page.with_custom_options(
+        module=M.Crafting, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Crafting Information",
     tags=["Items"],
@@ -115,7 +121,9 @@ async def getcrafting(
 
 @app.get(
     "/gear/",
-    response_model=Page[M.Gear],
+    response_model=Page.with_custom_options(
+        module=M.Gear, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Gear Information",
     tags=["Items"],
@@ -142,7 +150,9 @@ async def getgear(
 
 @app.get(
     "/pals/",
-    response_model=Page[M.Pals],
+    response_model=Page.with_custom_options(
+        module=M.Pals, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Pal[s] Information",
     tags=["Pals"],
@@ -190,7 +200,7 @@ async def getpal(
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, dexkey, typename, suitability, drop, skill) params.",
+            detail="Missing one of the (name, dexkey, type, suitability, drop, skill, nocturnal) params.",
         )
     if len(item.items) != 0:
         return item
@@ -202,7 +212,9 @@ async def getpal(
 
 @app.get(
     "/bosspals/",
-    response_model=Page[M.BossPals],
+    response_model=Page.with_custom_options(
+        module=M.BossPals, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Boss Pal[s] Information",
     tags=["Pals"],
@@ -225,7 +237,7 @@ async def getbosspal(
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, dexkey, typename, suitability, drop, skill) params.",
+            detail="Missing one of the (name, type, suitability) params.",
         )
     if len(item.items) != 0:
         return item
@@ -237,7 +249,9 @@ async def getbosspal(
 
 @app.get(
     "/foodeffect/",
-    response_model=Page[M.FoodEffect],
+    response_model=Page.with_custom_options(
+        module=M.FoodEffect, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Food Effects Information",
     tags=["Items"],
@@ -264,7 +278,9 @@ async def getfoodeffect(
 
 @app.get(
     "/breeding/",
-    response_model=Page[M.Breeding],
+    response_model=Page.with_custom_options(
+        module=M.Breeding, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Breeding Information",
     tags=["Pals"],
@@ -291,7 +307,9 @@ async def getbreeding(
 
 @app.get(
     "/sickness/",
-    response_model=Page[M.SickPal],
+    response_model=Page.with_custom_options(
+        module=M.SickPal, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Sickness Information",
     tags=["Pals"],
@@ -318,7 +336,9 @@ async def getsickness(
 
 @app.get(
     "/tech/",
-    response_model=Page[M.TechTree],
+    response_model=Page.with_custom_options(
+        module=M.TechTree, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Tech Tree Information",
     tags=["Items"],
@@ -336,7 +356,7 @@ async def gettech(
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            detail="Missing one of the (name, level) params.",
         )
     if len(item.items) != 0:
         return item
@@ -348,7 +368,9 @@ async def gettech(
 
 @app.get(
     "/build/",
-    response_model=Page[M.BuidObjects],
+    response_model=Page.with_custom_options(
+        module=M.BuidObjects, size=Query(50, ge=1, le=200)
+    ),
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
     tags=["Items"],
@@ -367,6 +389,35 @@ async def getbuild(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing one of the (name, category) params.",
+        )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
+    "/passive/",
+    response_model=Page.with_custom_options(
+        module=M.PassiveSkills, size=Query(50, ge=1, le=200)
+    ),
+    response_model_exclude_none=True,
+    summary="Lookup Passive Skills Information",
+    tags=["Pals"],
+    responses=responses,
+)
+async def getpassive(
+    name: str | None = None,
+    db: AsyncSession = Depends(get_session),
+):
+    if name:
+        item = await Q.get_passive(db, name)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing one of the (name) params.",
         )
     if len(item.items) != 0:
         return item

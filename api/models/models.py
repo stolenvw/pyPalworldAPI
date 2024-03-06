@@ -4,8 +4,10 @@ from pydantic import ConfigDict
 from sqlalchemy import Column, String
 from sqlmodel import JSON, Field, SQLModel
 
+
 class HealthCheck(SQLModel):
     status: str = "OK"
+
 
 class Items(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
@@ -189,9 +191,11 @@ class Breeding(SQLModel, table=True):
 class PassiveSkills(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
     Name: str = Field(index=True, sa_type=String(50))
-    Positive: Optional[str] = Field(sa_type=String(100))
-    Negative: Optional[str] = Field(sa_type=String(100))
+    DevName: str = Field(sa_type=String(50))
+    Ability: str = Field(sa_type=String(50))
     Tier: int
+    Description: str
+    Image: str = Field(sa_type=String(100))
 
 
 class FoodEffects(SQLModel):
@@ -228,9 +232,11 @@ class SickPal(SQLModel, table=True):
     SatietyDecrease: int
     Description: str
 
+
 class BuildMaterial(SQLModel):
     Name: str = Field(sa_type=String(50))
     Amount: int
+
 
 class BuidObjects(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
