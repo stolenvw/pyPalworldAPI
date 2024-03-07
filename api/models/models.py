@@ -109,7 +109,6 @@ class PalStats(SQLModel):
 class PalBreeding(SQLModel):
     Rank: int = Field(description="CombiRank")
     Order: int
-    ChildEligble: bool
     MaleProbability: float = Field(description="MaleProbability")
 
 
@@ -175,6 +174,7 @@ class BossPals(SQLModel, table=True):
     Price: int
     Size: str = Field(sa_type=String(2), description="EPalSizeType")
     BattleBGM: str = Field(sa_type=String(50), description="Boss battle location.")
+    Maps: dict[str, str] = Field(sa_column=Column(JSON))
     AIResponse: str = Field(sa_type=String(20))
     Nocturnal: bool
     Predator: bool

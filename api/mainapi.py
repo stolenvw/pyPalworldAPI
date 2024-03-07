@@ -18,6 +18,10 @@ app = FastAPI(
     title="Palworld API",
     description=D.description,
     version="0.0.1",
+    contact={
+        "name": "pyPalworldAPI GitHub",
+        "url": "https://github.com/stolenvw/pyPalworldAPI",
+    },
     license_info={
         "name": "MIT license",
         "identifier": "MIT",
