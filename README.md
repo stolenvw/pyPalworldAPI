@@ -302,4 +302,4 @@ This project is used by the following projects:
 
 ## License
 
-Distributed under the [MIT](https://choosealicense.com/licenses/mit/) License
+Distributed under the [MIT](LICENSE) License
