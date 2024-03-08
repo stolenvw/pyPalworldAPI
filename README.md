@@ -208,16 +208,12 @@ More than just a paldex, includes a lot of game data.
 
 - Edit the [compose.yaml](compose.yaml) file.
 
-  - <details>
+  - Uncomment
 
-      Uncomment
-
-      ```
-      #ports:
-        #  - ${HTTP_PORT}:${HTTP_PORT}
-      ```
-
-    </details>
+    ```
+    #ports:
+      #  - ${HTTP_PORT}:${HTTP_PORT}
+    ```
 
 - _If not running it behind a reversid proxy edit the Dockerfile_
 
@@ -243,6 +239,8 @@ docker-compose up
   - Do steps 1 through 3 above.
 
   - Recommended: Setup a Python virtual environment
+
+  - Move the `.env` into the `api` folder
 
   - Install Python requirements.
 
@@ -299,6 +297,10 @@ To run this project, you will need to add the following environment variables to
 ## Used By
 
 This project is used by the following projects:
+
+## Acknowledgements
+
+ - [dkoz](https://github.com/dkoz)
 
 ## License
 
