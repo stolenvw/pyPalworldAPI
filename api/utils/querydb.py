@@ -135,3 +135,28 @@ async def get_build_by_category(db: AsyncSession, category: str):
 
 async def get_passive(db: AsyncSession, name: str):
     return await paginate(db, select(PassiveSkills).where(PassiveSkills.Name == name))
+
+async def get_all(db: AsyncSession, name):
+    if name == "pals":
+        return await paginate(db, select(Pals))
+    elif name == "bosspals":
+        return await paginate(db, select(BossPals))
+    elif name == "items":
+        return await paginate(db, select(Items))
+    elif name == "breeding":
+        return await paginate(db, select(Breeding))
+    elif name == "buidobjects":
+        return await paginate(db, select(BuidObjects))
+    elif name == "crafting":
+        return await paginate(db, select(Crafting))
+    elif name == "foodeffect":
+        return await paginate(db, select(FoodEffect))
+    elif name == "gear":
+        return await paginate(db, select(Gear))
+    elif name == "sickpal":
+        return await paginate(db, select(SickPal))
+    elif name == "techtree":
+        return await paginate(db, select(TechTree))
+    elif name == "passiveskills":
+        return await paginate(db, select(PassiveSkills))
+    return

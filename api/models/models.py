@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional
 
 from pydantic import ConfigDict
@@ -250,3 +251,17 @@ class BuidObjects(SQLModel, table=True):
     InstallNeighborThreshold: float
     IsInstallOnlyOnBase: bool
     IsInstallOnlyHubAround: bool
+
+
+class APIModels(str, Enum):
+    pals = "pals"
+    bosspals = "bosspals"
+    items = "items"
+    breeding = "breeding"
+    buidobjects = "buidobjects"
+    crafting = "crafting"
+    foodeffect = "foodeffect"
+    gear = "gear"
+    sickpal = "sickpal"
+    techtree = "techtree"
+    passiveskills = "passiveskills"

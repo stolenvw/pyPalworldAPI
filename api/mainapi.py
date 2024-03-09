@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
@@ -423,6 +424,42 @@ async def getpassive(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing one of the (name) params.",
         )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
+    "/all/{category}",
+    response_model=Page.with_custom_options(
+        module=Union[
+            M.Pals,
+            M.BossPals,
+            M.Items,
+            M.Crafting,
+            M.Breeding,
+            M.BuidObjects,
+            M.FoodEffect,
+            M.Gear,
+            M.SickPal,
+            M.TechTree,
+            M.PassiveSkills,
+        ],
+        size=Query(50, ge=1, le=200),
+    ),
+    response_model_exclude_none=True,
+    summary="Paginate full category",
+    tags=["Misc"],
+    
+)
+async def getall(
+    category: M.APIModels,
+    db: AsyncSession = Depends(get_session),
+):
+    item = await Q.get_all(db, category.value)
     if len(item.items) != 0:
         return item
     else:
