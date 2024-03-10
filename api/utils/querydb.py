@@ -14,7 +14,8 @@ from models.models import (
     Pals,
     SickPal,
     TechTree,
-    PassiveSkills
+    PassiveSkills,
+    NPC,
 )
 
 
@@ -136,6 +137,9 @@ async def get_build_by_category(db: AsyncSession, category: str):
 async def get_passive(db: AsyncSession, name: str):
     return await paginate(db, select(PassiveSkills).where(PassiveSkills.Name == name))
 
+async def get_npc(db: AsyncSession, name: str):
+    return await paginate(db, select(NPC).where(NPC.Name == name))
+
 async def get_all(db: AsyncSession, name):
     if name == "pals":
         return await paginate(db, select(Pals))
@@ -159,4 +163,6 @@ async def get_all(db: AsyncSession, name):
         return await paginate(db, select(TechTree))
     elif name == "passiveskills":
         return await paginate(db, select(PassiveSkills))
+    elif name == "npc":
+        return await paginate(db, select(NPC))
     return

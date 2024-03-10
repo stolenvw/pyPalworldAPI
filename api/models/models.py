@@ -265,3 +265,20 @@ class APIModels(str, Enum):
     sickpal = "sickpal"
     techtree = "techtree"
     passiveskills = "passiveskills"
+    npc = "npc"
+
+
+class NPC(SQLModel, table=True):
+    ID: Optional[int] = Field(default=None, primary_key=True)
+    Name: str = Field(index=True, sa_type=String(50))
+    DevName: str = Field(sa_type=String(50))
+    Asset: str = Field(sa_type=String(50), description="BPClass")
+    Genus: str = Field(sa_type=String(50), description="GenusCategory")
+    Weapon: Optional[str] = Field(sa_type=String(50))
+    Stats: PalStats = Field(sa_column=Column(JSON))
+    Rarity: int
+    Price: int
+    Size: str = Field(sa_type=String(2), description="EPalSizeType")
+    AIResponse: str = Field(sa_type=String(20))
+    NooseTrap: bool
+    Suitability: list[PalSuitability] = Field(sa_column=Column(JSON))
