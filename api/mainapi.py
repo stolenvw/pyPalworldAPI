@@ -4,12 +4,13 @@ from typing import Union
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
 from fastapi.staticfiles import StaticFiles
-from fastapi_pagination import Page, add_pagination
+from fastapi_pagination import add_pagination
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 import models.models as M
 import utils.descriptions as D
 import utils.querydb as Q
+from utils.custompage import Page
 from utils.customresponses import responses
 from utils.database import engine
 
@@ -56,9 +57,7 @@ def get_health() -> M.HealthCheck:
 
 @app.get(
     "/items/",
-    response_model=Page.with_custom_options(
-        module=M.Items, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.Items],
     response_model_exclude_none=True,
     summary="Lookup Items Information",
     tags=["Items"],
@@ -97,9 +96,7 @@ async def getitems(
 
 @app.get(
     "/crafting/",
-    response_model=Page.with_custom_options(
-        module=M.Crafting, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.Crafting],
     response_model_exclude_none=True,
     summary="Lookup Crafting Information",
     tags=["Items"],
@@ -126,9 +123,7 @@ async def getcrafting(
 
 @app.get(
     "/gear/",
-    response_model=Page.with_custom_options(
-        module=M.Gear, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.Gear],
     response_model_exclude_none=True,
     summary="Lookup Gear Information",
     tags=["Items"],
@@ -155,9 +150,7 @@ async def getgear(
 
 @app.get(
     "/pals/",
-    response_model=Page.with_custom_options(
-        module=M.Pals, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.Pals],
     response_model_exclude_none=True,
     summary="Lookup Pal[s] Information",
     tags=["Pals"],
@@ -217,9 +210,7 @@ async def getpal(
 
 @app.get(
     "/bosspals/",
-    response_model=Page.with_custom_options(
-        module=M.BossPals, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.BossPals],
     response_model_exclude_none=True,
     summary="Lookup Boss Pal[s] Information",
     tags=["Pals"],
@@ -254,9 +245,7 @@ async def getbosspal(
 
 @app.get(
     "/foodeffect/",
-    response_model=Page.with_custom_options(
-        module=M.FoodEffect, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.FoodEffect],
     response_model_exclude_none=True,
     summary="Lookup Food Effects Information",
     tags=["Items"],
@@ -283,9 +272,7 @@ async def getfoodeffect(
 
 @app.get(
     "/breeding/",
-    response_model=Page.with_custom_options(
-        module=M.Breeding, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.Breeding],
     response_model_exclude_none=True,
     summary="Lookup Breeding Information",
     tags=["Pals"],
@@ -312,9 +299,7 @@ async def getbreeding(
 
 @app.get(
     "/sickness/",
-    response_model=Page.with_custom_options(
-        module=M.SickPal, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.SickPal],
     response_model_exclude_none=True,
     summary="Lookup Sickness Information",
     tags=["Pals"],
@@ -341,9 +326,7 @@ async def getsickness(
 
 @app.get(
     "/tech/",
-    response_model=Page.with_custom_options(
-        module=M.TechTree, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.TechTree],
     response_model_exclude_none=True,
     summary="Lookup Tech Tree Information",
     tags=["Items"],
@@ -373,9 +356,7 @@ async def gettech(
 
 @app.get(
     "/build/",
-    response_model=Page.with_custom_options(
-        module=M.BuidObjects, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.BuidObjects],
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
     tags=["Items"],
@@ -405,9 +386,7 @@ async def getbuild(
 
 @app.get(
     "/passive/",
-    response_model=Page.with_custom_options(
-        module=M.PassiveSkills, size=Query(50, ge=1, le=200)
-    ),
+    response_model=Page[M.PassiveSkills],
     response_model_exclude_none=True,
     summary="Lookup Passive Skills Information",
     tags=["Pals"],
@@ -434,8 +413,8 @@ async def getpassive(
 
 @app.get(
     "/all/{category}",
-    response_model=Page.with_custom_options(
-        module=Union[
+    response_model=Page[
+        Union[
             M.Pals,
             M.BossPals,
             M.Items,
@@ -448,9 +427,8 @@ async def getpassive(
             M.TechTree,
             M.PassiveSkills,
             M.NPC,
-        ],
-        size=Query(50, ge=1, le=200),
-    ),
+        ]
+    ],
     response_model_exclude_none=True,
     summary="Paginate full category",
     tags=["Misc"],
@@ -470,7 +448,7 @@ async def getall(
 
 @app.get(
     "/npc/",
-    response_model=Page.with_custom_options(module=M.NPC, size=Query(50, ge=1, le=200)),
+    response_model=Page[M.NPC],
     response_model_exclude_none=True,
     summary="Lookup NPC Information",
     tags=["Misc"],

@@ -19,3 +19,7 @@ All notable changes to this project will be documented in this file.
 - pydantic to version 2.6.3
 - SQLAlchemy to version 2.0.28
 - uvicorn to version 0.28.0
+
+### Fixed
+
+- Docs successful response example value, to show example instead of just "string"

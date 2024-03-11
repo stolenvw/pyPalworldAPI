@@ -212,7 +212,7 @@ More than just a paldex, includes a lot of game data.
 
     ```
     #ports:
-      #  - ${HTTP_PORT}:${HTTP_PORT}
+    #  - ${HTTP_PORT}:${HTTP_PORT}
     ```
 
 - _If not running it behind a reversid proxy edit the Dockerfile_
