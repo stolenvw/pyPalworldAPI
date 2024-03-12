@@ -64,28 +64,19 @@ def get_health() -> M.HealthCheck:
     responses=responses,
 )
 async def getitems(
+    request: Request,
     name: str | None = None,
     variety: str | None = Query(None, alias="type"),
     db: AsyncSession = Depends(get_session),
 ):
     """
-    Lookup items by one of the options below:
+    Lookup items options below:
 
     - **name**: item name to return information on.
     - **type**: item type.
     """
-    if name and variety:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Please only use one of the (name, variety) params at a time.",
-        )
-    if name or variety:
-        item = await Q.get_item(db, name, variety)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, type) params.",
-        )
+    params = request.query_params
+    item = await Q.get_item(db, params)
     if len(item.items) != 0:
         return item
     else:
@@ -170,7 +161,7 @@ async def getpal(
     db: AsyncSession = Depends(get_session),
 ):
     """
-    Lookup Pal by one of the options below:
+    Lookup Pal by options below:
 
     - **name**: Pal name to return information on.
     - **dexkey**: Paldex ID to return information on.
@@ -181,25 +172,7 @@ async def getpal(
     - **nocturnal**: Return Pals that are daytime/nocturnal.
     """
     params = request.query_params
-    if name:
-        item = await Q.get_pal(db, name)
-    elif dexkey:
-        item = await Q.get_pal_by_dexid(db, dexkey)
-    elif typename:
-        item = await Q.get_pal_by_type(db, typename)
-    elif suitability:
-        item = await Q.get_pal_by_suitability(db, suitability)
-    elif drop:
-        item = await Q.get_pal_by_drops(db, drop)
-    elif skill:
-        item = await Q.get_pal_by_skills(db, skill)
-    elif "nocturnal" in params:
-        item = await Q.get_pal_by_nocturnal(db, nocturnal)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, dexkey, type, suitability, drop, skill, nocturnal) params.",
-        )
+    item = await Q.get_pals(db, params)
     if len(item.items) != 0:
         return item
     else:
@@ -221,20 +194,15 @@ async def getbosspal(
     name: str | None = Query(None, description="Pal name."),
     typename: str | None = Query(None, alias="type"),
     suitability: str | None = None,
+    drop: str | None = None,
+    skill: str | None = None,
+    nocturnal: bool | None = Query(
+        None, description="False for day Pals, True for night Pals."
+    ),
     db: AsyncSession = Depends(get_session),
 ):
     params = request.query_params
-    if name:
-        item = await Q.get_bosspal(db, name)
-    elif typename:
-        item = await Q.get_bosspal_by_type(db, typename)
-    elif suitability:
-        item = await Q.get_bosspal_by_suitability(db, suitability)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, type, suitability) params.",
-        )
+    item = await Q.get_bosspal(db, params)
     if len(item.items) != 0:
         return item
     else:

@@ -36,7 +36,7 @@ More than just a paldex, includes a lot of game data.
 <details>
   <summary>Reference</summary>
 
-#### Get Pal(s), use one of the following parameters. Ex. `/pals/?name=lamball`,  `/pals/?name=lamball&page=1&size=20`
+#### Get Pals. Ex. `/pals/?name=lamball`,  `/pals/?name=lamball&page=1&size=20`
 
 ```http
   GET /pals/?
@@ -44,7 +44,6 @@ More than just a paldex, includes a lot of game data.
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| | One Of | |
 | `name` | `string` | Pal name |
 | `dexkey` | `string` | Paldex string. Ex.`012B` |
 | `type` | `string` | Pal type |
@@ -52,11 +51,11 @@ More than just a paldex, includes a lot of game data.
 | `drop` | `string` | Item |
 | `skill` | `string` | Pal skill |
 | `nocturnal` | `bool` | If true returns night pals, false returns day pal |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get Boss Pal(s), use one of the following parameters. Ex. `/bosspals/?name=Mammorest`,  `/bosspals/?name=Mammorest&page=1&size=20`
+#### Get Boss Pals. Ex. `/bosspals/?name=Mammorest`,  `/bosspals/?name=Mammorest&page=1&size=20`
 
 ```http
   GET /bosspals/?
@@ -64,15 +63,17 @@ More than just a paldex, includes a lot of game data.
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| | One Of | |
 | `name` | `string` | Pal name |
 | `type` | `string` | Pal type |
 | `suitability` | `string` | Pal work type |
-| | Can be used with above parameters. | |
+| `drop` | `string` | Item |
+| `skill` | `string` | Pal skill |
+| `nocturnal` | `bool` | If true returns night pals, false returns day pal |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get breeding. Ex. `/breeding/?name=Anubis`,  `/breeding/?name=Anubis&page=1&size=20`
+#### Get Breeding. Ex. `/breeding/?name=Anubis`,  `/breeding/?name=Anubis&page=1&size=20`
 
 ```http
   GET /breeding/?
@@ -81,11 +82,11 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Pal you want get egg of |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get sickness. Ex. `/sickness/?name=ulcer`,  `/sickness/?name=ulcer&page=1&size=20`
+#### Get Sickness. Ex. `/sickness/?name=ulcer`,  `/sickness/?name=ulcer&page=1&size=20`
 
 ```http
   GET /sickness/?
@@ -94,11 +95,11 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Sickness |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get items, use one of the following parameters. Ex. `/items/?name=arrow`,  `/items/?name=Arrow&page=1&size=20`
+#### Get Items. Ex. `/items/?name=arrow`,  `/items/?name=Arrow&page=1&size=20`
 
 ```http
   GET /items/?
@@ -106,15 +107,14 @@ More than just a paldex, includes a lot of game data.
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| | One Of | |
 | `name` | `string` | Item name |
 | `type` | `string` | Item type |
 | `suitability` | `string` | Pal work type |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get crafting, use one of the following parameters. Ex. `/crafting/?name=arrow`,  `/crafting/?name=Arrow&page=1&size=20`
+#### Get Crafting. Ex. `/crafting/?name=arrow`,  `/crafting/?name=Arrow&page=1&size=20`
 
 ```http
   GET /crafting/?
@@ -123,11 +123,11 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Item name to get recipe info for|
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get gear, use one of the following parameters. Ex. `/gear/?name=cloth%20outfit`,  `?name=cloth%20outfit&page=1&size=20`
+#### Get Gear. Ex. `/gear/?name=cloth%20outfit`,  `?name=cloth%20outfit&page=1&size=20`
 
 ```http
   GET /gear/?
@@ -136,11 +136,11 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Gear to lookup |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get foodeffect, use one of the following parameters. Ex. `/foodeffect/?name=salad`,  `?foodeffect=salad&page=1&size=20`
+#### Get Foodeffect. Ex. `/foodeffect/?name=salad`,  `?foodeffect=salad&page=1&size=20`
 
 ```http
   GET /foodeffect/?
@@ -149,11 +149,11 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Food item |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get tech, use one of the following parameters. Ex. `/tech/?name=Nail`,  `/tech/?name=Nail&page=1&size=20`
+#### Get Tech. Ex. `/tech/?name=Nail`,  `/tech/?name=Nail&page=1&size=20`
 
 ```http
   GET /tech/?
@@ -164,11 +164,11 @@ More than just a paldex, includes a lot of game data.
 | | One Of | |
 | `name` | `string` | Tech tree item |
 | `level` | `int` | Tech tree level |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get build, use one of the following parameters. Ex. `/build/?name=Campfire`,  `/build/?name=Campfire&page=1&size=20`
+#### Get Build. Ex. `/build/?name=Campfire`,  `/build/?name=Campfire&page=1&size=20`
 
 ```http
   GET /build/?
@@ -179,11 +179,11 @@ More than just a paldex, includes a lot of game data.
 | | One Of | |
 | `name` | `string` | Building Object |
 | `category` | `string` | Tech tree level |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
-#### Get passive, use one of the following parameters. Ex. `/passive/?name=Brave`,  `?passive=Brave&page=1&size=20`
+#### Get Passive. Ex. `/passive/?name=Brave`,  `?passive=Brave&page=1&size=20`
 
 ```http
   GET /passive/?
@@ -192,7 +192,7 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Passive skill |
-| | Can be used with above parameters. | |
+| Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
 

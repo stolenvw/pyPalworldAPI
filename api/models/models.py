@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import ConfigDict
 from sqlalchemy import Column, String
 from sqlmodel import JSON, Field, SQLModel
 
@@ -33,10 +32,6 @@ class Items(SQLModel, table=True):
 
 
 class Crafting(SQLModel, table=True):
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     ID: Optional[int] = Field(default=None, primary_key=True)
     Name: str = Field(foreign_key="items")
     Output: int
@@ -45,10 +40,6 @@ class Crafting(SQLModel, table=True):
 
 
 class Gear(SQLModel, table=True):
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     ID: Optional[int] = Field(default=None, primary_key=True)
     Name: str = Field(index=True, sa_type=String(50))
     Common: dict[str, int] = Field(sa_column=Column(JSON))
@@ -121,10 +112,6 @@ class PalDrops(SQLModel):
 
 
 class Pals(SQLModel, table=True):
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     ID: Optional[int] = Field(default=None, primary_key=True)
     DexKey: str = Field(sa_type=String(4), description="ZukanIndex")
     Image: str = Field(sa_type=String(100))
@@ -152,10 +139,6 @@ class Pals(SQLModel, table=True):
 
 
 class BossPals(SQLModel, table=True):
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     ID: Optional[int] = Field(default=None, primary_key=True)
     DexKey: str = Field(sa_type=String(4), description="ZukanIndex")
     Image: str = Field(sa_type=String(100))

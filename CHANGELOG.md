@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
 - pydantic to version 2.6.3
 - SQLAlchemy to version 2.0.28
 - uvicorn to version 0.28.0
+- get pals to take multiple params to filter results more
+- get bosspals to take multiple params to filter results more
 
 ### Fixed
 
