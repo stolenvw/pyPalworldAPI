@@ -19,7 +19,7 @@ load_dotenv(dotenv_path=".env")
 app = FastAPI(
     title="Palworld API",
     description=D.description,
-    version="0.0.1",
+    version="0.0.2",
     contact={
         "name": "pyPalworldAPI GitHub",
         "url": "https://github.com/stolenvw/pyPalworldAPI",
