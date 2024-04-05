@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Game data from v0.2.0.6
+
+### Changed
+
+- Some images to new version from v0.2.0.6
+
 ## [0.0.2] - 2024-3-13
 
 ### Added

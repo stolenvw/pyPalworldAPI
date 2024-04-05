@@ -33,7 +33,8 @@ class Items(SQLModel, table=True):
 
 class Crafting(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
-    Name: str = Field(foreign_key="items")
+    #Name: str = Field(foreign_key="items")
+    Name: str
     Output: int
     WorkAmount: int
     Material: dict[str, int] = Field(sa_column=Column(JSON))
@@ -96,6 +97,9 @@ class PalStats(SQLModel):
     Food: int
     CraftSpeed: int
     TransportSpeed: int
+    EnemyMaxHPRate: float
+    EnemyReceiveDamageRate: float
+    EnemyInflictDamageRate: float
 
 
 class PalBreeding(SQLModel):
@@ -136,6 +140,7 @@ class Pals(SQLModel, table=True):
     Nocturnal: bool
     Predator: bool
     NooseTrap: bool
+    IsRaidBoss: bool
 
 
 class BossPals(SQLModel, table=True):
@@ -163,6 +168,7 @@ class BossPals(SQLModel, table=True):
     Nocturnal: bool
     Predator: bool
     NooseTrap: bool
+    IsRaidBoss: bool
 
 
 class Breeding(SQLModel, table=True):
@@ -185,6 +191,7 @@ class PassiveSkills(SQLModel, table=True):
 class FoodEffects(SQLModel):
     Name: str
     Value: int
+    Interaval: int
 
 
 class FoodEffect(SQLModel, table=True):
@@ -215,6 +222,7 @@ class SickPal(SQLModel, table=True):
     MoveSpeed: int
     SatietyDecrease: int
     Description: str
+    RecoveryProbabilityPercentageInPalBox: int
 
 
 class BuildMaterial(SQLModel):
@@ -265,3 +273,4 @@ class NPC(SQLModel, table=True):
     AIResponse: str = Field(sa_type=String(20))
     NooseTrap: bool
     Suitability: list[PalSuitability] = Field(sa_column=Column(JSON))
+    IsRaidBoss: bool
