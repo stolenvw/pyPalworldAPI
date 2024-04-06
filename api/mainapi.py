@@ -395,6 +395,7 @@ async def getpassive(
             M.TechTree,
             M.PassiveSkills,
             M.NPC,
+            M.Elixir,
         ]
     ],
     response_model_exclude_none=True,
@@ -428,6 +429,33 @@ async def getnpc(
 ):
     if name:
         item = await Q.get_npc(db, name)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing one of the (name) params.",
+        )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
+    "/elixir/",
+    response_model=Page[M.Elixir],
+    response_model_exclude_none=True,
+    summary="Lookup Elixir Information",
+    tags=["Items"],
+    responses=responses,
+)
+async def getelixir(
+    name: str | None = None,
+    db: AsyncSession = Depends(get_session),
+):
+    if name:
+        item = await Q.get_elixir(db, name)
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

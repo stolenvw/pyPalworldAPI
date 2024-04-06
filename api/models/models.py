@@ -9,6 +9,13 @@ class HealthCheck(SQLModel):
     status: str = "OK"
 
 
+class ItemPassive(SQLModel):
+    PassiveSkill1: str
+    PassiveSkill2: str
+    PassiveSkill3: str
+    PassiveSkill4: str
+
+
 class Items(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
     Name: str = Field(index=True, sa_type=String(50))
@@ -29,11 +36,11 @@ class Items(SQLModel, table=True):
     MagicDefenseValue: Optional[int]
     Descripition: str
     ItemActorClass: Optional[str] = Field(sa_type=String(50))
+    PassiveSkills: ItemPassive = Field(sa_column=Column(JSON))
 
 
 class Crafting(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
-    #Name: str = Field(foreign_key="items")
     Name: str
     Output: int
     WorkAmount: int
@@ -257,6 +264,7 @@ class APIModels(str, Enum):
     techtree = "techtree"
     passiveskills = "passiveskills"
     npc = "npc"
+    elixir = "elixir"
 
 
 class NPC(SQLModel, table=True):
@@ -274,3 +282,15 @@ class NPC(SQLModel, table=True):
     NooseTrap: bool
     Suitability: list[PalSuitability] = Field(sa_column=Column(JSON))
     IsRaidBoss: bool
+
+
+class Elixir(SQLModel, table=True):
+    ID: Optional[int] = Field(default=None, primary_key=True)
+    Name: str = Field(index=True, sa_type=String(50))
+    Description: str
+    DevName: str = Field(sa_type=String(50))
+    MaxHP: int
+    MaxSP: int
+    Power: int
+    WorkSpeed: int
+    maxInventoryWeight: int

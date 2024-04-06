@@ -7,6 +7,17 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Game data from v0.2.0.6
+- Items passive skills
+- Pal stats:
+    - EnemyMaxHPRate
+    - EnemyReceiveDamageRate
+    - EnemyInflictDamageRate
+- Pals IsRaidBoss
+- BossPals IsRaidBoss
+- FoodEffects Interaval
+- SickPal RecoveryProbabilityPercentageInPalBox
+- NPC IsRaidBoss
+- Elixir
 
 ### Changed
 

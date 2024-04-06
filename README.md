@@ -7,7 +7,7 @@ More than just a paldex, includes a lot of game data.
 ![GitHub repo size](https://img.shields.io/github/repo-size/stolenvw/pyPalworldAPI)
 ![GitHub License](https://img.shields.io/github/license/stolenvw/pyPalworldAPI)
 ![Static Badge](https://img.shields.io/badge/3.10.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
-![Static Badge](https://img.shields.io/badge/v0.1.5.1-gray?label=Game%20Data&labelColor=gray&color=blue)
+![Static Badge](https://img.shields.io/badge/v0.2.0.6-gray?label=Game%20Data&labelColor=gray&color=blue)
 </div>
 
 ## Features
@@ -192,6 +192,32 @@ More than just a paldex, includes a lot of game data.
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Passive skill |
+| Optional: | | |
+| `page` | `int` | Page number to return |
+| ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+
+#### Get NPC. Ex. `/npc/?name=Wandering%20Merchant`,  `/npc/?name=Wandering%20Merchant&page=1&size=20`
+
+```http
+  GET /npc/?
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | npc |
+| Optional: | | |
+| `page` | `int` | Page number to return |
+| ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+
+#### Get Elixir. Ex. `/elixir/?name=Power%20Elixir`,  `/elixir/?name=Power%20Elixir&page=1&size=20`
+
+```http
+  GET /elixir/?
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | elixir |
 | Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |

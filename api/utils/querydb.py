@@ -9,6 +9,7 @@ from models.models import (
     Breeding,
     BuidObjects,
     Crafting,
+    Elixir,
     FoodEffect,
     Gear,
     Items,
@@ -169,6 +170,10 @@ async def get_npc(db: AsyncSession, name: str):
     return await paginate(db, select(NPC).where(NPC.Name == name))
 
 
+async def get_elixir(db: AsyncSession, name: str):
+    return await paginate(db, select(Elixir).where(Elixir.Name == name))
+
+
 async def get_all(db: AsyncSession, name):
     if name == "pals":
         return await paginate(db, select(Pals))
@@ -194,4 +199,6 @@ async def get_all(db: AsyncSession, name):
         return await paginate(db, select(PassiveSkills))
     elif name == "npc":
         return await paginate(db, select(NPC))
+    elif name == "elixir":
+        return await paginate(db, select(Elixir))
     return
