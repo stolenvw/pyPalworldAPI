@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - SickPal RecoveryProbabilityPercentageInPalBox
 - NPC IsRaidBoss
 - Elixir
+- New Breeding data (have checked some of them, if you find ones that are wrong let me know)
 
 ### Changed
 
