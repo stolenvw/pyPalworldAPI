@@ -2,7 +2,7 @@
 -- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Generation Time: Apr 11, 2024 at 04:54 PM
+-- Generation Time: Apr 15, 2024 at 04:42 PM
 -- Server version: 8.0.36-0ubuntu0.22.04.1
 -- PHP Version: 7.4.3-4ubuntu2.20
 
@@ -11413,7 +11413,7 @@ INSERT INTO `items` (`ID`, `Name`, `DevName`, `Image`, `Type`, `Rank`, `MaxStack
 (701, 'Fried Kelpsea', 'FriedKelpie', '/public/images/food/T_itemicon_Food_FriedKelpie.png', 'Food', 3, 9999, 0.5, 1080, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Crunchy fried batter perfectly accentuates the Kelpsea\'s plumpness. Eat to increase Defense by +10% and make SAN decrease slower for a period of time.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
 (702, 'Dumud Chowder', 'Chowder', '/public/images/food/T_itemicon_Food_Chowder.png', 'Food', 3, 9999, 0.5, 1700, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Dumud lavishly covered in a thick, creamy soup. Eat to increase work speed and stay full slightly longer for a period of time.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
 (703, 'Ring of Mercy', 'Accessory_Nonkilling', '/public/images/accessory/T_itemicon_Accessory_Nonkilling.png', 'Accessory', 2, 1, 2, 30000, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pacifist\'s ring. The wearer\'s attacks will not reduce the target\'s Health below 1.', NULL, '{\"PassiveSkill1\": \"Mercy Hit\", \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
-(704, 'Bellanoir\'s Slab', 'PalSummon', '/public/images/consume/T_itemicon_Consume_PalSummon_NightLady.png', 'Consume', 1, 9999, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Slab depicting Bellanoir. Offer to an Summoning Altar to summon a powerful Pal.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
+(704, 'Summoning Altar', 'PalSummon', '/public/images/consume/T_itemicon_Consume_PalSummon_NightLady.png', 'Consume', 1, 9999, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Slab depicting Bellanoir. Offer to an Summoning Altar to summon a powerful Pal.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
 (705, 'Bellanoir\'s Slab', 'PalSummon_NightLady', '/public/images/consume/T_itemicon_Consume_PalSummon_NightLady.png', 'Consume', 1, 9999, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Slab depicting Bellanoir. Offer to an Summoning Altar to summon a powerful Lv 30 Bellanoir.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
 (706, 'Bellanoir Libero\'s Slab', 'PalSummon_NightLady_Dark', '/public/images/consume/T_itemicon_Consume_PalSummon_NightLady_Dark.png', 'Consume', 1, 9999, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Slab depicting Bellanoir Libero. Offer to an Summoning Altar to summon an exceptionally powerful Lv 50 Bellanoir Libero.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
 (707, 'Bellanoir Libero (Ultra) Slab', 'PalSummon_NightLady_Dark_2', '/public/images/consume/T_itemicon_Consume_PalSummon_NightLady_Dark_2.png', 'Consume', 1, 9999, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Slab overflowing with Bellanoir Libero\'s energy. Offer to an Summoning Altar to summon an inconceivably powerful (Lv ??) Bellanoir Libero.', NULL, '{\"PassiveSkill1\": null, \"PassiveSkill2\": null, \"PassiveSkill3\": null, \"PassiveSkill4\": null}'),
@@ -12251,8 +12251,8 @@ ALTER TABLE `gear`
 --
 ALTER TABLE `items`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `ix_items_Type` (`Type`),
-  ADD KEY `ix_items_Name` (`Name`);
+  ADD KEY `ix_items_Name` (`Name`),
+  ADD KEY `ix_items_Type` (`Type`);
 
 --
 -- Indexes for table `npc`

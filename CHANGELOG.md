@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Game data from v0.2.2.0
+
+### Changed
+
+- ITEM_NAME_PalSummon name from "Bellanoir's Slab" to "Summoning Altar"
+
 ## [0.0.3] - 2024-4-14
 
 ### Added
