@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- "Boss" Pals HP, EnemyReceiveDamageRate, EnemyInflictDamageRate to new values from v0.2.4.0
+
 ## [0.0.4] - 2024-5-14
 
 ### Added
