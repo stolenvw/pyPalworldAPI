@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Game data from v0.3.1.55394
+
 ## [0.0.5] - 2024-6-27
 
 ### Changed
