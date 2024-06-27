@@ -7,7 +7,7 @@ More than just a paldex, includes a lot of game data.
 ![GitHub repo size](https://img.shields.io/github/repo-size/stolenvw/pyPalworldAPI)
 ![GitHub License](https://img.shields.io/github/license/stolenvw/pyPalworldAPI)
 ![Static Badge](https://img.shields.io/badge/3.10.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
-![Static Badge](https://img.shields.io/badge/v0.2.3.0-gray?label=Game%20Data&labelColor=gray&color=blue)
+![Static Badge](https://img.shields.io/badge/v0.2.4.0-gray?label=Game%20Data&labelColor=gray&color=blue)
 </div>
 
 ## Features
