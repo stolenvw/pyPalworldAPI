@@ -217,10 +217,64 @@ More than just a paldex, includes a lot of game data.
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `name` | `string` | elixir |
+| `name` | `string` | Elixir |
 | Optional: | | |
 | `page` | `int` | Page number to return |
 | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+
+#### Get All. Ex. `/all/pals`
+
+```http
+  GET /all/{category}
+```
+
+| Category | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `pals` | `string` | Pals |
+| `bosspals` | `string` | Boss Pals |
+| `items` | `string` | Items |
+| `breeding` | `string` | Breeding |
+| `buidobjects` | `string` | Buid Objects |
+| `crafting` | `string` | Crafting |
+| `foodeffect` | `string` | Food Effect |
+| `gear` | `string` | Gear |
+| `sickpal` | `string` | Sickness |
+| `techtree` | `string` | Tech Tree |
+| `passiveskills` | `string` | Passive Skills |
+| `npc` | `string` | Npc |
+| `elixir` | `string` | Elixir |
+| Optional: | | |
+| `page` | `int` | Page number to return |
+| ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+
+#### Get Autocomplete. Ex. `/autocomplete/palname/?name=la`
+
+```http
+  GET /autocomplete/{category}/?name=
+```
+
+| Category | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `palname` | `string` | Pal name |
+| `paldexkey` | `string` | Pal dex string |
+| `bossname` | `string` | Boss pal name |
+| `sickness` | `string` | Sickness |
+| `passiveskill` | `string` | Passive skill |
+| `itemname` | `string` | Item name |
+| `itemtype` | `string` | Item type |
+| `crafting` | `string` | Crafting |
+| `gear` | `string` | Gear |
+| `food` | `string` | Food |
+| `tech` | `string` | Tech |
+| `buidname` | `string` | Building object |
+| `buildcategory` | `string` | Building category |
+| `elixir` | `string` | Elixir |
+| `npc` | `string` | Npc |
+| Parameter: | | |
+| `name` | `string` | Start of name of what your looking for. |
+| Optional: | | |
+| `page` | `int` | Page number to return |
+| ` size` | `int` | How many to return per page. Default:`25` Max:`25` |
 
 </details>
 
