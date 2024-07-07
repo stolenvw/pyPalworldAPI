@@ -202,3 +202,127 @@ async def get_all(db: AsyncSession, name):
     elif name == "elixir":
         return await paginate(db, select(Elixir))
     return
+
+
+async def get_autocomplete(db: AsyncSession, category: str, name: str):
+    if category == "palname":
+        return await paginate(
+            db,
+            select(Pals.Name)
+            .where(Pals.Name.like(f"{name}%"))
+            .order_by(Pals.Name.asc())
+            .distinct(),
+        )
+    elif category == "paldexkey":
+        return await paginate(
+            db,
+            select(Pals.DexKey)
+            .where(Pals.DexKey.like(f"{name}%"))
+            .order_by(Pals.DexKey.asc())
+            .distinct(),
+        )
+    elif category == "bossname":
+        return await paginate(
+            db,
+            select(BossPals.Name)
+            .where(BossPals.Name.like(f"{name}%"))
+            .order_by(BossPals.Name.asc())
+            .distinct(),
+        )
+    elif category == "sickness":
+        return await paginate(
+            db,
+            select(SickPal.Name)
+            .where(SickPal.Name.like(f"{name}%"))
+            .order_by(SickPal.Name.asc())
+            .distinct(),
+        )
+    elif category == "passiveskill":
+        return await paginate(
+            db,
+            select(PassiveSkills.Name)
+            .where(PassiveSkills.Name.like(f"{name}%"))
+            .order_by(PassiveSkills.Name.asc())
+            .distinct(),
+        )
+    elif category == "itemname":
+        return await paginate(
+            db,
+            select(Items.Name)
+            .where(Items.Name.like(f"{name}%"))
+            .order_by(Items.Name.asc())
+            .distinct(),
+        )
+    elif category == "itemtype":
+        return await paginate(
+            db,
+            select(Items.Type)
+            .where(Items.Type.like(f"{name}%"))
+            .order_by(Items.Type.asc())
+            .distinct(),
+        )
+    elif category == "crafting":
+        return await paginate(
+            db,
+            select(Crafting.Name)
+            .where(Crafting.Name.like(f"{name}%"))
+            .order_by(Crafting.Name.asc())
+            .distinct(),
+        )
+    elif category == "gear":
+        return await paginate(
+            db,
+            select(Gear.Name)
+            .where(Gear.Name.like(f"{name}%"))
+            .order_by(Gear.Name.asc())
+            .distinct(),
+        )
+    elif category == "food":
+        return await paginate(
+            db,
+            select(FoodEffect.Name)
+            .where(FoodEffect.Name.like(f"{name}%"))
+            .order_by(FoodEffect.Name.asc())
+            .distinct(),
+        )
+    elif category == "tech":
+        return await paginate(
+            db,
+            select(TechTree.Name)
+            .where(TechTree.Name.like(f"{name}%"))
+            .order_by(TechTree.Name.asc())
+            .distinct(),
+        )
+    elif category == "buidname":
+        return await paginate(
+            db,
+            select(BuidObjects.Name)
+            .where(BuidObjects.Name.like(f"{name}%"))
+            .order_by(BuidObjects.Name.asc())
+            .distinct(),
+        )
+    elif category == "buildcategory":
+        return await paginate(
+            db,
+            select(BuidObjects.Category)
+            .where(BuidObjects.Category.like(f"{name}%"))
+            .order_by(BuidObjects.Category.asc())
+            .distinct(),
+        )
+    elif category == "elixir":
+        return await paginate(
+            db,
+            select(Elixir.Name)
+            .where(Elixir.Name.like(f"{name}%"))
+            .order_by(Elixir.Name.asc())
+            .distinct(),
+        )
+    elif category == "npc":
+        return await paginate(
+            db,
+            select(NPC.Name)
+            .where(NPC.Name.like(f"{name}%"))
+            .order_by(NPC.Name.asc())
+            .distinct(),
+        )
+    return

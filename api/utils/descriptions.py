@@ -10,4 +10,5 @@ tags_metadata = [
     {"name": "Pals", "description": "All your Pals info."},
     {"name": "Items","description": "All your Game items info.",},
     {"name": "Misc","description": "Miscellaneous.",},
+    {"name": "AutoComplete","description": "Discord bots AutoComplete helper.",}
 ]

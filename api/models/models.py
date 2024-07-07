@@ -294,3 +294,21 @@ class Elixir(SQLModel, table=True):
     Power: int
     WorkSpeed: int
     maxInventoryWeight: int
+
+
+class AutoCompleteModels(str, Enum):
+    palname = "palname"
+    paldexkey = "paldexkey"
+    bossname = "bossname"
+    sickness = "sickness"
+    passiveskill = "passiveskill"
+    itemname = "itemname"
+    itemtype = "itemtype"
+    crafting = "crafting"
+    gear = "gear"
+    food = "food"
+    tech = "tech"
+    buidname = "buidname"
+    buildcategory = "buildcategory"
+    elixir = "elixir"
+    npc = "npc"

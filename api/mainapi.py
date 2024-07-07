@@ -10,6 +10,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 import models.models as M
 import utils.descriptions as D
 import utils.querydb as Q
+from utils.autocustompage import AutoCompletePage
 from utils.custompage import Page
 from utils.customresponses import responses
 from utils.database import engine
@@ -302,7 +303,7 @@ async def getsickness(
 )
 async def gettech(
     name: str | None = None,
-    level: int | None = Query(None, ge=1, le=50),
+    level: int | None = Query(None, ge=1, le=55),
     db: AsyncSession = Depends(get_session),
 ):
     if name:
@@ -461,6 +462,27 @@ async def getelixir(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Missing one of the (name) params.",
         )
+    if len(item.items) != 0:
+        return item
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        )
+
+
+@app.get(
+    "/autocomplete/{category}/",
+    response_model=AutoCompletePage[str],
+    response_model_exclude_none=True,
+    summary="AutoComplete Helper",
+    tags=["AutoComplete"],
+)
+async def getautocomplete(
+    category: M.AutoCompleteModels,
+    name: str | None = "%",
+    db: AsyncSession = Depends(get_session),
+):
+    item = await Q.get_autocomplete(db, category.value, name)
     if len(item.items) != 0:
         return item
     else:
