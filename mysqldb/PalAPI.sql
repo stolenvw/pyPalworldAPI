@@ -2,7 +2,7 @@
 -- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Generation Time: Jul 07, 2024 at 01:30 PM
+-- Generation Time: Jul 07, 2024 at 07:57 PM
 -- Server version: 8.0.37-0ubuntu0.22.04.3
 -- PHP Version: 7.4.3-4ubuntu2.23
 
@@ -15793,7 +15793,22 @@ INSERT INTO `passiveskills` (`ID`, `Name`, `DevName`, `Ability`, `Tier`, `Descri
 (61, 'Flame Emperor', 'PASSIVE_ElementBoost_Fire_2_PAL', 'Fire Damage', 3, '20% increase to Fire attack damage.', '/public/images/passive/passivea.png'),
 (62, 'Ice Emperor', 'PASSIVE_ElementBoost_Ice_2_PAL', 'Ice Damage', 3, '20% increase to Ice attack damage.', '/public/images/passive/passivea.png'),
 (63, 'Lord of the Sea', 'PASSIVE_ElementBoost_Aqua_2_PAL', 'Water Damage', 3, '20% increase to Water attack damage.', '/public/images/passive/passivea.png'),
-(64, 'Mercy Hit', 'PASSIVE_NonKilling', 'Pacifist', 0, 'The attack target Health cannot be less than 1.', 'Unknown');
+(64, 'Mercy Hit', 'PASSIVE_NonKilling', 'Pacifist', -1, 'The attack target Health cannot be less than 1.', '/public/images/passive/passivex.png'),
+(65, 'Siren of the Void', 'PASSIVE_Witch', 'Attack', 3, '30% increase to Dark attack damage., 30% increase to Ice attack damage.', '/public/images/passive/passivea.png'),
+(66, 'Eternal Flame', 'PASSIVE_EternalFlame', 'Attack', 3, '30% increase to Fire attack damage., 30% increase to Lightning attack damage.', '/public/images/passive/passivea.png'),
+(67, 'Earth Emperor', 'PASSIVE_ElementBoost_Earth_2_PAL', 'Attack', 3, '20% increase to Earth attack damage.', '/public/images/passive/passivea.png'),
+(68, 'Philanthropist', 'PASSIVE_Test_PalEgg_HatchingSpeed_Up', 'Production', 3, 'When assigned to a Breeding Farm, egg production time is reduced by 100%.', '/public/images/passive/passivea.png'),
+(69, 'Serenity', 'PASSIVE_CoolTimeReduction_Up_1', 'Attack', 3, 'Active skill cooldown reduction 30%, Attack +10%', '/public/images/passive/passivea.png'),
+(70, 'Infinite Stamina', 'PASSIVE_Stamina_Up_1', 'Stamina', 3, 'Max stamina +50, *This effect is only valid for rideable pals.', '/public/images/passive/passivea.png'),
+(71, 'Noble', 'PASSIVE_SalePrice_Up_1', 'Sale', 2, 'Sale price +5%', '/public/images/passive/passiveb.png'),
+(72, 'Nocturnal', 'PASSIVE_Nocturnal', 'Nocturnal', 1, 'Does not sleep and continues to work even at night.', '/public/images/passive/passivec.png'),
+(73, 'Impatient', 'PASSIVE_CoolTimeReduction_Up_2', 'Skill', 1, 'Active skill cooldown reduction 15%', '/public/images/passive/passivec.png'),
+(74, 'Fit as a Fiddle', 'PASSIVE_Stamina_Up_2', 'Stamina', 1, 'Max stamina +25%, *This effect is only valid for rideable pals.', '/public/images/passive/passivec.png'),
+(75, 'Fine Furs', 'PASSIVE_SalePrice_Up_2', 'SalePrice', 1, 'Sale price +3%', '/public/images/passive/passivec.png'),
+(76, 'Otherworldly Cells', 'PASSIVE_Alien', 'Attack, Damage', 1, 'Attack +10%, Fire damage reduction 15%, Lightning damage reduction 15%', '/public/images/passive/passivec.png'),
+(77, 'Easygoing', 'PASSIVE_CoolTimeReduction_Down_1', 'Skill', -1, 'Active skill cooldown extension -15%', '/public/images/passive/passivex.png'),
+(78, 'Sickly', 'PASSIVE_Stamina_Down_1', 'Stamina', -1, 'Max Stamina -25%, *This effect is only valid for rideable pals.', '/public/images/passive/passivex.png'),
+(79, 'Shabby', 'PASSIVE_SalePrice_Down_1', 'SalePrice', -1, 'Sale price -10%', '/public/images/passive/passivex.png');
 
 -- --------------------------------------------------------
 
@@ -16366,7 +16381,7 @@ ALTER TABLE `pals`
 -- AUTO_INCREMENT for table `passiveskills`
 --
 ALTER TABLE `passiveskills`
-  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `sickpal`
