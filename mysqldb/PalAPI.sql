@@ -2,7 +2,7 @@
 -- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Generation Time: Jul 08, 2024 at 10:49 AM
+-- Generation Time: Jul 08, 2024 at 04:30 PM
 -- Server version: 8.0.37-0ubuntu0.22.04.3
 -- PHP Version: 7.4.3-4ubuntu2.23
 
@@ -13676,10 +13676,10 @@ INSERT INTO `breeding` (`ID`, `Egg`, `P1`, `P2`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `buidobjects`
+-- Table structure for table `buildobjects`
 --
 
-CREATE TABLE `buidobjects` (
+CREATE TABLE `buildobjects` (
   `ID` int NOT NULL,
   `MapObjectId` varchar(50) NOT NULL,
   `Name` varchar(50) NOT NULL,
@@ -13694,10 +13694,10 @@ CREATE TABLE `buidobjects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `buidobjects`
+-- Dumping data for table `buildobjects`
 --
 
-INSERT INTO `buidobjects` (`ID`, `MapObjectId`, `Name`, `Description`, `Image`, `Material`, `Category`, `RequiredBuildWorkAmount`, `InstallNeighborThreshold`, `IsInstallOnlyOnBase`, `IsInstallOnlyHubAround`) VALUES
+INSERT INTO `buildobjects` (`ID`, `MapObjectId`, `Name`, `Description`, `Image`, `Material`, `Category`, `RequiredBuildWorkAmount`, `InstallNeighborThreshold`, `IsInstallOnlyOnBase`, `IsInstallOnlyHubAround`) VALUES
 (1, 'FarmBlockV2_wheet', 'Wheat Plantation', 'A farm that can grow Wheat. It requires an average amount of time to harvest. Requires a few Pals to plant seeds, water, and harvest crops.', '/public/images/build/T_icon_buildObject_FarmBlockV2_Berries.png', '[{\"Name\": \"Wheat Seeds\", \"Amount\": 3}, {\"Name\": \"Wood\", \"Amount\": 35}, {\"Name\": \"Stone\", \"Amount\": 35}]', 'Food', 8000, 140, 0, 0),
 (2, 'FarmBlockV2_tomato', 'Tomato Plantation', 'A farm that can grow Tomato. They take time to harvest, but increase the variety of meals you can prepare. Requires a few Pals to plant seeds, water, and harvest the crops.', '/public/images/build/T_icon_buildObject_FarmBlockV2_Berries.png', '[{\"Name\": \"Tomato Seeds\", \"Amount\": 3}, {\"Name\": \"Wood\", \"Amount\": 70}, {\"Name\": \"Stone\", \"Amount\": 50}, {\"Name\": \"Pal Fluids\", \"Amount\": 5}]', 'Food', 20000, 140, 0, 0),
 (3, 'FarmBlockV2_Lettuce', 'Lettuce Plantation', 'A farm that can grow Lettuce. It takes time to harvest, but increases the variety of meals you can prepare. Requires a few Pals to plant seeds, water, and harvest the crops.', '/public/images/build/T_icon_buildObject_FarmBlockV2_Berries.png', '[{\"Name\": \"Lettuce Seeds\", \"Amount\": 3}, {\"Name\": \"Wood\", \"Amount\": 100}, {\"Name\": \"Stone\", \"Amount\": 70}, {\"Name\": \"Pal Fluids\", \"Amount\": 10}]', 'Food', 40000, 140, 0, 0),
@@ -13844,7 +13844,7 @@ INSERT INTO `buidobjects` (`ID`, `MapObjectId`, `Name`, `Description`, `Image`, 
 (144, 'TableSquare_Wood', 'Square Table', 'Decorative square table. ', '/public/images/build/T_icon_buildObject_TableSquare_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 20}, {\"Name\": \"Red Berries\", \"Amount\": 5}]', 'Furniture', 3000, 0, 0, 0),
 (145, 'TableCircular_Wood', 'Round Table', 'Decorative round table. ', '/public/images/build/T_icon_buildObject_TableCircular_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 20}, {\"Name\": \"Red Berries\", \"Amount\": 5}]', 'Furniture', 3000, 0, 0, 0),
 (146, 'Bench_Wood', 'Wooden Bench', 'Decorative wooden bench. ', '/public/images/build/T_icon_buildObject_Bench_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 10}]', 'Furniture', 1000, 0, 0, 0);
-INSERT INTO `buidobjects` (`ID`, `MapObjectId`, `Name`, `Description`, `Image`, `Material`, `Category`, `RequiredBuildWorkAmount`, `InstallNeighborThreshold`, `IsInstallOnlyOnBase`, `IsInstallOnlyHubAround`) VALUES
+INSERT INTO `buildobjects` (`ID`, `MapObjectId`, `Name`, `Description`, `Image`, `Material`, `Category`, `RequiredBuildWorkAmount`, `InstallNeighborThreshold`, `IsInstallOnlyOnBase`, `IsInstallOnlyHubAround`) VALUES
 (147, 'Stool_Wood', 'Wooden Stool', 'Decorative wooden stool. ', '/public/images/build/T_icon_buildObject_Stool_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 5}]', 'Furniture', 1000, 0, 0, 0),
 (148, 'Stool_High_Wood', 'Wooden Bar Stool', 'Decorative bar stool. ', '/public/images/build/T_icon_buildObject_Stool_High_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 8}]', 'Furniture', 1000, 0, 0, 0),
 (149, 'Chair01_Wood', 'Wooden Chair', 'Decorative wooden chair. ', '/public/images/build/T_icon_buildObject_Chair01_Wood.png', '[{\"Name\": \"Wood\", \"Amount\": 10}]', 'Furniture', 1000, 0, 0, 0),
@@ -16236,12 +16236,12 @@ ALTER TABLE `breeding`
   ADD KEY `ix_breeding_Egg` (`Egg`);
 
 --
--- Indexes for table `buidobjects`
+-- Indexes for table `buildobjects`
 --
-ALTER TABLE `buidobjects`
+ALTER TABLE `buildobjects`
   ADD PRIMARY KEY (`ID`),
-  ADD KEY `ix_buidobjects_Name` (`Name`),
-  ADD KEY `ix_buidobjects_Category` (`Category`);
+  ADD KEY `ix_buildobjects_Name` (`Name`),
+  ADD KEY `ix_buildobjects_Category` (`Category`);
 
 --
 -- Indexes for table `crafting`
@@ -16330,9 +16330,9 @@ ALTER TABLE `breeding`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13403;
 
 --
--- AUTO_INCREMENT for table `buidobjects`
+-- AUTO_INCREMENT for table `buildobjects`
 --
-ALTER TABLE `buidobjects`
+ALTER TABLE `buildobjects`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=256;
 
 --

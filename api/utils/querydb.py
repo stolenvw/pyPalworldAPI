@@ -7,7 +7,7 @@ from models.models import (
     NPC,
     BossPals,
     Breeding,
-    BuidObjects,
+    BuildObjects,
     Crafting,
     Elixir,
     FoodEffect,
@@ -153,12 +153,12 @@ async def get_tech_by_level(db: AsyncSession, level: int):
 
 
 async def get_build(db: AsyncSession, name: str):
-    return await paginate(db, select(BuidObjects).where(BuidObjects.Name == name))
+    return await paginate(db, select(BuildObjects).where(BuildObjects.Name == name))
 
 
 async def get_build_by_category(db: AsyncSession, category: str):
     return await paginate(
-        db, select(BuidObjects).where(BuidObjects.Category == category)
+        db, select(BuildObjects).where(BuildObjects.Category == category)
     )
 
 
@@ -183,8 +183,8 @@ async def get_all(db: AsyncSession, name):
         return await paginate(db, select(Items))
     elif name == "breeding":
         return await paginate(db, select(Breeding))
-    elif name == "buidobjects":
-        return await paginate(db, select(BuidObjects))
+    elif name == "buildobjects":
+        return await paginate(db, select(BuildObjects))
     elif name == "crafting":
         return await paginate(db, select(Crafting))
     elif name == "foodeffect":
@@ -293,20 +293,20 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str):
             .order_by(TechTree.Name.asc())
             .distinct(),
         )
-    elif category == "buidname":
+    elif category == "buildname":
         return await paginate(
             db,
-            select(BuidObjects.Name)
-            .where(BuidObjects.Name.like(f"{name}%"))
-            .order_by(BuidObjects.Name.asc())
+            select(BuildObjects.Name)
+            .where(BuildObjects.Name.like(f"{name}%"))
+            .order_by(BuildObjects.Name.asc())
             .distinct(),
         )
     elif category == "buildcategory":
         return await paginate(
             db,
-            select(BuidObjects.Category)
-            .where(BuidObjects.Category.like(f"{name}%"))
-            .order_by(BuidObjects.Category.asc())
+            select(BuildObjects.Category)
+            .where(BuildObjects.Category.like(f"{name}%"))
+            .order_by(BuildObjects.Category.asc())
             .distinct(),
         )
     elif category == "elixir":

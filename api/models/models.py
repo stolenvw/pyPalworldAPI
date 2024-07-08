@@ -34,7 +34,7 @@ class Items(SQLModel, table=True):
     ShieldValue: Optional[int]
     MagicAttackValue: Optional[int]
     MagicDefenseValue: Optional[int]
-    Descripition: str
+    Description: str
     ItemActorClass: Optional[str] = Field(sa_type=String(50))
     PassiveSkills: ItemPassive = Field(sa_column=Column(JSON))
 
@@ -237,7 +237,7 @@ class BuildMaterial(SQLModel):
     Amount: int
 
 
-class BuidObjects(SQLModel, table=True):
+class BuildObjects(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
     MapObjectId: str = Field(sa_type=String(50))
     Name: str = Field(index=True, sa_type=String(50))
@@ -256,7 +256,7 @@ class APIModels(str, Enum):
     bosspals = "bosspals"
     items = "items"
     breeding = "breeding"
-    buidobjects = "buidobjects"
+    buildobjects = "buildobjects"
     crafting = "crafting"
     foodeffect = "foodeffect"
     gear = "gear"
@@ -308,7 +308,7 @@ class AutoCompleteModels(str, Enum):
     gear = "gear"
     food = "food"
     tech = "tech"
-    buidname = "buidname"
+    buildname = "buildname"
     buildcategory = "buildcategory"
     elixir = "elixir"
     npc = "npc"

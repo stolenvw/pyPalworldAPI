@@ -325,7 +325,7 @@ async def gettech(
 
 @app.get(
     "/build/",
-    response_model=Page[M.BuidObjects],
+    response_model=Page[M.BuildObjects],
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
     tags=["Items"],
@@ -389,7 +389,7 @@ async def getpassive(
             M.Items,
             M.Crafting,
             M.Breeding,
-            M.BuidObjects,
+            M.BuildObjects,
             M.FoodEffect,
             M.Gear,
             M.SickPal,
