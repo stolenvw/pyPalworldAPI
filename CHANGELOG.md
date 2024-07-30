@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Game data from v0.3.3.55731 (work in progress), breeding info may be off while adding data
+- Game data from v0.3.4 (work in progress), breeding info may be off while adding data
 - Get autocomplete to help with discord bots slash command autocomplete
     ```http
     GET /autocomplete/{category}/?name=
