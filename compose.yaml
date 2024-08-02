@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   palapidb:
     container_name: palapidb
@@ -22,19 +21,53 @@ services:
       retries: 3
       start_period: 1m
 
+  palapiuserdb:
+    container_name: palapiuserdb
+    image: mysql:8.0.36
+    restart: unless-stopped
+    profiles: [USE_OAUTH2]
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_USER_DATABASE}
+      - MYSQL_TCP_PORT=${MYSQL_PORT}
+      - MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}
+    networks:
+      - dockerinternal
+    volumes:
+      - db-user-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$MYSQL_PASSWORD mysqladmin -u ${MYSQL_USER} ping -P ${MYSQL_PORT} | grep 'mysqld is alive' || exit 1"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 3
+      start_period: 1m
+
   pypalworldapi:
     depends_on:
-      - palapidb
+      palapidb:
+        condition: "service_started"
+        required: true
+      palapiuserdb:
+        condition: "service_started"
+        required: false
     container_name: pypalworldapi
     environment:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER_DATABASE=${MYSQL_USER_DATABASE}
       - MYSQL_PORT=${MYSQL_PORT}
       - SQL_HOST=${SQL_HOST}
+      - SQL_USER_HOST=${SQL_USER_HOST}
       - DOCS_URL=${DOCS_URL}
       - REDOC_URL=${REDOC_URL}
       - HTTP_PORT=${HTTP_PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS}
+      - ADMIN_NAME=${ADMIN_NAME}
+      - COMPOSE_PROFILES=${COMPOSE_PROFILES}
     build:
       context: .
       args:
@@ -57,3 +90,4 @@ networks:
 
 volumes:
   db-data:
+  db-user-data:

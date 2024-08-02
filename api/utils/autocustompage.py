@@ -15,7 +15,6 @@ from fastapi_pagination.types import GreaterEqualOne, GreaterEqualZero
 from fastapi_pagination.utils import create_pydantic_model
 from pydantic import BaseModel
 
-
 T = TypeVar("T")
 
 

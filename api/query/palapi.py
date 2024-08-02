@@ -1,8 +1,4 @@
 from fastapi_pagination.ext.sqlmodel import paginate
-from sqlalchemy.sql.expression import text
-from sqlmodel import select
-from sqlmodel.ext.asyncio.session import AsyncSession
-
 from models.models import (
     NPC,
     BossPals,
@@ -18,6 +14,9 @@ from models.models import (
     SickPal,
     TechTree,
 )
+from sqlalchemy.sql.expression import text
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 async def get_pals(db: AsyncSession, params):
