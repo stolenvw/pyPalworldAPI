@@ -400,7 +400,7 @@ More than just a paldex, includes a lot of game data.
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
       | `token` | `string` | Refresh token |
-      | `grant_type` | `string` | refresh_token |
+      | `grant_type` | `string` | This needs to be set to `refresh_token` |
 
       </details>
 
@@ -438,7 +438,7 @@ More than just a paldex, includes a lot of game data.
       *_Users need the `APIUser:Read` scopes_
 
       ```http
-        PUT /user/me/
+        GET /user/me/
         accept: application/json
         Authorization: Bearer ACCESS-TOKEN
       ```
@@ -576,7 +576,7 @@ More than just a paldex, includes a lot of game data.
       <blockquote>
 
       ```http
-        POST /admin/chscope/
+        PUT /admin/chscope/
         accept: application/json
         Authorization: Bearer ACCESS-TOKEN
         Content-Type: application/json
