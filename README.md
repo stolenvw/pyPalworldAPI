@@ -12,6 +12,7 @@ More than just a paldex, includes a lot of game data.
 
 ## Features
 
+- OAuth
 - Case Insensitive Lookups
 - Pal Lookups
 - Breeding Lookups
@@ -26,6 +27,8 @@ More than just a paldex, includes a lot of game data.
 - Built in interface to test api calls
 - Data stored in MySQL database
 - Passive Skills
+- NPC Lookups
+- Elixir Lookups
 
 ## API Reference
 
@@ -36,7 +39,7 @@ More than just a paldex, includes a lot of game data.
 *_When using OAuth all API request need to use Authorization header_
 
 - ```http
-    Authorization: Bearer ACCESS-TOKEN
+  Authorization: Bearer ACCESS-TOKEN
   ```
 
 <details>
@@ -48,11 +51,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Pals</summary>
 
-      #### Get Pals. Ex. `/pals/?name=lamball`,  `/pals/?name=lamball&page=1&size=20`
+      #### Get Pals. Ex.
 
-      ```http
-        GET /pals/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_pals(name: str):
+          url = f"http://127.0.0.0/pals/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_pals(name="lamball"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_pals(name:str, access_token: str):
+          url = f"http://127.0.0.0/pals/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_pals(name="lamball", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -72,11 +147,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Boss Pals</summary>
 
-      #### Get Boss Pals. Ex. `/bosspals/?name=Mammorest`,  `/bosspals/?name=Mammorest&page=1&size=20`
+      #### Get Boss Pals. Ex.
 
-      ```http
-        GET /bosspals/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_bosspals(name: str):
+          url = f"http://127.0.0.0/bosspals/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_bosspals(name="Mammorest"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_bosspals(name: str, access_token: str):
+          url = f"http://127.0.0.0/bosspals/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_bosspals(name="Mammorest", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -95,11 +242,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Breeding</summary>
 
-      #### Get Breeding. Ex. `/breeding/?name=Anubis`,  `/breeding/?name=Anubis&page=1&size=20`
+      #### Get Breeding. Ex.
 
-      ```http
-        GET /breeding/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_breeding(name: str):
+          url = f"http://127.0.0.0/breeding/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_breeding(name="Anubis"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_breeding(name: str, access_token: str):
+          url = f"http://127.0.0.0/breeding/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_breeding(name="Anubis", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -113,11 +332,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Sickness</summary>
 
-      #### Get Sickness. Ex. `/sickness/?name=ulcer`,  `/sickness/?name=ulcer&page=1&size=20`
+      #### Get Sickness. Ex.
 
-      ```http
-        GET /sickness/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_sickness(name: str):
+          url = f"http://127.0.0.0/sickness/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_sickness(name="ulcer"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_sickness(name: str, access_token: str):
+          url = f"http://127.0.0.0/sickness/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_sickness(name="ulcer", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -131,11 +422,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Items</summary>
 
-      #### Get Items. Ex. `/items/?name=arrow`,  `/items/?name=Arrow&page=1&size=20`
+      #### Get Items. Ex.
 
-      ```http
-        GET /items/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/items/?name=arrow&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/items/?name=arrow&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_items(name: str):
+          url = f"http://127.0.0.0/items/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_items(name="arrow"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_items(name: str, access_token: str):
+          url = f"http://127.0.0.0/items/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_items(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -151,11 +514,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Crafting</summary>
 
-      #### Get Crafting. Ex. `/crafting/?name=arrow`,  `/crafting/?name=Arrow&page=1&size=20`
+      #### Get Crafting. Ex.
 
-      ```http
-        GET /crafting/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_crafting(name: str):
+          url = f"http://127.0.0.0/crafting/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_crafting(name="arrow"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_crafting(name: str, access_token: str):
+          url = f"http://127.0.0.0/crafting/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_crafting(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -169,11 +604,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Gear</summary>
 
-      #### Get Gear. Ex. `/gear/?name=cloth%20outfit`,  `?name=cloth%20outfit&page=1&size=20`
+      #### Get Gear. Ex.
 
-      ```http
-        GET /gear/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_gear(name: str):
+          url = f"http://127.0.0.0/gear/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_gear(name="cloth%20outfit"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_gear(name: str, access_token: str):
+          url = f"http://127.0.0.0/gear/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_gear(name="cloth%20outfit", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -187,11 +694,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Foodeffect</summary>
 
-      #### Get Foodeffect. Ex. `/foodeffect/?name=salad`,  `?foodeffect=salad&page=1&size=20`
+      #### Get Foodeffect. Ex.
 
-      ```http
-        GET /foodeffect/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_foodeffect(name: str):
+          url = f"http://127.0.0.0/foodeffect/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_foodeffect(name="salad"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_foodeffect(name: str, access_token: str):
+          url = f"http://127.0.0.0/foodeffect/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_foodeffect(name="salad", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -205,11 +784,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Tech</summary>
 
-      #### Get Tech. Ex. `/tech/?name=Nail`,  `/tech/?name=Nail&page=1&size=20`
+      #### Get Tech. Ex.
 
-      ```http
-        GET /tech/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_tech(name: str):
+          url = f"http://127.0.0.0/tech/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_tech(name="Nail"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_tech(name: str, access_token: str):
+          url = f"http://127.0.0.0/tech/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_tech(name="Nail", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -225,11 +876,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Build</summary>
 
-      #### Get Build. Ex. `/build/?name=Campfire`,  `/build/?name=Campfire&page=1&size=20`
+      #### Get Build. Ex.
 
-      ```http
-        GET /build/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_build(name: str):
+          url = f"http://127.0.0.0/build/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_build(name="Campfire"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_build(name: str, access_token: str):
+          url = f"http://127.0.0.0/build/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_build(name="Campfire", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -245,11 +968,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Passive</summary>
 
-      #### Get Passive. Ex. `/passive/?name=Brave`,  `?passive=Brave&page=1&size=20`
+      #### Get Passive. Ex.
 
-      ```http
-        GET /passive/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_passive(name: str):
+          url = f"http://127.0.0.0/passive/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_passive(name="Brave"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_passive(name: str, access_token: str):
+          url = f"http://127.0.0.0/passive/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_passive(name="Brave", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -263,11 +1058,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>NPC</summary>
 
-      #### Get NPC. Ex. `/npc/?name=Wandering%20Merchant`,  `/npc/?name=Wandering%20Merchant&page=1&size=20`
+      #### Get NPC. Ex.
 
-      ```http
-        GET /npc/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_npc(name: str):
+          url = f"http://127.0.0.0/npc/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_npc(name="Wandering%20Merchant"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_npc(name: str, access_token: str):
+          url = f"http://127.0.0.0/npc/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_npc(name="Wandering%20Merchant", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -281,11 +1148,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Elixir</summary>
 
-      #### Get Elixir. Ex. `/elixir/?name=Power%20Elixir`,  `/elixir/?name=Power%20Elixir&page=1&size=20`
+      #### Get Elixir. Ex.
 
-      ```http
-        GET /elixir/?
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_elixir(name: str):
+          url = f"http://127.0.0.0/elixir/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_elixir(name="Speed%20Elixir"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_elixir(name: str, access_token: str):
+          url = f"http://127.0.0.0/elixir/?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_elixir(name="Speed%20Elixir", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Parameter | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -299,11 +1238,83 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>All</summary>
 
-      #### Get All. Ex. `/all/pals`
+      #### Get All. Ex.
 
-      ```http
-        GET /all/{category}
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/all/pals?page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/all/pals?page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_all(category: str):
+          url = f"http://127.0.0.0/all/{category}?page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_all(category="pals"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_all(category: str, access_token: str):
+          url = f"http://127.0.0.0/all/{category}?page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_all(category="pals", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -322,18 +1333,90 @@ More than just a paldex, includes a lot of game data.
       | `elixir` | `string` | Elixir |
       | Optional: | | |
       | `page` | `int` | Page number to return |
-      | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+      | `size` | `int` | How many to return per page. Default:`50` Max:`200` |
 
       </details>
 
     - <details>
         <summary>Autocomplete</summary>
 
-      #### Get Autocomplete. Ex. `/autocomplete/palname/?name=la`
+      #### Get Autocomplete. Ex.
 
-      ```http
-        GET /autocomplete/{category}/?name=
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        #### With Out OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=50' \
+          -H 'Accept: application/json'
+        ```
+
+        #### OAuth
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        #### With Out OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_autocomplete(category: str, name: str):
+          url = f"http://127.0.0.0/autocomplete/{category}?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_autocomplete(category="palname", name="la"))
+        ```
+
+        #### OAuth
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_autocomplete(category: str, name: str, access_token: str):
+          url = f"http://127.0.0.0/autocomplete/{category}?name={name}&page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_autocomplete(category="palname", name="la", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -365,17 +1448,53 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Login</summary>
 
-      #### Login. Ex. `/oauth2/login/`
+      #### Login. Ex.
 
       *_Login will make any refresh token you currently have invalid._
 
-      ```http
-        POST /oauth2/login/
-        accept: application/json
-        Content-Type: application/x-www-form-urlencoded
+      - <details>
+        <summary>Curl</summary>
+        
+        ```http
+        curl -X 'POST' \
+          'http://127.0.0.0/oauth2/login/' \
+          -H 'Accept: application/json' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'username=Bob123&password=SomePass'
+        ```
 
-        username=USERNAME&password=PASSWORD
-      ```
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _post_login(username: str, password: str):
+          url = f"http://127.0.0.0/oauth2/login/"
+          headers = {
+              "Accept": "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"username": username, "password": password}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.post(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_post_login(username="Bob123", password="SomePass"))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -387,15 +1506,51 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Refresh</summary>
 
-      #### Refresh. Ex. `/oauth2/refresh/`
+      #### Refresh. Ex.
 
-      ```http
-        POST /oauth2/refresh/
-        accept: application/json
-        Content-Type: application/x-www-form-urlencoded
+      - <details>
+        <summary>Curl</summary>
+        
+        ```http
+        curl -X 'POST' \
+          'http://127.0.0.0/oauth2/refresh/' \
+          -H 'Accept: application/json' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'token=kafaj083209jq904j8qjiaf39&grant_type=refresh_token'
+        ```
 
-        token=REFRESH-TOKEN&grant_type=refresh_token
-      ```
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _post_refresh(refresh_token: str):
+          url = f"http://127.0.0.0/oauth2/refresh/"
+          headers = {
+              "Accept": "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"token": refresh_token, "grant_type": "refresh_token"}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.post(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_post_refresh(refresh_token="kafaj083209jq904j8qjiaf39"))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -409,19 +1564,56 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Change Password</summary>
 
-      #### Change Password. Ex. `/user/changepassword/`
+      #### Change Password. Ex.
 
       *_Users need the `APIUser:Read, APIUser:ChangePassword` scopes_  
       *Change password will make any access/refresh token you currently have invalid.
 
-      ```http
-        PUT /user/changepassword/
-        accept: application/json
-        Authorization: Bearer ACCESS-TOKEN
-        Content-Type: application/x-www-form-urlencoded
+      - <details>
+        <summary>Curl</summary>
         
-        current_password=CURRENT-PASSWORD&new_password=NEW-PASSWORD
-      ```
+        ```http
+        curl -X 'PUT' \
+          'http://127.0.0.0/user/changepassword/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'current_password=SomePass&new_password=SomeNewPass'
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _put_user_change_password(current_password: str, new_password: str, access_token: str):
+          url = f"http://127.0.0.0/user/changepassword/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"current_password": current_password, "new_password": new_password}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.put(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_put_user_change_password(current_password="SomePass", new_password="SomeNewPass", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -433,15 +1625,51 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Me</summary>
 
-      #### Me. Ex. `/user/me/`
+      #### Me. Ex.
 
       *_Users need the `APIUser:Read` scopes_
 
-      ```http
-        GET /user/me/
-        accept: application/json
-        Authorization: Bearer ACCESS-TOKEN
-      ```
+      - <details>
+        <summary>Curl</summary>
+        
+        ```http
+        curl -X 'GET' \
+          'http://127.0.0.0/user/me/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+        ```
+
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_user_me(access_token: str):
+          url = f"http://127.0.0.0/user/me/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_user_me(access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
+
+        </details>
 
       </details>
 
@@ -452,29 +1680,66 @@ More than just a paldex, includes a lot of game data.
     - <details>
         <summary>Add User</summary>
 
-      #### Add User. Ex. `/admin/adduser/`
+      #### Add User. Ex.
 
-      <blockquote>
+      - <details>
+        <summary>Curl</summary>
+        
+        ```http
+        curl -X 'Post' \
+          'http://127.0.0.0/admin/adduser/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/json' \
+          -d '{
+                "username": "Bob123",
+                "password": "SomePass",
+                "scopes": [
+                  "APIUser:Read",
+                  "APIUser:ChangePassword"
+                ],
+                "disabled": false
+              }'
+        ```
 
-      ```http
-        POST /admin/adduser/
-        accept: application/json
-        Authorization: Bearer ACCESS-TOKEN
-        Content-Type: application/json
-      ```
-      ```json
-        {
-          "username": "USERNAME",
-          "password": "PASSWORD",
-          "scopes": [
-            "APIUser:Read",
-            "APIUser:ChangePassword"
-          ],
-          "disabled": false
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _post_add_user(access_token: str, username: str, password: str, scopes: list, disabled: bool):
+          url = f"http://127.0.0.0/admin/adduser/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/json",
+          }
+          json_body = {
+            "username": username,
+            "password": password,
+            "scopes": scopes,
+            "disabled": disabled,
         }
-      ```
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.post(url, headers=headers, json=json_body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
 
-      </blockquote>
+        if __name__ == "__main__":
+          asyncio.run(_post_add_user(access_token="kajfe0983qjaf309ajj3w8j3aij3a3", username="Bob123", password="SomePass", scopes=["APIUser:Read", "APIUser:ChangePassword"], disabled=False))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
@@ -486,112 +1751,294 @@ More than just a paldex, includes a lot of game data.
       </details>
 
     - <details>
-          <summary>Change Password</summary>
+        <summary>Change Password</summary>
 
-        #### Change Password. Ex. `/admin/chpass/`
+      #### Change Password. Ex.
 
-        *Change password will make any access/refresh token the user currently has invalid.
+      *Change password will make any access/refresh token the user currently has invalid.
 
+      - <details>
+        <summary>Curl</summary>
+      
         ```http
-          PUT /admin/chpass/
-          accept: application/json
-          Authorization: Bearer ACCESS-TOKEN
-          Content-Type: application/x-www-form-urlencoded
-
-          username=USERNAME&new_password=PASSWORD
+        curl -X 'PUT' \
+          'http://127.0.0.0/admin/chpass/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'username=Bob123&new_password=SomeNewPass'
         ```
 
-        | Category | Type     | Description                |
-        | :-------- | :------- | :------------------------- |
-        | `username` | `string` | Username |
-        | `new_password` | `string` | Password |
-
         </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _put_admin_change_password(username: str, new_password: str, access_token: str):
+          url = f"http://127.0.0.0/admin/chpass/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"username": username, "new_password": new_password}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.put(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+          if __name__ == "__main__":
+            asyncio.run(_put_admin_change_password(username="Bob123", new_password="SomeNewPass", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+          ```
+
+          </details>
+
+      | Category | Type     | Description                |
+      | :-------- | :------- | :------------------------- |
+      | `username` | `string` | Username |
+      | `new_password` | `string` | Password |
+
+      </details>
 
     - <details>
-          <summary>Delete User</summary>
+        <summary>Delete User</summary>
 
-        #### Delete User. Ex. `/admin/deleteuser/`
+      #### Delete User. Ex.
 
+      - <details>
+        <summary>Curl</summary>
+        
         ```http
-          DELETE /admin/deleteuser/
-          accept: application/json
-          Authorization: Bearer ACCESS-TOKEN
-          Content-Type: application/x-www-form-urlencoded
-
-          username=USERNAME
+        curl -X 'DELETE' \
+          'http://127.0.0.0/admin/deleteuser/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'username=Bob123'
         ```
 
-        | Category | Type     | Description                |
-        | :-------- | :------- | :------------------------- |
-        | `username` | `string` | Username |
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _delete_admin_delete_user(access_token: str, username: str):
+          url = f"http://127.0.0.0/admin/deleteuser/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"username": username}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.delete(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_delete_admin_delete_user(access_token="kajfe0983qjaf309ajj3w8j3aij3a3", username="Bob123"))
+        ```
 
         </details>
+
+      | Category | Type     | Description                |
+      | :-------- | :------- | :------------------------- |
+      | `username` | `string` | Username |
+
+      </details>
 
     - <details>
           <summary>Users</summary>
 
-        #### Users. Ex. `/admin/users/`
+      #### Users. Ex.
 
+      - <details>
+        <summary>Curl</summary>
+        
         ```http
-          GET /admin/users/
-          accept: application/json
-          Authorization: Bearer ACCESS-TOKEN
+        curl -X 'GET' \
+          'http://127.0.0.0/admin/users/?page=1&size=50' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
         ```
 
-        | Category | Type     | Description                |
-        | :-------- | :------- | :------------------------- |
-        | Optional: | | |
-        | `page` | `int` | Page number to return |
-        | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _get_admin_users(access_token: str):
+          url = f"http://127.0.0.0/admin/users/?page=1&size=50"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+          }
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.get(url, headers=headers) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_get_admin_users(access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+        ```
 
         </details>
+
+      | Category | Type     | Description                |
+      | :-------- | :------- | :------------------------- |
+      | Optional: | | |
+      | `page` | `int` | Page number to return |
+      | ` size` | `int` | How many to return per page. Default:`50` Max:`200` |
+
+      </details>
 
     - <details>
           <summary>User Disable</summary>
 
-        #### User Disable. Ex. `/admin/userdisable/`
+      #### User Disable. Ex.
 
+      - <details>
+        <summary>Curl</summary>
+        
         ```http
-          PUT /admin/userdisable/
-          accept: application/json
-          Authorization: Bearer ACCESS-TOKEN
-          Content-Type: application/x-www-form-urlencoded
-
-          username=USERNAME&disabled=True
+        curl -X 'PUT' \
+          'http://127.0.0.0/admin/userdisable/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/x-www-form-urlencoded' \
+          -d 'username=Bob123&disabled=True'
         ```
 
-        | Category | Type     | Description                |
-        | :-------- | :------- | :------------------------- |
-        | `username` | `string` | Username |
-        | `disabled` | `bool` | Account disabled |
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _put_admin_user_disable(access_token: str, username: str, disabled: bool):
+          url = f"http://127.0.0.0/admin/userdisable/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/x-www-form-urlencoded",
+          }
+          body = {"username": username, "disabled": disabled}
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.put(url, headers=headers, data=body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
+
+        if __name__ == "__main__":
+          asyncio.run(_put_admin_user_disable(access_token="kajfe0983qjaf309ajj3w8j3aij3a3", username="Bob123", disabled=True))
+        ```
 
         </details>
+
+      | Category | Type     | Description                |
+      | :-------- | :------- | :------------------------- |
+      | `username` | `string` | Username |
+      | `disabled` | `bool` | Account disabled |
+
+      </details>
 
     - <details>
         <summary>Change Scopes</summary>
 
-      #### Change Scopes. Ex. `/admin/chscope/`
+      #### Change Scopes. Ex.
 
-      <blockquote>
+      - <details>
+        <summary>Curl</summary>
+        
+        ```http
+        curl -X 'PUT' \
+          'http://127.0.0.0/admin/chscope/' \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Content-Type: application/json' \
+          -d '{
+                "username": "Bob123",
+                "scopes": [
+                  "APIUser:Read",
+                  "APIUser:ChangePassword"
+                ],
+              }'
+        ```
 
-      ```http
-        PUT /admin/chscope/
-        accept: application/json
-        Authorization: Bearer ACCESS-TOKEN
-        Content-Type: application/json
-      ```
-      ```json
-        {
-          "username": "USERNAME",
-          "scopes": [
-            "APIUser:Read",
-            "APIUser:ChangePassword"
-          ],
+        </details>
+
+      - <details>
+        <summary>Python</summary>
+        
+        ```python
+        import asyncio
+        import json
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+        async def _put_admin_change_scope(access_token: str, username: str, scopes: list):
+          url = f"http://127.0.0.0/admin/chscope/"
+          headers = {
+              "Accept": "application/json",
+              "Authorization": f"Bearer {access_token}",
+              "Content-Type": "application/json",
+          }
+          json_body = {
+            "username": username,
+            "scopes": scopes,
         }
-      ```
+          try:
+              async with aiohttp.ClientSession() as session:
+                  async with session.put(url, headers=headers, json=json_body) as result:
+                      data = await result.json()
+          except ClientConnectorError as e:
+              print(f"ClientConnectorError: {e}")
+          else:
+              print(json.dumps(data, indent=2))
 
-      </blockquote>
+        if __name__ == "__main__":
+          asyncio.run(_put_admin_change_scope(access_token="kajfe0983qjaf309ajj3w8j3aij3a3", username="Bob123", scopes=["APIUser:Read", "APIUser:ChangePassword"]))
+        ```
+
+        </details>
 
       | Category | Type     | Description                |
       | :-------- | :------- | :------------------------- |
