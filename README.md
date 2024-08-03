@@ -57,14 +57,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -153,14 +153,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -248,14 +248,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -338,14 +338,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -428,14 +428,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/items/?name=arrow&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/items/?name=arrow&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -520,14 +520,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -610,14 +610,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -700,14 +700,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -790,14 +790,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -882,14 +882,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -974,14 +974,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1064,14 +1064,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1154,14 +1154,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1244,14 +1244,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/all/pals?page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/all/pals?page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1346,14 +1346,14 @@ More than just a paldex, includes a lot of game data.
         <summary>Curl</summary>
         
         #### With Out OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=50' \
           -H 'Accept: application/json'
         ```
 
         #### OAuth
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1455,7 +1455,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'POST' \
           'http://127.0.0.0/oauth2/login/' \
           -H 'Accept: application/json' \
@@ -1511,7 +1511,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'POST' \
           'http://127.0.0.0/oauth2/refresh/' \
           -H 'Accept: application/json' \
@@ -1572,7 +1572,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'PUT' \
           'http://127.0.0.0/user/changepassword/' \
           -H 'Accept: application/json' \
@@ -1632,7 +1632,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/user/me/' \
           -H 'Accept: application/json' \
@@ -1685,7 +1685,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'Post' \
           'http://127.0.0.0/admin/adduser/' \
           -H 'Accept: application/json' \
@@ -1760,7 +1760,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
       
-        ```http
+        ```bash
         curl -X 'PUT' \
           'http://127.0.0.0/admin/chpass/' \
           -H 'Accept: application/json' \
@@ -1818,7 +1818,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'DELETE' \
           'http://127.0.0.0/admin/deleteuser/' \
           -H 'Accept: application/json' \
@@ -1875,7 +1875,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'GET' \
           'http://127.0.0.0/admin/users/?page=1&size=50' \
           -H 'Accept: application/json' \
@@ -1930,7 +1930,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'PUT' \
           'http://127.0.0.0/admin/userdisable/' \
           -H 'Accept: application/json' \
@@ -1988,7 +1988,7 @@ More than just a paldex, includes a lot of game data.
       - <details>
         <summary>Curl</summary>
         
-        ```http
+        ```bash
         curl -X 'PUT' \
           'http://127.0.0.0/admin/chscope/' \
           -H 'Accept: application/json' \
