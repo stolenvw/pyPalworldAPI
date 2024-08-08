@@ -2,18 +2,20 @@ import random
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Form, HTTPException, status
+import utils.examples as examples
+from fastapi import APIRouter, BackgroundTasks, Depends, Form, status
 from fastapi.security import OAuth2PasswordRequestForm
 from models import auth_models as AuthModel
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import auth as AuthUtils
 from utils import customresponses as R
+from utils.customexception import APIException
 
 router = APIRouter(
     prefix="/oauth2",
     tags=["Auth"],
-    responses=R.response_440_401,
+    responses=R.response_400_401,
 )
 
 
@@ -21,6 +23,7 @@ router = APIRouter(
     "/login/",
     status_code=status.HTTP_200_OK,
     response_model=AuthModel.LoginResponse,
+    openapi_extra={"x-codeSamples": examples.login},
 )
 async def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
@@ -37,19 +40,30 @@ async def login(
     """
     user = await AuthQuery.authenticate_user(db, user_credentials.username)
     if not user:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Username or Password",
+            content={
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Invalid Username or Password.",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
     if user.disabled == True:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Account Disabled"
+        raise APIException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Account Disabled.",
+            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
     if not await AuthUtils.verify_password(user_credentials.password, user.password):
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Username or Password",
+            content={
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Invalid Username or Password.",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
     refresh_token_check = await AuthQuery.refresh_token_delete(db, user_id=user.ID)
@@ -96,6 +110,7 @@ async def login(
     "/refresh/",
     status_code=status.HTTP_200_OK,
     response_model=AuthModel.RefreshResponse,
+    openapi_extra={"x-codeSamples": examples.refresh},
 )
 async def get_new_access_token(
     token: Annotated[str, Form()],
@@ -114,11 +129,14 @@ async def get_new_access_token(
     """
     background_tasks.add_task(AuthUtils.remove_old_tokens, db)
     if grant_type != "refresh_token":
-        credential_exception = HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid Grant Type",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Invalid Grant Type.",
+            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
-        raise credential_exception
     refresh_data = await AuthUtils.verify_refresh_token(db, token)
     access_token_expires = timedelta(minutes=AuthUtils.ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(days=AuthUtils.REFRESH_TOKEN_EXPIRE_DAYS)

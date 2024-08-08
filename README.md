@@ -7,7 +7,7 @@ More than just a paldex, includes a lot of game data.
 ![GitHub repo size](https://img.shields.io/github/repo-size/stolenvw/pyPalworldAPI)
 ![GitHub License](https://img.shields.io/github/license/stolenvw/pyPalworldAPI)
 ![Static Badge](https://img.shields.io/badge/3.10.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
-![Static Badge](https://img.shields.io/badge/v0.2.4.0-gray?label=Game%20Data&labelColor=gray&color=blue)
+![Static Badge](https://img.shields.io/badge/v0.3.5.0-gray?label=Game%20Data&labelColor=gray&color=blue)
 </div>
 
 ## Features
@@ -36,17 +36,18 @@ More than just a paldex, includes a lot of game data.
 
 `/docs` For testing API. Can be disabled by leaving environment variable `DOCS_URL` blank
 
-*_When using OAuth all API request need to use Authorization header_
-
-- ```http
-  Authorization: Bearer ACCESS-TOKEN
-  ```
+> [!NOTE]
+> _When using OAuth all API request need to use Authorization header_
+> - ```http
+>   Authorization: Bearer ACCESS-TOKEN
+>   ```
 
 <details>
   <summary>Reference</summary>
 
   - #### API
-    *_When using OAuth users need the `APIUser:Read` scope_
+    > [!IMPORTANT]
+    > _When using OAuth users need the `APIUser:Read` scope_
 
     - <details>
         <summary>Pals</summary>
@@ -1450,7 +1451,8 @@ More than just a paldex, includes a lot of game data.
 
       #### Login. Ex.
 
-      *_Login will make any refresh token you currently have invalid._
+      > [!NOTE]
+      > _Login will make any refresh token you currently have invalid._
 
       - <details>
         <summary>Curl</summary>
@@ -1566,8 +1568,11 @@ More than just a paldex, includes a lot of game data.
 
       #### Change Password. Ex.
 
-      *_Users need the `APIUser:Read, APIUser:ChangePassword` scopes_  
-      *Change password will make any access/refresh token you currently have invalid.
+      > [!IMPORTANT]
+      > _Users need the `APIUser:Read, APIUser:ChangePassword` scopes_
+
+      > [!NOTE]
+      > Changing password will make any access/refresh token you currently have invalid.
 
       - <details>
         <summary>Curl</summary>
@@ -1627,7 +1632,8 @@ More than just a paldex, includes a lot of game data.
 
       #### Me. Ex.
 
-      *_Users need the `APIUser:Read` scopes_
+      > [!IMPORTANT]
+      > _Users need the `APIUser:Read` scopes_
 
       - <details>
         <summary>Curl</summary>
@@ -1636,7 +1642,7 @@ More than just a paldex, includes a lot of game data.
         curl -X 'GET' \
           'http://127.0.0.0/user/me/' \
           -H 'Accept: application/json' \
-          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
         ```
 
         </details>
@@ -1675,7 +1681,8 @@ More than just a paldex, includes a lot of game data.
 
   - #### Admin
 
-    *_Users need the `APIAdmin:Write` scope_
+    > [!IMPORTANT]
+    > _Users need the `APIAdmin:Write` scope_
 
     - <details>
         <summary>Add User</summary>
@@ -1725,7 +1732,7 @@ More than just a paldex, includes a lot of game data.
             "password": password,
             "scopes": scopes,
             "disabled": disabled,
-        }
+          }
           try:
               async with aiohttp.ClientSession() as session:
                   async with session.post(url, headers=headers, json=json_body) as result:
@@ -1755,7 +1762,8 @@ More than just a paldex, includes a lot of game data.
 
       #### Change Password. Ex.
 
-      *Change password will make any access/refresh token the user currently has invalid.
+      > [!NOTE]
+      > Changing password will make any access/refresh token the user currently has invalid.
 
       - <details>
         <summary>Curl</summary>
@@ -1879,7 +1887,7 @@ More than just a paldex, includes a lot of game data.
         curl -X 'GET' \
           'http://127.0.0.0/admin/users/?page=1&size=50' \
           -H 'Accept: application/json' \
-          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
         ```
 
         </details>
@@ -2024,7 +2032,7 @@ More than just a paldex, includes a lot of game data.
           json_body = {
             "username": username,
             "scopes": scopes,
-        }
+          }
           try:
               async with aiohttp.ClientSession() as session:
                   async with session.put(url, headers=headers, json=json_body) as result:

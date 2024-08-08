@@ -1,17 +1,19 @@
 import os
 
 import models.models as M
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Security, status
+import utils.examples as examples
+from fastapi import APIRouter, Depends, Query, Request, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import customresponses as R
 from utils.auth import get_current_active_user
+from utils.customexception import APIException
 from utils.custompage import Page
 from utils.database import get_session
 
 router = APIRouter(
     tags=["Pals"],
-    responses=R.responses,
+    responses=R.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -25,6 +27,7 @@ router = APIRouter(
     response_model=Page[M.Pals],
     response_model_exclude_none=True,
     summary="Lookup Pal[s] Information",
+    openapi_extra={"x-codeSamples": examples.pals},
 )
 async def getpal(
     request: Request,
@@ -55,8 +58,13 @@ async def getpal(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -65,6 +73,7 @@ async def getpal(
     response_model=Page[M.BossPals],
     response_model_exclude_none=True,
     summary="Lookup Boss Pal[s] Information",
+    openapi_extra={"x-codeSamples": examples.boss_pals},
 )
 async def getbosspal(
     request: Request,
@@ -83,8 +92,13 @@ async def getbosspal(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -93,6 +107,7 @@ async def getbosspal(
     response_model=Page[M.Breeding],
     response_model_exclude_none=True,
     summary="Lookup Breeding Information",
+    openapi_extra={"x-codeSamples": examples.breeding},
 )
 async def getbreeding(
     name: str,
@@ -101,15 +116,24 @@ async def getbreeding(
     if name:
         item = await Q.get_breeding(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -118,6 +142,7 @@ async def getbreeding(
     response_model=Page[M.SickPal],
     response_model_exclude_none=True,
     summary="Lookup Sickness Information",
+    openapi_extra={"x-codeSamples": examples.sickness},
 )
 async def getsickness(
     name: str,
@@ -126,15 +151,24 @@ async def getsickness(
     if name:
         item = await Q.get_sickness(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -143,6 +177,7 @@ async def getsickness(
     response_model=Page[M.PassiveSkills],
     response_model_exclude_none=True,
     summary="Lookup Passive Skills Information",
+    openapi_extra={"x-codeSamples": examples.passive},
 )
 async def getpassive(
     name: str | None = None,
@@ -151,13 +186,22 @@ async def getpassive(
     if name:
         item = await Q.get_passive(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )

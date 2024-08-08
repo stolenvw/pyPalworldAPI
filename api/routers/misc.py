@@ -2,17 +2,19 @@ import os
 from typing import Union
 
 import models.models as M
-from fastapi import APIRouter, Depends, HTTPException, Security, status
+import utils.examples as examples
+from fastapi import APIRouter, Depends, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import customresponses as R
 from utils.auth import get_current_active_user
+from utils.customexception import APIException
 from utils.custompage import Page
 from utils.database import get_session
 
 router = APIRouter(
     tags=["Misc"],
-    responses=R.responses,
+    responses=R.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -42,6 +44,7 @@ router = APIRouter(
     ],
     response_model_exclude_none=True,
     summary="Paginate full category",
+    openapi_extra={"x-codeSamples": examples.alls},
 )
 async def getall(
     category: M.APIModels,
@@ -51,8 +54,13 @@ async def getall(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -61,6 +69,7 @@ async def getall(
     response_model=Page[M.NPC],
     response_model_exclude_none=True,
     summary="Lookup NPC Information",
+    openapi_extra={"x-codeSamples": examples.npc},
 )
 async def getnpc(
     name: str | None = None,
@@ -69,13 +78,22 @@ async def getnpc(
     if name:
         item = await Q.get_npc(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )

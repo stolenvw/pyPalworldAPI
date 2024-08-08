@@ -1,17 +1,19 @@
 import os
 
 import models.models as M
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Security, status
+import utils.examples as examples
+from fastapi import APIRouter, Depends, Query, Request, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import customresponses as R
 from utils.auth import get_current_active_user
+from utils.customexception import APIException
 from utils.custompage import Page
 from utils.database import get_session
 
 router = APIRouter(
     tags=["Items"],
-    responses=R.responses,
+    responses=R.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -25,6 +27,7 @@ router = APIRouter(
     response_model=Page[M.Items],
     response_model_exclude_none=True,
     summary="Lookup Items Information",
+    openapi_extra={"x-codeSamples": examples.items},
 )
 async def getitems(
     request: Request,
@@ -43,8 +46,13 @@ async def getitems(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -53,6 +61,7 @@ async def getitems(
     response_model=Page[M.Crafting],
     response_model_exclude_none=True,
     summary="Lookup Crafting Information",
+    openapi_extra={"x-codeSamples": examples.crafting},
 )
 async def getcrafting(
     name: str = Query(None, description="Item you want to make."),
@@ -61,15 +70,24 @@ async def getcrafting(
     if name:
         item = await Q.get_crafting(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -78,6 +96,7 @@ async def getcrafting(
     response_model=Page[M.Gear],
     response_model_exclude_none=True,
     summary="Lookup Gear Information",
+    openapi_extra={"x-codeSamples": examples.gear},
 )
 async def getgear(
     name: str,
@@ -86,15 +105,24 @@ async def getgear(
     if name:
         item = await Q.get_gear(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -103,6 +131,7 @@ async def getgear(
     response_model=Page[M.FoodEffect],
     response_model_exclude_none=True,
     summary="Lookup Food Effects Information",
+    openapi_extra={"x-codeSamples": examples.foodeffect},
 )
 async def getfoodeffect(
     name: str,
@@ -111,15 +140,24 @@ async def getfoodeffect(
     if name:
         item = await Q.get_foodeffects(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -128,6 +166,7 @@ async def getfoodeffect(
     response_model=Page[M.TechTree],
     response_model_exclude_none=True,
     summary="Lookup Tech Tree Information",
+    openapi_extra={"x-codeSamples": examples.tech},
 )
 async def gettech(
     name: str | None = None,
@@ -139,15 +178,24 @@ async def gettech(
     elif level:
         item = await Q.get_tech_by_level(db, level)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, level) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name, level) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -156,6 +204,7 @@ async def gettech(
     response_model=Page[M.BuildObjects],
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
+    openapi_extra={"x-codeSamples": examples.build},
 )
 async def getbuild(
     name: str | None = None,
@@ -167,15 +216,24 @@ async def getbuild(
     elif category:
         item = await Q.get_build_by_category(db, category)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name, category) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name, category) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -184,6 +242,7 @@ async def getbuild(
     response_model=Page[M.Elixir],
     response_model_exclude_none=True,
     summary="Lookup Elixir Information",
+    openapi_extra={"x-codeSamples": examples.elixir},
 )
 async def getelixir(
     name: str | None = None,
@@ -192,13 +251,22 @@ async def getelixir(
     if name:
         item = await Q.get_elixir(db, name)
     else:
-        raise HTTPException(
+        raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Missing one of the (name) params.",
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing one of the (name) params.",
+            },
+            headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )

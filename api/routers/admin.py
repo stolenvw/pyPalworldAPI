@@ -1,18 +1,19 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Security, status
+import utils.examples as examples
+from fastapi import APIRouter, Depends, Form, Security, status
 from models import auth_models as AuthModel
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import customresponses as R
 from utils.auth import get_auth_session, get_current_active_user, get_password_hash
+from utils.customexception import APIException
 from utils.custompage import Page
 
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
     dependencies=[Security(get_current_active_user, scopes=["APIAdmin:Write"])],
-    responses={404: {"description": "Not found"}},
 )
 
 
@@ -21,7 +22,8 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     response_model=AuthModel.RegistrationUserResponse,
     summary="Add User",
-    responses=R.adduser_responses,
+    responses=R.response_401_409,
+    openapi_extra={"x-codeSamples": examples.add_user},
 )
 async def adduser(
     new_user: AuthModel.UserInput,
@@ -57,8 +59,13 @@ async def adduser(
     """
     user = await AuthQuery.get_user(db, new_user.username)
     if user:
-        raise HTTPException(
-            detail="Username is taken", status_code=status.HTTP_409_CONFLICT
+        raise APIException(
+            status_code=status.HTTP_409_CONFLICT,
+            content={
+                "status": status.HTTP_409_CONFLICT,
+                "message": "Username is taken.",
+            },
+            headers=None,
         )
     hashed_password = await get_password_hash(new_user.password)
     new_user.password = hashed_password
@@ -80,6 +87,7 @@ async def adduser(
     summary="Change Users Password",
     responses=R.response_401_404,
     response_model=AuthModel.MessageStatus,
+    openapi_extra={"x-codeSamples": examples.admin_change_password},
 )
 async def changepassword(
     username: str = Form(),
@@ -106,8 +114,13 @@ async def changepassword(
     pass_reset = AuthModel.PassReset(username=username, new_password=new_password)
     user = await AuthQuery.get_user(db, pass_reset.username)
     if not user:
-        raise HTTPException(
-            detail="Username not found", status_code=status.HTTP_404_NOT_FOUND
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Username not found.",
+            },
+            headers=None,
         )
     hashed_password = await get_password_hash(pass_reset.new_password)
     await AuthQuery.change_password(db=db, user=user, new_password=hashed_password)
@@ -121,11 +134,14 @@ async def changepassword(
     "/deleteuser/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Delete User",
-    responses=R.response_401_404,
+    responses=R.response_401_403_404,
     response_model=AuthModel.MessageStatus,
+    openapi_extra={"x-codeSamples": examples.delete_user},
 )
 async def deleteuser(
-    current_user: Annotated[AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])],
+    current_user: Annotated[
+        AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])
+    ],
     username: str = Form(),
     db: AsyncSession = Depends(get_auth_session),
 ):
@@ -145,14 +161,23 @@ async def deleteuser(
     """
     user_credentials = AuthModel.UserName(username=username)
     if user_credentials.username.lower() == current_user.username.lower():
-        raise HTTPException(
-            detail="You can not delete your own admin account",
+        raise APIException(
             status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "status": status.HTTP_403_FORBIDDEN,
+                "message": "You can not delete your own admin account.",
+            },
+            headers=None,
         )
     user = await AuthQuery.get_user(db, user_credentials.username)
     if not user:
-        raise HTTPException(
-            detail="Username not found", status_code=status.HTTP_404_NOT_FOUND
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Username not found.",
+            },
+            headers=None,
         )
     await AuthQuery.delete_user(db=db, user=user)
     return {
@@ -165,7 +190,8 @@ async def deleteuser(
     "/users/",
     response_model=Page[AuthModel.UserResponse],
     summary="List Users",
-    responses=R.responses,
+    responses=R.response_401_404,
+    openapi_extra={"x-codeSamples": examples.list_users},
 )
 async def list_user(
     db: AsyncSession = Depends(get_auth_session),
@@ -184,8 +210,13 @@ async def list_user(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )
 
 
@@ -193,11 +224,14 @@ async def list_user(
     "/userdisable/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Disable/Enable User",
-    responses=R.response_401_404,
+    responses=R.response_401_403_404,
     response_model=AuthModel.MessageStatus,
+    openapi_extra={"x-codeSamples": examples.user_disable},
 )
 async def userdisable(
-    current_user: Annotated[AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])],
+    current_user: Annotated[
+        AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])
+    ],
     username: Annotated[str, Form()],
     disabled: Annotated[bool, Form()],
     db: AsyncSession = Depends(get_auth_session),
@@ -218,14 +252,23 @@ async def userdisable(
     ```
     """
     if username.lower() == current_user.username.lower():
-        raise HTTPException(
-            detail="You can not change the disabled status of your own account.",
+        raise APIException(
             status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "status": status.HTTP_403_FORBIDDEN,
+                "message": "You can not change the disabled status of your own account.",
+            },
+            headers=None,
         )
     user = await AuthQuery.get_user(db, username)
     if not user:
-        raise HTTPException(
-            detail="Username not found", status_code=status.HTTP_404_NOT_FOUND
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Username not found.",
+            },
+            headers=None,
         )
     await AuthQuery.change_user_status(db, user, disabled)
     return {
@@ -238,11 +281,14 @@ async def userdisable(
     "/chscope/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Change Users Scopes",
-    responses=R.response_401_404,
+    responses=R.response_401_403_404,
     response_model=AuthModel.MessageStatus,
+    openapi_extra={"x-codeSamples": examples.change_scopes},
 )
 async def scope_change(
-    current_user: Annotated[AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])],
+    current_user: Annotated[
+        AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])
+    ],
     update_user: AuthModel.UserScopeChange,
     db: AsyncSession = Depends(get_auth_session),
 ):
@@ -270,15 +316,27 @@ async def scope_change(
             }'
     ```
     """
-    if update_user.username.lower() == current_user.username.lower():
-        raise HTTPException(
-            detail="You can not change the scopes of your own account.",
+    if (
+        update_user.username.lower() == current_user.username.lower()
+        and "APIAdmin:Write" not in update_user.scopes
+    ):
+        raise APIException(
             status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "status": status.HTTP_403_FORBIDDEN,
+                "message": "You can not remove the 'APIAdmin:Write' scope from your account.",
+            },
+            headers=None,
         )
     user = await AuthQuery.get_user(db, update_user.username)
     if not user:
-        raise HTTPException(
-            detail="Username not found", status_code=status.HTTP_404_NOT_FOUND
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Username not found.",
+            },
+            headers=None,
         )
     await AuthQuery.change_scope(db=db, user=user, new_scope=update_user.scopes)
     return {

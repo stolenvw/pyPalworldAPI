@@ -3,7 +3,7 @@ For all your Palworld data.
 
 ### Note: _Some Null items will not be in json response_
 
-_Parsed game data v0.3.4.0_
+_Parsed game data v0.3.5.0_
 """
 
 tags_metadata = [

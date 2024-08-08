@@ -5,13 +5,14 @@ from typing import Annotated, Optional
 import bcrypt
 import jwt
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from models.auth_models import TokenData, User
 from pydantic import ValidationError
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
+from utils.customexception import APIException
 from utils.database import auth_engine
 
 load_dotenv(dotenv_path=".env")
@@ -23,6 +24,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="oauth2/login",
+    auto_error=False,
 )
 
 
@@ -68,9 +70,12 @@ async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = 
 
 
 async def verify_refresh_token(db, token: str):
-    credential_exception = HTTPException(
+    credential_exception = APIException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid refresh token",
+        content={
+            "status": status.HTTP_401_UNAUTHORIZED,
+            "message": "Invalid refresh token.",
+        },
         headers={"WWW-Authenticate": "refresh_token"},
     )
     try:
@@ -86,12 +91,7 @@ async def verify_refresh_token(db, token: str):
     else:
         token_valid = await AuthQuery.check_refresh_token(db, username)
         if not token_valid or token != token_valid.refresh_token:
-            token_invalid = HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid refresh token",
-                headers={"WWW-Authenticate": "refresh_token"},
-            )
-            raise token_invalid
+            raise credential_exception
     return token_data
 
 
@@ -104,9 +104,12 @@ async def get_current_user(
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
         authenticate_value = "Bearer"
-    credentials_exception = HTTPException(
+    credentials_exception = APIException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        content={
+            "status": status.HTTP_401_UNAUTHORIZED,
+            "message": "Not authenticated.",
+        },
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
@@ -127,9 +130,12 @@ async def get_current_user(
         raise credentials_exception
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
-            raise HTTPException(
+            raise APIException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions",
+                content={
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Not enough permissions.",
+                },
                 headers={"WWW-Authenticate": authenticate_value},
             )
     return user
@@ -139,7 +145,14 @@ async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise APIException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={
+                "status": status.HTTP_401_UNAUTHORIZED,
+                "message": "Inactive user.",
+            },
+            headers=None,
+        )
     return current_user
 
 

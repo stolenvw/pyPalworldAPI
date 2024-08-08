@@ -1,12 +1,14 @@
 import os
 
 import models.models as M
-from fastapi import APIRouter, Depends, HTTPException, Security, status
+import utils.examples as examples
+from fastapi import APIRouter, Depends, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import customresponses as R
 from utils.auth import get_current_active_user
 from utils.autocustompage import AutoCompletePage
+from utils.customexception import APIException
 from utils.database import get_session
 
 router = APIRouter(
@@ -17,7 +19,7 @@ router = APIRouter(
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
         else None
     ),
-    responses=R.responses,
+    responses=R.response_401_404,
 )
 
 
@@ -26,6 +28,7 @@ router = APIRouter(
     response_model=AutoCompletePage[str],
     response_model_exclude_none=True,
     summary="AutoComplete Helper",
+    openapi_extra={"x-codeSamples": examples.autocomplete},
 )
 async def getautocomplete(
     category: M.AutoCompleteModels,
@@ -36,6 +39,11 @@ async def getautocomplete(
     if len(item.items) != 0:
         return item
     else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nothing Found"
+        raise APIException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={
+                "status": status.HTTP_404_NOT_FOUND,
+                "message": "Nothing Found.",
+            },
+            headers=None,
         )

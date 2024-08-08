@@ -7,12 +7,14 @@ import sqlalchemy as sa
 import utils.auth as AuthUtils
 import utils.descriptions as D
 from dotenv import load_dotenv
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi_pagination import add_pagination
 from routers import admin, autocomplete, items, misc, oauth2, pals, user
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils.database import auth_engine, auth_table, engine
+from utils.customexception import APIException
 
 load_dotenv(dotenv_path=".env")
 
@@ -56,11 +58,14 @@ app = FastAPI(
         "identifier": "MIT",
     },
     openapi_tags=(
-        D.tags_metadata if os.getenv("COMPOSE_PROFILES") != "USE_OAUTH2" else D.oauth_tags_metadata
+        D.tags_metadata
+        if os.getenv("COMPOSE_PROFILES") != "USE_OAUTH2"
+        else D.oauth_tags_metadata
     ),
     swagger_ui_parameters={
         "defaultModelsExpandDepth": -1,
         "persistAuthorization": True,
+        "showExtensions": False,
     },
     docs_url=os.getenv("DOCS_URL"),
     redoc_url=os.getenv("REDOC_URL"),
@@ -68,6 +73,14 @@ app = FastAPI(
 )
 
 add_pagination(app)
+
+@app.exception_handler(APIException)
+async def api_exception_handler(request: Request, exc: APIException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=exc.content,
+        headers=exc.headers
+    )
 
 if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2":
     app.include_router(user.router)

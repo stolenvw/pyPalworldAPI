@@ -1,9 +1,98 @@
-responses = {
+response_401_409 = {
+    409: {
+        "description": "Conflict",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+    401: {
+        "description": "Unauthorized",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+}
+
+response_401_404 = {
+    404: {
+        "description": "Not Found",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+    401: {
+        "description": "Unauthorized",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+}
+
+response_401_403_404 = {
+    403: {
+        "description": "Forbidden",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+    404: {
+        "description": "Not Found",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+    401: {
+        "description": "Unauthorized",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+}
+
+responses_400_401_404 = {
     404: {
         "description": "Item NotFound",
         "content": {
             "application/json": {
-                "schema": {"type": "string", "example": {"detail": "Nothing Found"}}
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
             }
         },
     },
@@ -11,7 +100,10 @@ responses = {
         "description": "Missing params",
         "content": {
             "application/json": {
-                "schema": {"type": "string", "example": {"detail": "Missing params"}}
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
             }
         },
     },
@@ -21,68 +113,21 @@ responses = {
             "application/json": {
                 "schema": {
                     "type": "string",
-                    "example": {"detail": "string"},
+                    "example": {"status": 0, "message": "string"},
                 }
             }
         },
     },
 }
 
-adduser_responses = {
-    409: {
-        "description": "Username taken",
-        "content": {
-            "application/json": {
-                "schema": {"type": "string", "example": {"detail": "Username is taken"}}
-            }
-        },
-    }
-}
-
-response_401 = {
+response_400_401 = {
     401: {
         "description": "Unauthorized",
         "content": {
             "application/json": {
                 "schema": {
                     "type": "string",
-                    "example": {"detail": "string"},
-                }
-            }
-        },
-    }
-}
-
-response_401_404 = {
-    404: {
-        "description": "NotFound",
-        "content": {
-            "application/json": {
-                "schema": {"type": "string", "example": {"detail": "string"}}
-            }
-        },
-    },
-    401: {
-        "description": "Unauthorized",
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "string",
-                    "example": {"detail": "string"},
-                }
-            }
-        },
-    },
-}
-
-response_440_401 = {
-    401: {
-        "description": "Unauthorized",
-        "content": {
-            "application/json": {
-                "schema": {
-                    "type": "string",
-                    "example": {"detail": "string"},
+                    "example": {"status": 0, "message": "string"},
                 }
             }
         },
@@ -91,7 +136,35 @@ response_440_401 = {
         "description": "Bad Request",
         "content": {
             "application/json": {
-                "schema": {"type": "string", "example": {"detail": "string"}}
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+}
+
+response_401_403 = {
+    403: {
+        "description": "Forbidden",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
+            }
+        },
+    },
+    401: {
+        "description": "Unauthorized",
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "string",
+                    "example": {"status": 0, "message": "string"},
+                }
             }
         },
     },
