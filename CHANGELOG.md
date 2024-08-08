@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Game data from v0.3.4
+- Game data from v0.3.5
 - Get autocomplete to help with discord bots slash command autocomplete
     ```http
     GET /autocomplete/{category}/?name=
@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
     - `APIAdmin:Write` Needed to use `/admin/*` endpoints.
     - `APIUser:Read` Needed to get info from API.
     - `APIUser:ChangePassword` Needed to use `/user/changepassword/` endpoint.
+- `Curl` and `Python` request samples to the `/redoc` URL.
 
 ### Changed
 
@@ -45,6 +46,13 @@ All notable changes to this project will be documented in this file.
 - SQLAlchemy to version 2.0.31
 - sqlmodel to version 0.0.21
 - uvicorn to version 0.30.4
+- Most of the error returns to be format shown below, (Validation Error is still the same.)
+    ```json
+    {
+        "status": 0,
+        "message": "string"
+    }
+    ```
 
 ## [0.0.5] - 2024-6-27
 
