@@ -1309,11 +1309,9 @@ delete_user = [
     {
         "lang": "Curl",
         "source": """curl -X 'PUT' \ 
-  'http://127.0.0.0/admin/deleteuser/' \ 
+  'http://127.0.0.0/admin/deleteuser/?username=Bob123' \ 
   -H 'Accept: application/json' \ 
-  -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-  -H 'Content-Type: application/x-www-form-urlencoded' \ 
-  -d 'username=Bob123'""",
+  -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
         "label": "Curl",
     },
     {
@@ -1328,12 +1326,11 @@ async def _delete_admin_delete_user(access_token: str, username: str):
   headers = {
       "Accept": "application/json",
       "Authorization": f"Bearer {access_token}",
-      "Content-Type": "application/x-www-form-urlencoded",
   }
-  body = {"username": username}
+  params = {"username": username}
   try:
       async with aiohttp.ClientSession() as session:
-          async with session.delete(url, headers=headers, data=body) as result:
+          async with session.delete(url, headers=headers, data=params) as result:
               data = await result.json()
   except ClientConnectorError as e:
       print(f"ClientConnectorError: {e}")

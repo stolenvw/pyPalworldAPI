@@ -46,7 +46,7 @@ More than just a paldex, includes a lot of game data.
   <summary>Reference</summary>
 
   - #### API
-    > [!IMPORTANT]
+    > [!IMPORTANT]  
     > _When using OAuth users need the `APIUser:Read` scope_
 
     - <details>
@@ -1451,7 +1451,7 @@ More than just a paldex, includes a lot of game data.
 
       #### Login. Ex.
 
-      > [!NOTE]
+      > [!NOTE]  
       > _Login will make any refresh token you currently have invalid._
 
       - <details>
@@ -1568,10 +1568,10 @@ More than just a paldex, includes a lot of game data.
 
       #### Change Password. Ex.
 
-      > [!IMPORTANT]
+      > [!IMPORTANT]  
       > _Users need the `APIUser:Read, APIUser:ChangePassword` scopes_
 
-      > [!NOTE]
+      > [!NOTE]  
       > Changing password will make any access/refresh token you currently have invalid.
 
       - <details>
@@ -1632,7 +1632,7 @@ More than just a paldex, includes a lot of game data.
 
       #### Me. Ex.
 
-      > [!IMPORTANT]
+      > [!IMPORTANT]  
       > _Users need the `APIUser:Read` scopes_
 
       - <details>
@@ -1681,7 +1681,7 @@ More than just a paldex, includes a lot of game data.
 
   - #### Admin
 
-    > [!IMPORTANT]
+    > [!IMPORTANT]  
     > _Users need the `APIAdmin:Write` scope_
 
     - <details>
@@ -1828,11 +1828,9 @@ More than just a paldex, includes a lot of game data.
         
         ```bash
         curl -X 'DELETE' \
-          'http://127.0.0.0/admin/deleteuser/' \
+          'http://127.0.0.0/admin/deleteuser/?username=Bob123' \
           -H 'Accept: application/json' \
-          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \
-          -H 'Content-Type: application/x-www-form-urlencoded' \
-          -d 'username=Bob123'
+          -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
         ```
 
         </details>
@@ -1851,12 +1849,11 @@ More than just a paldex, includes a lot of game data.
           headers = {
               "Accept": "application/json",
               "Authorization": f"Bearer {access_token}",
-              "Content-Type": "application/x-www-form-urlencoded",
           }
-          body = {"username": username}
+          params = {"username": username}
           try:
               async with aiohttp.ClientSession() as session:
-                  async with session.delete(url, headers=headers, data=body) as result:
+                  async with session.delete(url, headers=headers, params=params) as result:
                       data = await result.json()
           except ClientConnectorError as e:
               print(f"ClientConnectorError: {e}")

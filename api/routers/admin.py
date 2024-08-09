@@ -142,7 +142,7 @@ async def deleteuser(
     current_user: Annotated[
         AuthModel.User, Security(get_current_active_user, scopes=["APIAdmin:Write"])
     ],
-    username: str = Form(),
+    username: str,
     db: AsyncSession = Depends(get_auth_session),
 ):
     """
@@ -152,11 +152,9 @@ async def deleteuser(
 
     ```
     curl -X 'DELETE'
-        'http://**APIURL**/admin/deleteuser/'
-        -H 'accept: application/json'
+        'http://**APIURL**/admin/deleteuser/?username=**USERNAME**'
+        -H 'Accept: application/json'
         -H 'Authorization: Bearer **ACCESS TOKEN**'
-        -H 'Content-Type: application/x-www-form-urlencoded'
-        -d 'username=**USERNAME**'
     ```
     """
     user_credentials = AuthModel.UserName(username=username)
