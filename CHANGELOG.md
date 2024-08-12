@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - API endpoints for OAuth
     - `/oauth2/login/` Used to login and get an access and refresh token. *_Logging in again will make all current access/refresh tokens invalid._
     - `/oauth2/refresh/` Used to get new access token after current one expired, will also give new refresh token if its close to expiring.
+    - `/oauth2/validate` Used to check if access token is still valid.
     - `/user/changepassword/` Allows users with `APIUser:ChangePassword` scope to change there password. *_Will make all current access/refresh tokens invalid._
     - `/user/me/` Allows users with `APIUser:Read` scope to get username and scopes associated with the access token there using.
     - `/admin/adduser/` Allows user with `APIAdmin:Write` scope to add new users.
@@ -39,6 +40,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- api folder name to pyPalworldAPI (Posable breaking change for people not using docker.)
 - bcrypt to version 4.2.0
 - fastapi to version 0.111.1
 - fastapi-pagination to version 0.12.26

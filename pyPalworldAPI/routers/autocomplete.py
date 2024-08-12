@@ -1,15 +1,15 @@
 import os
 
 import models.models as M
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import get_current_active_user
 from utils.autocustompage import AutoCompletePage
 from utils.customexception import APIException
+from utils.customresponses import pyPalworldAPIErrorResponses
 from utils.database import get_session
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     prefix="/autocomplete",
@@ -19,7 +19,7 @@ router = APIRouter(
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
         else None
     ),
-    responses=R.response_401_404,
+    responses=pyPalworldAPIErrorResponses.response_401_404,
 )
 
 
@@ -28,7 +28,7 @@ router = APIRouter(
     response_model=AutoCompletePage[str],
     response_model_exclude_none=True,
     summary="AutoComplete Helper",
-    openapi_extra={"x-codeSamples": examples.autocomplete},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.autocomplete},
 )
 async def getautocomplete(
     category: M.AutoCompleteModels,

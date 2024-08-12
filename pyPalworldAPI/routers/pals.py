@@ -1,19 +1,19 @@
 import os
 
 import models.models as M
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Query, Request, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import get_current_active_user
 from utils.customexception import APIException
 from utils.custompage import Page
+from utils.customresponses import pyPalworldAPIErrorResponses
 from utils.database import get_session
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     tags=["Pals"],
-    responses=R.responses_400_401_404,
+    responses=pyPalworldAPIErrorResponses.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -27,7 +27,7 @@ router = APIRouter(
     response_model=Page[M.Pals],
     response_model_exclude_none=True,
     summary="Lookup Pal[s] Information",
-    openapi_extra={"x-codeSamples": examples.pals},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.pals},
 )
 async def getpal(
     request: Request,
@@ -73,7 +73,7 @@ async def getpal(
     response_model=Page[M.BossPals],
     response_model_exclude_none=True,
     summary="Lookup Boss Pal[s] Information",
-    openapi_extra={"x-codeSamples": examples.boss_pals},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.boss_pals},
 )
 async def getbosspal(
     request: Request,
@@ -107,7 +107,7 @@ async def getbosspal(
     response_model=Page[M.Breeding],
     response_model_exclude_none=True,
     summary="Lookup Breeding Information",
-    openapi_extra={"x-codeSamples": examples.breeding},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.breeding},
 )
 async def getbreeding(
     name: str,
@@ -142,7 +142,7 @@ async def getbreeding(
     response_model=Page[M.SickPal],
     response_model_exclude_none=True,
     summary="Lookup Sickness Information",
-    openapi_extra={"x-codeSamples": examples.sickness},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.sickness},
 )
 async def getsickness(
     name: str,
@@ -177,7 +177,7 @@ async def getsickness(
     response_model=Page[M.PassiveSkills],
     response_model_exclude_none=True,
     summary="Lookup Passive Skills Information",
-    openapi_extra={"x-codeSamples": examples.passive},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.passive},
 )
 async def getpassive(
     name: str | None = None,

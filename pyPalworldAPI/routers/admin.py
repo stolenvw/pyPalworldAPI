@@ -1,14 +1,14 @@
 from typing import Annotated
 
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Form, Security, status
 from models import auth_models as AuthModel
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import get_auth_session, get_current_active_user, get_password_hash
 from utils.customexception import APIException
 from utils.custompage import Page
+from utils.customresponses import pyPalworldAPIErrorResponses
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     prefix="/admin",
@@ -22,8 +22,8 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     response_model=AuthModel.RegistrationUserResponse,
     summary="Add User",
-    responses=R.response_401_409,
-    openapi_extra={"x-codeSamples": examples.add_user},
+    responses=pyPalworldAPIErrorResponses.response_401_409,
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.add_user},
 )
 async def adduser(
     new_user: AuthModel.UserInput,
@@ -85,9 +85,9 @@ async def adduser(
     "/chpass/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Change Users Password",
-    responses=R.response_401_404,
+    responses=pyPalworldAPIErrorResponses.response_401_404,
     response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": examples.admin_change_password},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.admin_change_password},
 )
 async def changepassword(
     username: str = Form(),
@@ -134,9 +134,9 @@ async def changepassword(
     "/deleteuser/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Delete User",
-    responses=R.response_401_403_404,
+    responses=pyPalworldAPIErrorResponses.response_401_403_404,
     response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": examples.delete_user},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.delete_user},
 )
 async def deleteuser(
     current_user: Annotated[
@@ -188,8 +188,8 @@ async def deleteuser(
     "/users/",
     response_model=Page[AuthModel.UserResponse],
     summary="List Users",
-    responses=R.response_401_404,
-    openapi_extra={"x-codeSamples": examples.list_users},
+    responses=pyPalworldAPIErrorResponses.response_401_404,
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.list_users},
 )
 async def list_user(
     db: AsyncSession = Depends(get_auth_session),
@@ -222,9 +222,9 @@ async def list_user(
     "/userdisable/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Disable/Enable User",
-    responses=R.response_401_403_404,
+    responses=pyPalworldAPIErrorResponses.response_401_403_404,
     response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": examples.user_disable},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.user_disable},
 )
 async def userdisable(
     current_user: Annotated[
@@ -279,9 +279,9 @@ async def userdisable(
     "/chscope/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Change Users Scopes",
-    responses=R.response_401_403_404,
+    responses=pyPalworldAPIErrorResponses.response_401_403_404,
     response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": examples.change_scopes},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.change_scopes},
 )
 async def scope_change(
     current_user: Annotated[

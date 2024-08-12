@@ -1,19 +1,19 @@
 import os
 
 import models.models as M
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Query, Request, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import get_current_active_user
 from utils.customexception import APIException
 from utils.custompage import Page
+from utils.customresponses import pyPalworldAPIErrorResponses
 from utils.database import get_session
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     tags=["Items"],
-    responses=R.responses_400_401_404,
+    responses=pyPalworldAPIErrorResponses.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -27,7 +27,7 @@ router = APIRouter(
     response_model=Page[M.Items],
     response_model_exclude_none=True,
     summary="Lookup Items Information",
-    openapi_extra={"x-codeSamples": examples.items},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.items},
 )
 async def getitems(
     request: Request,
@@ -61,7 +61,7 @@ async def getitems(
     response_model=Page[M.Crafting],
     response_model_exclude_none=True,
     summary="Lookup Crafting Information",
-    openapi_extra={"x-codeSamples": examples.crafting},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.crafting},
 )
 async def getcrafting(
     name: str = Query(None, description="Item you want to make."),
@@ -96,7 +96,7 @@ async def getcrafting(
     response_model=Page[M.Gear],
     response_model_exclude_none=True,
     summary="Lookup Gear Information",
-    openapi_extra={"x-codeSamples": examples.gear},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.gear},
 )
 async def getgear(
     name: str,
@@ -131,7 +131,7 @@ async def getgear(
     response_model=Page[M.FoodEffect],
     response_model_exclude_none=True,
     summary="Lookup Food Effects Information",
-    openapi_extra={"x-codeSamples": examples.foodeffect},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.foodeffect},
 )
 async def getfoodeffect(
     name: str,
@@ -166,7 +166,7 @@ async def getfoodeffect(
     response_model=Page[M.TechTree],
     response_model_exclude_none=True,
     summary="Lookup Tech Tree Information",
-    openapi_extra={"x-codeSamples": examples.tech},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.tech},
 )
 async def gettech(
     name: str | None = None,
@@ -204,7 +204,7 @@ async def gettech(
     response_model=Page[M.BuildObjects],
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
-    openapi_extra={"x-codeSamples": examples.build},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.build},
 )
 async def getbuild(
     name: str | None = None,
@@ -242,7 +242,7 @@ async def getbuild(
     response_model=Page[M.Elixir],
     response_model_exclude_none=True,
     summary="Lookup Elixir Information",
-    openapi_extra={"x-codeSamples": examples.elixir},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.elixir},
 )
 async def getelixir(
     name: str | None = None,

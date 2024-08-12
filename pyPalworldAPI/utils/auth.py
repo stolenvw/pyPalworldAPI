@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 import bcrypt
 import jwt
 from dotenv import load_dotenv
-from fastapi import Depends, status
+from fastapi import Depends, Request, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from models.auth_models import TokenData, User
@@ -167,3 +167,47 @@ async def remove_old_tokens(db: AsyncSession):
     if delete_tokens_list:
         await AuthQuery.delete_old_tokens(db=db, tokens=delete_tokens_list)
     await db.close()
+
+
+async def verify_token(request: Request):
+    auth_type = ""
+    token = ""
+    if "authorization" in request.headers:
+        auth_type, _, token = request.headers["authorization"].partition(" ")
+    else:
+        raise APIException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Missing authorization header.",
+            },
+            headers=None,
+        )
+    if auth_type.lower() == "oauth":
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            token_data = TokenData(
+                username=payload.get("sub"),
+                scopes=payload.get("scopes"),
+                exp=payload.get("exp"),
+            )
+        except (InvalidTokenError, ValidationError):
+            raise APIException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                content={
+                    "status": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Invalid access token.",
+                },
+                headers=None,
+            )
+        else:
+            return token_data
+    else:
+        raise APIException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Invalid authorization type.",
+            },
+            headers=None,
+        )

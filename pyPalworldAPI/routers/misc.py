@@ -2,19 +2,19 @@ import os
 from typing import Union
 
 import models.models as M
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import get_current_active_user
 from utils.customexception import APIException
 from utils.custompage import Page
+from utils.customresponses import pyPalworldAPIErrorResponses
 from utils.database import get_session
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     tags=["Misc"],
-    responses=R.responses_400_401_404,
+    responses=pyPalworldAPIErrorResponses.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -44,7 +44,7 @@ router = APIRouter(
     ],
     response_model_exclude_none=True,
     summary="Paginate full category",
-    openapi_extra={"x-codeSamples": examples.alls},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.alls},
 )
 async def getall(
     category: M.APIModels,
@@ -69,7 +69,7 @@ async def getall(
     response_model=Page[M.NPC],
     response_model_exclude_none=True,
     summary="Lookup NPC Information",
-    openapi_extra={"x-codeSamples": examples.npc},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.npc},
 )
 async def getnpc(
     name: str | None = None,

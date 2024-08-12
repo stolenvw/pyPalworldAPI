@@ -2,20 +2,21 @@ import random
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-import utils.examples as examples
 from fastapi import APIRouter, BackgroundTasks, Depends, Form, status
 from fastapi.security import OAuth2PasswordRequestForm
 from models import auth_models as AuthModel
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils import auth as AuthUtils
-from utils import customresponses as R
+from utils.auth import verify_token
 from utils.customexception import APIException
+from utils.customresponses import pyPalworldAPIErrorResponses
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     prefix="/oauth2",
     tags=["Auth"],
-    responses=R.response_400_401,
+    responses=pyPalworldAPIErrorResponses.response_400_401,
 )
 
 
@@ -23,7 +24,7 @@ router = APIRouter(
     "/login/",
     status_code=status.HTTP_200_OK,
     response_model=AuthModel.LoginResponse,
-    openapi_extra={"x-codeSamples": examples.login},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.login},
 )
 async def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
@@ -110,7 +111,7 @@ async def login(
     "/refresh/",
     status_code=status.HTTP_200_OK,
     response_model=AuthModel.RefreshResponse,
-    openapi_extra={"x-codeSamples": examples.refresh},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.refresh},
 )
 async def get_new_access_token(
     token: Annotated[str, Form()],
@@ -146,7 +147,7 @@ async def get_new_access_token(
     )
     user = await AuthQuery.authenticate_user(db, refresh_data.username)
     if (
-        random.randrange(refresh_token_expires.total_seconds())
+        random.randrange(int(refresh_token_expires.total_seconds()))
         > (
             datetime.fromtimestamp(refresh_data.exp, tz=timezone.utc)
             - datetime.now(timezone.utc)
@@ -182,4 +183,25 @@ async def get_new_access_token(
         "access_token": a_token,
         "refresh_token": r_token,
         "status": status.HTTP_200_OK,
+    }
+
+
+@router.get(
+    "/validate",
+    status_code=status.HTTP_200_OK,
+    response_model=AuthModel.ValidateResponse,
+    summary="Validate token",
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.validate},
+)
+async def validate_token(
+    payload: Annotated[str, Depends(verify_token)],
+):
+    token_expire_in = (
+        datetime.fromtimestamp(payload.exp, tz=timezone.utc)
+        - datetime.now(timezone.utc)
+    ).total_seconds()
+    return {
+        "username": payload.username,
+        "scopes": payload.scopes,
+        "expires_in": int(token_expire_in),
     }

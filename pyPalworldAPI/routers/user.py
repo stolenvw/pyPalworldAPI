@@ -1,11 +1,9 @@
 from typing import Annotated
 
-import utils.examples as examples
 from fastapi import APIRouter, Depends, Form, Security, status
 from models import auth_models as AuthModel
 from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils import customresponses as R
 from utils.auth import (
     get_auth_session,
     get_current_active_user,
@@ -13,11 +11,13 @@ from utils.auth import (
     verify_password,
 )
 from utils.customexception import APIException
+from utils.customresponses import pyPalworldAPIErrorResponses
+from utils.examples import pyPalworldAPIExamples
 
 router = APIRouter(
     prefix="/user",
     tags=["User"],
-    responses=R.response_400_401,
+    responses=pyPalworldAPIErrorResponses.response_400_401,
 )
 
 
@@ -26,7 +26,7 @@ router = APIRouter(
     status_code=status.HTTP_202_ACCEPTED,
     summary="Change your password.",
     response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": examples.user_change_password},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.user_change_password},
 )
 async def change_own_password(
     current_user: Annotated[
@@ -71,7 +71,7 @@ async def change_own_password(
     "/me/",
     response_model=AuthModel.UserResponse,
     summary="List User Info",
-    openapi_extra={"x-codeSamples": examples.me},
+    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.me},
 )
 async def get_user(
     current_user: Annotated[
