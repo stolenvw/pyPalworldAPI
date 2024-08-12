@@ -1,12 +1,12 @@
 FROM python:3.10.12
 
-WORKDIR /api
+WORKDIR /pyPalworldAPI
 
 COPY ./requirements.txt /requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /requirements.txt
 
-COPY ./api /api
+COPY ./pyPalworldAPI /pyPalworldAPI
 
 ARG HTTP_PORT
 

@@ -2377,7 +2377,7 @@ docker-compose up
 
   - Recommended: Setup a Python virtual environment
 
-  - Move the `.env` into the `api` folder
+  - Move the `.env` into the `pyPalworldAPI` folder
 
   - Install Python requirements.
 
@@ -2387,13 +2387,13 @@ docker-compose up
 
   - Import the [PalAPI.sql](mysqldb/PalAPI.sql) data from the mysqldb folder into your MySQL server.
 
-  - If not using a reverse proxy run from in the api folder.
+  - If not using a reverse proxy run from in the pyPalworldAPI folder.
 
     ```bash
       uvicorn mainapi:app --host 0.0.0.0 --port 8000
     ```
 
-  - With a reverse proxy run from in the api folder
+  - With a reverse proxy run from in the pyPalworldAPI folder
 
     ```bash
       uvicorn mainapi:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'
