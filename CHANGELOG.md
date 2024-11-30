@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.0.6] - 2024-11-30
 
 ### Added
 
-- Game data from v0.3.5
+- Game data from v0.3.6
 - Get autocomplete to help with discord bots slash command autocomplete
     ```http
     GET /autocomplete/{category}/?name=
