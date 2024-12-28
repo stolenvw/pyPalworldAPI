@@ -170,7 +170,7 @@ async def getfoodeffect(
 )
 async def gettech(
     name: str | None = None,
-    level: int | None = Query(None, ge=1, le=55),
+    level: int | None = Query(None, ge=1, le=60),
     db: AsyncSession = Depends(get_session),
 ):
     if name:
