@@ -4,10 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.8] - 2026-07-10
+
 ### Added
 
-- Game data from v1.0.0.100427
-- Game data from v0.4.11
+- Game data updated through `v1.0.0.100427`.
+- `bLegalInGame` field to `Items`.
+- `CraftExpRate` field to `Crafting`.
+- `BuildExpRate` field to `BuildObjects`.
+- `IgnoreStun` and `IgnoreCombi` fields to `NPC`.
+- `IgnoreStun`, `IgnoreCombi`, and `FirstDefeatRewardItemID` fields to `Pals`.
+- `IgnoreStun`, `IgnoreCombi`, and `FirstDefeatRewardItemID` fields to `BossPals`.
+
+### Changed
+
+- Expanded SQL text storage for long description fields across multiple models.
+- Increased `WikiImage` length for `Pals` and `BossPals`.
+- Increased `AIResponse` length for `NPC`.
+- Refreshed bundled game assets, including NPC icons and other in-game images.
 
 ## [0.0.7] - 2024-11-30
 

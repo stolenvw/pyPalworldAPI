@@ -21,3 +21,4 @@ dev
 .vscode
 .gitignore
 example.env
+api/test

@@ -7,8 +7,14 @@ More than just a paldex, includes a lot of game data.
 ![GitHub repo size](https://img.shields.io/github/repo-size/stolenvw/pyPalworldAPI)
 ![GitHub License](https://img.shields.io/github/license/stolenvw/pyPalworldAPI)
 ![Static Badge](https://img.shields.io/badge/3.10.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
-![Static Badge](https://img.shields.io/badge/v0.3.11.0-gray?label=Game%20Data&labelColor=gray&color=blue)
+![Static Badge](https://img.shields.io/badge/v1.0.0.100427-gray?label=Game%20Data&labelColor=gray&color=blue)
 </div>
+
+## Release Highlights
+
+- Game data updated through `v1.0.0.100427`.
+- Added new schema fields for items, crafting, build objects, NPCs, pals, and boss pals.
+- Expanded long-text fields in the SQL models to better preserve in-game descriptions.
 
 ## Features
 
@@ -29,6 +35,8 @@ More than just a paldex, includes a lot of game data.
 - Passive Skills
 - NPC Lookups
 - Elixir Lookups
+- Updated game data from `v1.0.0.100427`
+- Expanded response models for newer Palworld data fields
 
 ## API Reference
 
@@ -2364,7 +2372,7 @@ More than just a paldex, includes a lot of game data.
 - To deploy run
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 #### How to run without Docker
