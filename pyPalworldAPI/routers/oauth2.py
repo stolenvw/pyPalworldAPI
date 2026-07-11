@@ -31,15 +31,87 @@ async def login(
     db: AsyncSession = Depends(AuthUtils.get_auth_session),
 ):
     """
-    ```
-    curl -X 'POST'
-        'http://**APIURL**/oauth2/login/'
-        -H 'accept: application/json'
-        -H 'Content-Type: application/x-www-form-urlencoded'
-        -d 'username=**USERNAME**&password=**PASSWORD**'
-    ```
+    To login, send an HTTP POST request to ``https://127.0.0.1/oauth2/login``.
+
+    When you get a access token, the `expires_in` field indicates how long, in seconds, the token is valid for.
+    When a token expires, it becomes invalid. If you call the API with an invalid token, the request returns 401 Unauthorized.
+    \f
+    Parameters
+    ----------
+    username : str
+        User to login as.
+    password : str
+        Users password.
+
+    Returns
+    -------
+    json
+        ::
+
+        {
+            "access_token": "kajfe0983qjaf309ajj3w8j3aij3a3",
+            "token_type": "Bearer",
+            "expires_in": 8200,
+            "scopes": [
+                "APIUser:Read",
+                "APIUser:ChangePassword"
+            ],
+            "refresh_token": {
+                "token": "kafaj083209jq904j8qjiaf39",
+                "expires_in": 72000
+            },
+            "message": "User Logged in Successfully.",
+            "status": 200
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+
+    Examples
+    -------
+    Curl::
+
+        curl -X 'POST' \ 
+            'http://127.0.0.0/oauth2/login/' \ 
+            -H 'accept: application/json' \ 
+            -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            -d 'username=Bob123&password=SomePass'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def post_login(username: str, password: str):
+            url = f"http://127.0.0.0/oauth2/login/"
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+            body = {"username": username, "password": password}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(url, headers=headers, data=body) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(post_login(username="Bob123", password="SomePass"))
+
     """
-    user = await AuthQuery.authenticate_user(db, user_credentials.username)
+    user = await AuthQuery.get_user(db, user_credentials.username)
     if not user:
         raise APIException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -120,13 +192,79 @@ async def get_new_access_token(
     db: AsyncSession = Depends(AuthUtils.get_auth_session),
 ):
     """
-    ```
-    curl -X 'POST'
-        'http://**APIURL**/oauth2/refresh/'
-        -H 'accept: application/json'
-        -H 'Content-Type: application/x-www-form-urlencoded'
-        -d 'token=**REFRESH TOKEN**&grant_type=refresh_token'
-    ```
+    To refresh a access token, send an HTTP POST request to ``https://127.0.0.1/oauth2/refresh``.
+    \f
+    Parameters
+    ----------
+    token : str
+        The refresh token issued to the client.
+    grant_type : str
+        Must be set to ``refresh_token``.
+
+    Returns
+    -------
+    json
+        ::
+
+        {
+            "access_token": {
+                "token_type": "Bearer",
+                "access_token": "kajfe0983qjaf309ajj3w8j3aij3a3",
+                "expires_in": 8200
+            },
+            "refresh_token": {
+                "token": "kafaj083209jq904j8qjiaf39",
+                "expires_in": 72000
+            },
+            "status": 200
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+
+    Examples
+    -------
+    Curl::
+
+        curl -X 'POST' \ 
+            'https://127.0.0.1/oauth2/refresh' \ 
+            -H 'accept: application/json' \ 
+            -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            -d 'token=kafaj083209jq904j8qjiaf39&grant_type=refresh_token'
+
+    Python::
+
+        import asyncio
+        import json
+        
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+        
+        
+        async def post_refresh(refresh_token: str):
+            url = f"http://127.0.0.0/oauth2/refresh/"
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+            body = {"token": refresh_token, "grant_type": "refresh_token"}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(url, headers=headers, data=body) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+        
+        
+        if __name__ == "__main__":
+            asyncio.run(post_refresh(refresh_token="kafaj083209jq904j8qjiaf39"))
+
     """
     background_tasks.add_task(AuthUtils.remove_old_tokens, db)
     if grant_type != "refresh_token":
@@ -145,7 +283,7 @@ async def get_new_access_token(
         {"sub": refresh_data.username, "scopes": refresh_data.scopes},
         expires_delta=access_token_expires,
     )
-    user = await AuthQuery.authenticate_user(db, refresh_data.username)
+    user = await AuthQuery.get_user(db, refresh_data.username)
     if (
         random.randrange(int(refresh_token_expires.total_seconds()))
         > (
@@ -196,6 +334,68 @@ async def get_new_access_token(
 async def validate_token(
     payload: Annotated[str, Depends(verify_token)],
 ):
+    """
+    To validate a access token, send an HTTP GET request to ``https://127.0.0.1/oauth2/validate``.
+    \f
+    Returns
+    -------
+    json
+        ::
+
+        {
+            "username": "Bob123",
+            "scopes": [
+                "APIUser:Read",
+                "APIUser:ChangePassword"
+            ],
+            "expires_in": 8200
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/oauth2/validate' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: OAuth kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_user_me(access_token: str):
+            url = "http://127.0.0.0/oauth2/validate"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"OAuth {access_token}",
+            }
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(get_user_me(access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+
+    """
     token_expire_in = (
         datetime.fromtimestamp(payload.exp, tz=timezone.utc)
         - datetime.now(timezone.utc)

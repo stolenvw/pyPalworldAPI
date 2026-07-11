@@ -36,10 +36,108 @@ async def getitems(
     db: AsyncSession = Depends(get_session),
 ):
     """
-    Lookup items options below:
+    Look up items.
+    \f
+    Parameters
+    ----------
+    name : str, optional
+        Item thats being looked for
+    type: str, optional
+        Find items by type
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
 
-    - **name**: item name to return information on.
-    - **type**: item type.
+
+    .. note:: Need to supply one of the ``name`` or ``type`` parameters.
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "DevName": "string",
+              "Image": "string",
+              "Type": "string",
+              "Rank": 0,
+              "MaxStackCount": 0,
+              "Weight": 0,
+              "Gold": 0,
+              "Durability": 0,
+              "MagazineSize": 0,
+              "PhysicalAttackValue": 0,
+              "HPValue": 0,
+              "PhysicalDefenseValue": 0,
+              "ShieldValue": 0,
+              "MagicAttackValue": 0,
+              "MagicDefenseValue": 0,
+              "Description": "string",
+              "ItemActorClass": "string",
+              "PassiveSkills": {
+                "PassiveSkill1": "string",
+                "PassiveSkill2": "string",
+                "PassiveSkill3": "string",
+                "PassiveSkill4": "string"
+              }
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/items/?name=arrow&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_items(name: str, access_token: str):
+            url = "http://127.0.0.0/items/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(get_items(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+
     """
     params = request.query_params
     item = await Q.get_item(db, params)
@@ -67,6 +165,91 @@ async def getcrafting(
     name: str = Query(None, description="Item you want to make."),
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Look up materials to craft item.
+    \f
+    Parameters
+    ----------
+    name : str
+        Item you want to make
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "Output": 0,
+              "WorkAmount": 0,
+              "Material": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              }
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_crafting(name: str, access_token: str):
+            url = "http://127.0.0.0/crafting/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(
+                get_crafting(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+            )
+
+    """
     if name:
         item = await Q.get_crafting(db, name)
     else:
@@ -102,6 +285,109 @@ async def getgear(
     name: str,
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Look gear stats.
+    \f
+    Parameters
+    ----------
+    name : str
+        Gear you want to get stats for
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "Common": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              },
+              "Uncommon": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              },
+              "Rare": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              },
+              "Epic": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              },
+              "Legendary": {
+                "additionalProp1": 0,
+                "additionalProp2": 0,
+                "additionalProp3": 0
+              }
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_gear(name: str, access_token: str):
+            url = "http://127.0.0.0/gear/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(
+                get_gear(name="cloth outfit", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+            )
+
+    """
     if name:
         item = await Q.get_gear(db, name)
     else:
@@ -137,6 +423,92 @@ async def getfoodeffect(
     name: str,
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Lookup effect for food.
+    \f
+    Parameters
+    ----------
+    name : str
+        Food you want to get effect info for
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "EffectTime": 0,
+              "Effects": [
+                {
+                  "Name": "string",
+                  "Value": 0,
+                  "Interaval": 0
+                }
+              ]
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_foodeffect(name: str, access_token: str):
+            url = "http://127.0.0.0/foodeffect/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(
+                get_foodeffect(name="salad", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+            )
+
+    """
     if name:
         item = await Q.get_foodeffects(db, name)
     else:
@@ -170,9 +542,102 @@ async def getfoodeffect(
 )
 async def gettech(
     name: str | None = None,
-    level: int | None = Query(None, ge=1, le=60),
+    level: int | None = Query(None, ge=1, le=80),
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Lookup level and cost to unlock tech tree item.
+    \f
+    Parameters
+    ----------
+    name : str, optional
+        Get tech tree info for item
+    level : str, optional
+        Get tech tree items for given level
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+
+
+    .. note:: Need to supply one of the ``name`` or ``level`` parameters.
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "UnlockBuildObjects": [
+                "string"
+              ],
+              "UnlockItemRecipes": [
+                "string"
+              ],
+              "Description": "string",
+              "Image": "string",
+              "RequireTechnology": "string",
+              "IsBossTechnology": true,
+              "LevelCap": 0,
+              "Cost": 0
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_tech(name: str, access_token: str):
+            url = "http://127.0.0.0/tech/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(get_tech(name="Nail", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+
+    """
     if name:
         item = await Q.get_tech(db, name)
     elif level:
@@ -211,6 +676,103 @@ async def getbuild(
     category: str | None = None,
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Lookup material needed to build item.
+    \f
+    Parameters
+    ----------
+    name : str, optional
+        Build item
+    category : str, optional
+        Build category
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+
+
+    .. note:: Need to supply one of the ``name`` or ``category`` parameters.
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "MapObjectId": "string",
+              "Name": "string",
+              "Description": "string",
+              "Image": "string",
+              "Material": [
+                {
+                  "Name": "string",
+                  "Amount": 0
+                }
+              ],
+              "Category": "string",
+              "RequiredBuildWorkAmount": 0,
+              "InstallNeighborThreshold": 0,
+              "IsInstallOnlyOnBase": true,
+              "IsInstallOnlyHubAround": true
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def get_build(name: str, access_token: str):
+            url = "http://127.0.0.0/build/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(
+                get_build(name="Campfire", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+            )
+
+    """
     if name:
         item = await Q.get_build(db, name)
     elif category:
@@ -248,6 +810,93 @@ async def getelixir(
     name: str | None = None,
     db: AsyncSession = Depends(get_session),
 ):
+    """
+    Lookup elixir status.
+    \f
+    Parameters
+    ----------
+    name : str
+        Elixir to get stats for
+    page : int, default: 1
+        Page number to return
+    size: int, default: 50
+        Items to return on the page
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "ID": 0,
+              "Name": "string",
+              "Description": "string",
+              "DevName": "string",
+              "MaxHP": 0,
+              "MaxSP": 0,
+              "Power": 0,
+              "WorkSpeed": 0,
+              "maxInventoryWeight": 0
+            }
+          ],
+          "total": 0,
+          "page": 0,
+          "size": 0,
+          "pages": 0
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+        
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+        
+        
+        async def get_elixir(name: str, access_token: str):
+            url = "http://127.0.0.0/elixir/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            params = {"name": name, "page": 1, "size": 50}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers, params=params) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+        
+        
+        if __name__ == "__main__":
+            asyncio.run(
+                get_elixir(
+                    name="Speed Elixir", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"
+                )
+            )
+
+    """
     if name:
         item = await Q.get_elixir(db, name)
     else:

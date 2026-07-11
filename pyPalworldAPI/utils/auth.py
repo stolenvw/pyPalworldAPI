@@ -33,21 +33,67 @@ async def get_auth_session():
         yield auth_session
 
 
-async def verify_password(plain_password, hashed_password):
+async def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Check if users supplied password matches with there stored hashed password.
+
+    Parameters
+    ----------
+    plain_password : str
+        Users plain password.
+    hashed_password : str
+        Users hashed password.
+
+    Returns
+    -------
+    bool
+        True if passwords match else false
+
+    """
     password_byte_enc = plain_password.encode("utf-8")
     return bcrypt.checkpw(
         password=password_byte_enc, hashed_password=str.encode(hashed_password)
     )
 
 
-async def get_password_hash(password):
+async def get_password_hash(password: str) -> bytes:
+    """
+    Convert users supplied password to a hashed password.
+
+    Parameters
+    ----------
+    password : str
+        Users plain password.
+
+    Returns
+    -------
+    hashed_password : bytes
+        Hashed version of users password.
+
+    """
     pwd_bytes = password.encode("utf-8")
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
     return hashed_password
 
 
-async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """
+    Create a users access token.
+
+    Parameters
+    ----------
+    data : dict
+        Data to make access token with {"sub": "username", "scopes": "list of scopes"}
+    expires_delta : timedelta, optional
+        How long access token should be valid for.
+
+    Returns
+    -------
+    access token : str
+        Users access token.
+
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -58,7 +104,23 @@ async def create_access_token(data: dict, expires_delta: Optional[timedelta] = N
     return encoded_jwt
 
 
-async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None):
+async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """
+    Create a users refresh token.
+
+    Parameters
+    ----------
+    data : dict
+        Data to make refresh token with {"sub": "username", "scopes": "list of scopes"}
+    expires_delta : timedelta, optional
+        How long refresh token should be valid for.
+
+    Returns
+    -------
+    refresh token : str
+        Users refresh token.
+
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -69,7 +131,26 @@ async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = 
     return encoded_jwt
 
 
-async def verify_refresh_token(db, token: str):
+async def verify_refresh_token(db: AsyncSession, token: str) -> TokenData:
+    """
+    Verify a users refresh token.
+
+    Parameters
+    ----------
+    token : str
+        Users refresh token.
+
+    Returns
+    -------
+    tokenData : object
+        Decrypted refresh token data.
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+
+    """
     credential_exception = APIException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={
@@ -99,7 +180,28 @@ async def get_current_user(
     security_scopes: SecurityScopes,
     token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_auth_session),
-):
+) -> User:
+    """
+    Get current logged in user from access token.
+
+    Parameters
+    ----------
+    security_scopes : SecurityScopes
+        Object of needed router scopes.
+    token : str
+        Users access token.
+
+    Returns
+    -------
+    User : object
+        User object of logged in user.
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+
+    """
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -143,7 +245,26 @@ async def get_current_user(
 
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
-):
+) -> User:
+    """
+    Get current logged in user from access token.
+
+    Parameters
+    ----------
+    current_user : User
+        Logged in user object.
+
+    Returns
+    -------
+    User : object
+        User object of logged in user.
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+
+    """
     if current_user.disabled:
         raise APIException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -156,7 +277,20 @@ async def get_current_active_user(
     return current_user
 
 
-async def remove_old_tokens(db: AsyncSession):
+async def remove_old_tokens(db: AsyncSession) -> None:
+    """
+    Checks for and removes access tokens that have expired from the Tokens table.
+
+    Parameters
+    ----------
+    db : AsyncSession
+        SQL database connection session.
+
+    Returns
+    -------
+    None
+
+    """
     token_list = await AuthQuery.list_tokens(db=db)
     delete_tokens_list = []
     for token in token_list:
@@ -169,7 +303,26 @@ async def remove_old_tokens(db: AsyncSession):
     await db.close()
 
 
-async def verify_token(request: Request):
+async def verify_token(request: Request) -> TokenData:
+    """
+    Verify access token is still valid.
+
+    Parameters
+    ----------
+    request : Request
+        Request object from ``/oauth2/validate`` route.
+
+    Returns
+    -------
+    TokenData : object
+        Access token object.
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+
+    """
     auth_type = ""
     token = ""
     if "authorization" in request.headers:

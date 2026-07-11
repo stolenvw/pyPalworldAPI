@@ -1,9 +1,14 @@
+"""
+SQL table and data verification models for api data.
+
+"""
+
 from enum import Enum
 from typing import Optional
 
 from pydantic import SerializeAsAny
 from sqlalchemy import Column, String
-from sqlmodel import JSON, Field, SQLModel
+from sqlmodel import JSON, Field, SQLModel, Text
 
 
 class HealthCheck(SQLModel):
@@ -36,9 +41,10 @@ class Items(SQLModel, table=True):
     ShieldValue: Optional[int]
     MagicAttackValue: Optional[int]
     MagicDefenseValue: Optional[int]
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     ItemActorClass: Optional[str] = Field(sa_type=String(50))
     PassiveSkills: SerializeAsAny[ItemPassive] = Field(sa_column=Column(JSON))
+    bLegalInGame: bool
 
 
 class Crafting(SQLModel, table=True):
@@ -48,6 +54,7 @@ class Crafting(SQLModel, table=True):
     Output: int
     WorkAmount: int
     Material: dict[str, int] = Field(sa_column=Column(JSON))
+    CraftExpRate: float
 
 
 class Gear(SQLModel, table=True):
@@ -74,14 +81,14 @@ class PalSuitability(SQLModel):
 
 class PalAura(SQLModel):
     Name: str
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Tech: Optional[str]
 
 
 class PalSkills(SQLModel):
     Name: str
     Type: str
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Level: int
     Cooldown: int
     Power: int
@@ -125,6 +132,10 @@ class PalDrops(SQLModel):
     Min: int
     Max: int
 
+class DefeatRewardItem(SQLModel):
+    Name: Optional[str]
+    Image: Optional[str]
+    Description: Optional[str] = Field(sa_column=Column(Text))
 
 class Pals(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
@@ -133,12 +144,12 @@ class Pals(SQLModel, table=True):
     Image: str = Field(sa_type=String(100))
     Name: str = Field(index=True, sa_type=String(50))
     Wiki: str = Field(sa_type=String(100))
-    WikiImage: str = Field(sa_type=String(100))
+    WikiImage: str = Field(sa_type=String(200))
     Types: SerializeAsAny[list[PalTypes]] = Field(sa_column=Column(JSON))
     Suitability: SerializeAsAny[list[PalSuitability]] = Field(sa_column=Column(JSON))
     Drops: SerializeAsAny[list[PalDrops]] = Field(sa_column=Column(JSON))
     Aura: SerializeAsAny[PalAura] = Field(sa_column=Column(JSON))
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Skills: SerializeAsAny[list[PalSkills]] = Field(sa_column=Column(JSON))
     Stats: SerializeAsAny[PalStats] = Field(sa_column=Column(JSON))
     Asset: str = Field(sa_type=String(50), description="BPClass")
@@ -153,6 +164,9 @@ class Pals(SQLModel, table=True):
     Predator: bool
     NooseTrap: bool
     IsRaidBoss: bool
+    IgnoreStun: bool
+    IgnoreCombi: bool
+    FirstDefeatRewardItemID: SerializeAsAny[DefeatRewardItem] = Field(sa_column=Column(JSON))
 
 
 class BossPals(SQLModel, table=True):
@@ -162,12 +176,12 @@ class BossPals(SQLModel, table=True):
     Image: str = Field(sa_type=String(100))
     Name: str = Field(index=True, sa_type=String(50))
     Wiki: str = Field(sa_type=String(100))
-    WikiImage: str = Field(sa_type=String(100))
+    WikiImage: str = Field(sa_type=String(200))
     Types: SerializeAsAny[list[PalTypes]] = Field(sa_column=Column(JSON))
     Suitability: SerializeAsAny[list[PalSuitability]] = Field(sa_column=Column(JSON))
     Drops: SerializeAsAny[list[PalDrops]] = Field(sa_column=Column(JSON))
     Aura: SerializeAsAny[PalAura] = Field(sa_column=Column(JSON))
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Skills: SerializeAsAny[list[PalSkills]] = Field(sa_column=Column(JSON))
     Stats: SerializeAsAny[PalStats] = Field(sa_column=Column(JSON))
     Asset: str = Field(sa_type=String(50), description="BPClass")
@@ -182,6 +196,9 @@ class BossPals(SQLModel, table=True):
     Predator: bool
     NooseTrap: bool
     IsRaidBoss: bool
+    IgnoreStun: bool
+    IgnoreCombi: bool
+    FirstDefeatRewardItemID: SerializeAsAny[DefeatRewardItem] = Field(sa_column=Column(JSON))
 
 
 class Breeding(SQLModel, table=True):
@@ -199,7 +216,7 @@ class PassiveSkills(SQLModel, table=True):
     DevName: str = Field(sa_type=String(50))
     Ability: str = Field(sa_type=String(50))
     Tier: int
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Image: str = Field(sa_type=String(100))
 
 
@@ -223,7 +240,7 @@ class TechTree(SQLModel, table=True):
     Name: str = Field(index=True, sa_type=String(50))
     UnlockBuildObjects: Optional[list] = Field(sa_column=Column(JSON))
     UnlockItemRecipes: Optional[list] = Field(sa_column=Column(JSON))
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Image: str = Field(sa_type=String(100))
     RequireTechnology: Optional[str] = Field(sa_type=String(50))
     IsBossTechnology: bool
@@ -239,7 +256,7 @@ class SickPal(SQLModel, table=True):
     WorkSpeed: int
     MoveSpeed: int
     SatietyDecrease: int
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     RecoveryProbabilityPercentageInPalBox: int
 
 
@@ -253,7 +270,7 @@ class BuildObjects(SQLModel, table=True):
     """Auto incremented database primary key."""
     MapObjectId: str = Field(sa_type=String(50))
     Name: str = Field(index=True, sa_type=String(50))
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     Image: Optional[str] = Field(sa_type=String(100))
     Material: SerializeAsAny[list[BuildMaterial]] = Field(sa_column=Column(JSON))
     Category: str = Field(index=True, sa_type=String(25), description="TypeA")
@@ -261,6 +278,7 @@ class BuildObjects(SQLModel, table=True):
     InstallNeighborThreshold: float
     IsInstallOnlyOnBase: bool
     IsInstallOnlyHubAround: bool
+    BuildExpRate: float
 
 
 class APIModels(str, Enum):
@@ -291,17 +309,19 @@ class NPC(SQLModel, table=True):
     Rarity: int
     Price: int
     Size: str = Field(sa_type=String(2), description="EPalSizeType")
-    AIResponse: str = Field(sa_type=String(20))
+    AIResponse: str = Field(sa_type=String(200))
     NooseTrap: bool
     Suitability: SerializeAsAny[list[PalSuitability]] = Field(sa_column=Column(JSON))
     IsRaidBoss: bool
+    IgnoreStun: bool
+    IgnoreCombi: bool
 
 
 class Elixir(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     Name: str = Field(index=True, sa_type=String(50))
-    Description: str
+    Description: str = Field(sa_column=Column(Text))
     DevName: str = Field(sa_type=String(50))
     MaxHP: int
     MaxSP: int

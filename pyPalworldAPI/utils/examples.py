@@ -1,3 +1,8 @@
+"""
+pyPalworldAPI usage examples for `/redoc`.
+
+"""
+
 class pyPalworldAPIExamples:
     pals = [
         {

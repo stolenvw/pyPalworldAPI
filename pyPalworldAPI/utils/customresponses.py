@@ -1,3 +1,8 @@
+"""
+pyPalworldAPI HTTP 40* error responses examples.
+
+"""
+
 class pyPalworldAPIErrorResponses:
     response_401_409 = {
         409: {

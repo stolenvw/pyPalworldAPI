@@ -1,3 +1,8 @@
+"""
+Custom FastAPI Pagination Page for pyPalworldAPI to change size limit to `200`,
+
+"""
+
 from __future__ import annotations
 
 __all__ = [

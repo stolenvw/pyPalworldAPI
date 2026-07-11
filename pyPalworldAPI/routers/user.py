@@ -40,14 +40,83 @@ async def change_own_password(
     db: AsyncSession = Depends(get_auth_session),
 ):
     """
-    ```Curl
-    curl -X 'PUT' \ 
-        'http://127.0.0.0/user/changepassword/' \ 
-        -H 'Accept: application/json' \ 
-        -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-        -H 'Content-Type: application/x-www-form-urlencoded' \ 
-        -d 'current_password=SomePass&new_password=SomeNewPass'
-    ```
+    Change your password.
+
+    .. important:: Changing your password will make all your access/refresh invalid.
+    \f
+    Parameters
+    ----------
+    current_password : str
+        Your current password
+    new_password : str
+        Your new password
+    
+    Returns
+    -------
+    json
+        ::
+
+        {
+            "message": "Password Changed Successfully.",
+            "status": 202
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'PUT' \ 
+            'http://127.0.0.0/user/changepassword/' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
+            -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            -d 'current_password=SomePass&new_password=SomeNewPass'
+
+    Python::
+
+        import asyncio
+        import json
+
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+
+
+        async def put_user_change_password(
+            current_password: str, new_password: str, access_token: str
+        ):
+            url = f"http://127.0.0.0/user/changepassword/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+            body = {"current_password": current_password, "new_password": new_password}
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.put(url, headers=headers, data=body) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+
+
+        if __name__ == "__main__":
+            asyncio.run(
+                put_user_change_password(
+                    current_password="SomePass",
+                    new_password="SomeNewPass",
+                    access_token="kajfe0983qjaf309ajj3w8j3aij3a3",
+                )
+            )
+
     """
     if not await verify_password(current_password, current_user.password):
         raise APIException(
@@ -79,11 +148,74 @@ async def get_user(
     ],
 ):
     """
-    ```
-    curl -X 'GET'
-        'http://**APIURL**/user/me/'
-        -H 'accept: application/json'
-        -H 'Authorization: Bearer **ACCESS TOKEN**'
-    ```
+    List all users.
+    \f
+    Returns
+    -------
+    json
+        ::
+
+        {
+          "items": [
+            {
+              "username": "Bob123",
+              "disabled": false,
+              "created_at": "2024-08-02T20:48:43",
+              "scopes": [
+                "APIUser:Read",
+                "APIUser:ChangePassword"
+              ]
+            }
+          ],
+          "total": 1,
+          "page": 1,
+          "size": 50,
+          "pages": 1
+        }
+
+    Raises
+    ------
+    APIException
+        HTTP responses with errors.
+    RequestValidationError
+        When a request contains invalid data.
+        
+    Examples
+    -------
+    Curl::
+
+        curl -X 'GET' \ 
+            'http://127.0.0.0/user/me/' \ 
+            -H 'Accept: application/json' \ 
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
+
+    Python::
+
+        import asyncio
+        import json
+        
+        import aiohttp
+        from aiohttp.client_exceptions import ClientConnectorError
+        
+        
+        async def get_user_me(access_token: str):
+            url = f"http://127.0.0.0/user/me/"
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {access_token}",
+            }
+            try:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, headers=headers) as result:
+                        data = await result.json()
+            except ClientConnectorError as e:
+                print(f"ClientConnectorError: {e}")
+            else:
+                print(json.dumps(data, indent=2))
+        
+        
+        if __name__ == "__main__":
+            asyncio.run(get_user_me(access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+
     """
     return current_user

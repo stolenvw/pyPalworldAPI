@@ -7,7 +7,7 @@ mysqlclient==2.2.4
 pydantic==2.8.2
 pyjwt==2.8.0
 python-dotenv==1.0.1
-python-multipart==0.0.9
+python-multipart==0.0.20
 SQLAlchemy==2.0.31
 sqlmodel==0.0.21
 uvicorn==0.30.4

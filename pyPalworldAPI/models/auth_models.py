@@ -1,3 +1,8 @@
+"""
+SQL table and data verification models for oauth system.
+
+"""
+
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -65,7 +70,7 @@ class UserInput(SQLModel):
     password: str = Field(max_length=256, min_length=6)
     """min_length=``6``, max_length=``256``"""
     scopes: list[str] = ["APIUser:Read"]
-    """Users scopes default: ``['APIUser:Read']``"""
+    """Users scopes default ``['APIUser:Read']``"""
     disabled: bool = False
 
 

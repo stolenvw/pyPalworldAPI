@@ -1,3 +1,9 @@
+"""
+Custom FastAPI Pagination Page for auto complete to limit size to `25`,
+Maximin allowed list for a Discord autocomplete.
+
+"""
+
 from __future__ import annotations
 
 __all__ = [
