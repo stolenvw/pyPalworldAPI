@@ -107,6 +107,7 @@ async def getpal(
               "Aura": {
                 "Name": "string",
                 "Description": "string",
+                "Image": "string",
                 "Tech": "string"
               },
               "Description": "string",
@@ -314,6 +315,7 @@ async def getbosspal(
               "Aura": {
                 "Name": "string",
                 "Description": "string",
+                "Image": "string",
                 "Tech": "string"
               },
               "Description": "string",

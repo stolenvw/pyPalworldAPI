@@ -82,6 +82,7 @@ class PalSuitability(SQLModel):
 class PalAura(SQLModel):
     Name: str
     Description: str = Field(sa_column=Column(Text))
+    Image: Optional[str]
     Tech: Optional[str]
 
 
@@ -136,6 +137,7 @@ class DefeatRewardItem(SQLModel):
     Name: Optional[str]
     Image: Optional[str]
     Description: Optional[str] = Field(sa_column=Column(Text))
+
 
 class Pals(SQLModel, table=True):
     ID: Optional[int] = Field(default=None, primary_key=True)

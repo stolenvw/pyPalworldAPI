@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.9] - 2026-07-12
+
+### Added
+
+- `Aura.Image` in pal and boss pal API responses and response examples.
+- New pal records in the bundled SQL dump, including Eidrolon, Eidrolon Ignis, Dandilord, Astralym, Renjishi, and Aegidron.
+- New bundled partner-skill and pal icon assets required by the refreshed game data.
+
+### Changed
+
+- Refreshed the bundled Palworld SQL snapshot with updated pal, boss, and tech-tree data.
+- Replaced several missing or outdated bundled pal and boss images in the shipped data payload.
+
+### Fixed
+
+- `/pals/` and `/bosspals/` OpenAPI examples now show the `Aura.Image` field.
+- Cleaned the shipped `Fire Arrow` tech-tree description text in the SQL dump.
+
 ## [0.0.8] - 2026-07-10
 
 ### Added

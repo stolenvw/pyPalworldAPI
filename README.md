@@ -12,9 +12,9 @@ More than just a paldex, includes a lot of game data.
 
 ## Release Highlights
 
-- Game data updated through `v1.0.0.100427`.
-- Added new schema fields for items, crafting, build objects, NPCs, pals, and boss pals.
-- Expanded long-text fields in the SQL models to better preserve in-game descriptions.
+- Refreshed the bundled Palworld data dump and bundled image assets.
+- Added `Aura.Image` to pal and boss pal response payloads.
+- Filled in new partner-skill art and replaced several missing boss and pal icons in the shipped data.
 
 ## Features
 
@@ -35,8 +35,8 @@ More than just a paldex, includes a lot of game data.
 - Passive Skills
 - NPC Lookups
 - Elixir Lookups
-- Updated game data from `v1.0.0.100427`
-- Expanded response models for newer Palworld data fields
+- Refreshed shipped game data and bundled icons from the latest SQL dump
+- Aura metadata now includes partner-skill image paths for pals and boss pals
 
 ## API Reference
 
