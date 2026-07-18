@@ -268,6 +268,15 @@ async def _paginate_breeding(db: AsyncSession, statement, lang: str):
     return await paginate(db, statement, transformer=transform)
 
 
+async def _paginate_scalar_autocomplete(db: AsyncSession, statement):
+    """Flatten single-column row results before AutoCompletePage[str] validation."""
+
+    async def transform(rows):
+        return [row[0] for row in rows]
+
+    return await paginate(db, statement, transformer=transform)
+
+
 async def _get_pal_id(db: AsyncSession, name: str, lang: str) -> int | None:
     if lang == "en":
         statement = select(Pals.ID).where(Pals.Name == name)
@@ -436,6 +445,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
         "buildname": (BuildObjectsI18n, BuildObjectsI18n.Name),
         "buildcategory": (BuildObjectsI18n, BuildObjectsI18n.Category),
         "elixir": (ElixirI18n, ElixirI18n.Name),
+        "npc": (NPCI18n, NPCI18n.Name),
     }
     if category == "skill":
         source_model = PalsI18n if lang != "en" else Pals
@@ -454,11 +464,11 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
         )
         if lang != "en":
             statement = statement.where(source_model.LanguageCode == lang)
-        return await paginate(db, statement)
+        return await _paginate_scalar_autocomplete(db, statement)
 
     if lang != "en" and category in localized_map:
         model, column = localized_map[category]
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(column)
             .where(model.LanguageCode == lang, column.like(f"{name}%"))
@@ -467,7 +477,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
         )
 
     if category == "palname":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Pals.Name)
             .where(Pals.Name.like(f"{name}%"))
@@ -475,7 +485,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "paldexkey":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Pals.DexKey)
             .where(Pals.DexKey.like(f"{name}%"))
@@ -483,7 +493,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "bossname":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(BossPals.Name)
             .where(BossPals.Name.like(f"{name}%"))
@@ -491,7 +501,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "sickness":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(SickPal.Name)
             .where(SickPal.Name.like(f"{name}%"))
@@ -499,7 +509,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "passiveskill":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(PassiveSkills.Name)
             .where(PassiveSkills.Name.like(f"{name}%"))
@@ -507,7 +517,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "itemname":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Items.Name)
             .where(Items.Name.like(f"{name}%"))
@@ -515,7 +525,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "itemtype":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Items.Type)
             .where(Items.Type.like(f"{name}%"))
@@ -523,7 +533,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "crafting":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Crafting.Name)
             .where(Crafting.Name.like(f"{name}%"))
@@ -531,7 +541,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "gear":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Gear.Name)
             .where(Gear.Name.like(f"{name}%"))
@@ -539,7 +549,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "food":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(FoodEffect.Name)
             .where(FoodEffect.Name.like(f"{name}%"))
@@ -547,7 +557,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "tech":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(TechTree.Name)
             .where(TechTree.Name.like(f"{name}%"))
@@ -555,7 +565,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "buildname":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(BuildObjects.Name)
             .where(BuildObjects.Name.like(f"{name}%"))
@@ -563,7 +573,7 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "buildcategory":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(BuildObjects.Category)
             .where(BuildObjects.Category.like(f"{name}%"))
@@ -571,11 +581,19 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
             .distinct(),
         )
     elif category == "elixir":
-        return await paginate(
+        return await _paginate_scalar_autocomplete(
             db,
             select(Elixir.Name)
             .where(Elixir.Name.like(f"{name}%"))
             .order_by(Elixir.Name.asc())
+            .distinct(),
+        )
+    elif category == "npc":
+        return await _paginate_scalar_autocomplete(
+            db,
+            select(NPC.Name)
+            .where(NPC.Name.like(f"{name}%"))
+            .order_by(NPC.Name.asc())
             .distinct(),
         )
     return

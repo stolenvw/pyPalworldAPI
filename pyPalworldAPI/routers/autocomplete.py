@@ -116,7 +116,7 @@ async def getautocomplete(
 
     """
     item = await Q.get_autocomplete(db, category.value, name, lang=lang)
-    if len(item.items) != 0:
+    if item is not None and len(item.items) != 0:
         return item
     else:
         raise APIException(

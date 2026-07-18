@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Palworld API",
     description=D.description,
-    version="0.0.6-alpha",
+    version="0.1.1",
     contact={
         "name": "pyPalworldAPI GitHub",
         "url": "https://github.com/stolenvw/pyPalworldAPI",
