@@ -2,7 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+Historical entries before changelog adoption were backfilled from git commit history
+and may be less complete than newer releases.
+
 ## [Unreleased]
+
+## [0.1.0] - 2026-07-18
+
+### Added
+
+- Localized `lang` support for item, crafting, gear, food effect, tech tree, build object, NPC, elixir, breeding, `/all/{category}`, and autocomplete lookups backed by shipped `*I18n` tables.
+- `skill` autocomplete sourced from Pal skill JSON, including localized skill-name autocomplete when a supported `lang` value is used.
+- New shipped localization tables, unique constraints, and language/name indexes in the SQL schema for translated data lookups.
+- New bundled route examples in `examples/README.md`, `examples/http.md`, and `examples/python.md`.
+
+### Changed
+
+- Refreshed the bundled Palworld SQL snapshot and image assets through game data `v1.0.1.100619`.
+- Switched breeding lookups to resolve from Pal IDs and localized names instead of relying on name-only breeding rows.
+- Added non-response source fields such as `DevName` and `SourceKey` to internal models to support more stable data joins while keeping them excluded from API output.
+- Updated Python and API dependency pins, including FastAPI, SQLModel, SQLAlchemy, Pydantic, and Uvicorn.
+- Reworked the README to keep GitHub-facing setup and route guidance concise while moving longer request examples into `examples/`.
+- Breaking behavior change: clients that previously loaded Simplified Chinese data without a language parameter must now send `lang=zh-Hans`. Requests without `lang` now use the default English dataset.
+
+### Fixed
+
+- `/all/breeding` pagination now resolves breeding output to the API response model before page validation.
+- Docs now call out shipped localization behavior, the `/passive/` localization limitation
 
 ## [0.0.9] - 2026-07-12
 
