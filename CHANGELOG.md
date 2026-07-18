@@ -10,6 +10,14 @@ and may be less complete than newer releases.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-18
+
+### Fixed
+
+- Restored `autocomplete/npc` results in the shipped query behavior.
+- Flattened autocomplete scalar query results before pagination validation so autocomplete responses serialize correctly as `AutoCompletePage[str]`.
+- Updated the API description metadata to report parsed game data `v1.0.1.100619`.
+
 ## [0.1.0] - 2026-07-18
 
 ### Added

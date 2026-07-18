@@ -90,6 +90,14 @@ curl -X 'GET' \
   -H 'Accept: application/json'
 ```
 
+### NPC autocomplete
+
+```bash
+curl -X 'GET' \
+  'http://127.0.0.1/autocomplete/npc/?name=Wan&page=1&size=25' \
+  -H 'Accept: application/json'
+```
+
 ### Health check
 
 ```bash

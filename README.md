@@ -134,9 +134,6 @@ Examples below use `http://127.0.0.1` as the local base URL.
 
 `palname`, `paldexkey`, `bossname`, `sickness`, `skill`, `passiveskill`, `itemname`, `itemtype`, `crafting`, `gear`, `food`, `tech`, `buildname`, `buildcategory`, `elixir`, `npc`
 
-> [!WARNING]
-> `autocomplete/npc` is still present in the route enum, but the current shipped query logic does not return NPC autocomplete results. Treat it as not implemented in this release.
-
 ### OAuth and User Routes
 
 These routes are available when `COMPOSE_PROFILES=USE_OAUTH2`.

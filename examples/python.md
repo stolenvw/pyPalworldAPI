@@ -125,6 +125,21 @@ async def get_skill_autocomplete_zh_hans():
 asyncio.run(get_skill_autocomplete_zh_hans())
 ```
 
+### NPC autocomplete
+
+```python
+async def get_npc_autocomplete():
+    await get_json(
+        "GET",
+        "/autocomplete/npc/",
+        headers={"Accept": "application/json"},
+        params={"name": "Wan", "page": 1, "size": 25},
+    )
+
+
+asyncio.run(get_npc_autocomplete())
+```
+
 
 ## OAuth Routes
 
