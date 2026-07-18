@@ -10,6 +10,12 @@ and may be less complete than newer releases.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-18
+
+### Fixed
+
+- Corrected the localized skill autocomplete query to build the MySQL `JSON_TABLE` expression safely, fixing requests that could fail when querying `/autocomplete/skill/`.
+
 ## [0.1.1] - 2026-07-18
 
 ### Fixed

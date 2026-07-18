@@ -26,7 +26,7 @@ from models.models import (
     TechTree,
     TechTreeI18n,
 )
-from sqlalchemy import and_, bindparam, column as sql_column, func, true
+from sqlalchemy import and_, bindparam, column as sql_column, func, literal_column, true
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -451,8 +451,8 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
         source_model = PalsI18n if lang != "en" else Pals
         skill_table = func.JSON_TABLE(
             source_model.Skills,
-            "$[*]",
-            "COLUMNS(skill_name VARCHAR(255) PATH '$.Name')",
+            literal_column("'$[*]'"),
+            literal_column("COLUMNS(skill_name VARCHAR(255) PATH '$.Name')"),
         ).table_valued(sql_column("skill_name"))
         statement = (
             select(skill_table.c.skill_name)
