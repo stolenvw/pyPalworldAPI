@@ -33,6 +33,7 @@ async def getitems(
     request: Request,
     name: str | None = None,
     variety: str | None = Query(None, alias="type"),
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -140,7 +141,7 @@ async def getitems(
 
     """
     params = request.query_params
-    item = await Q.get_item(db, params)
+    item = await Q.get_item(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
@@ -163,6 +164,7 @@ async def getitems(
 )
 async def getcrafting(
     name: str = Query(None, description="Item you want to make."),
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -251,7 +253,7 @@ async def getcrafting(
 
     """
     if name:
-        item = await Q.get_crafting(db, name)
+        item = await Q.get_crafting(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -283,6 +285,7 @@ async def getcrafting(
 )
 async def getgear(
     name: str,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -389,7 +392,7 @@ async def getgear(
 
     """
     if name:
-        item = await Q.get_gear(db, name)
+        item = await Q.get_gear(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -421,6 +424,7 @@ async def getgear(
 )
 async def getfoodeffect(
     name: str,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -510,7 +514,7 @@ async def getfoodeffect(
 
     """
     if name:
-        item = await Q.get_foodeffects(db, name)
+        item = await Q.get_foodeffects(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -543,6 +547,7 @@ async def getfoodeffect(
 async def gettech(
     name: str | None = None,
     level: int | None = Query(None, ge=1, le=80),
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -639,9 +644,9 @@ async def gettech(
 
     """
     if name:
-        item = await Q.get_tech(db, name)
+        item = await Q.get_tech(db, name, lang=lang)
     elif level:
-        item = await Q.get_tech_by_level(db, level)
+        item = await Q.get_tech_by_level(db, level, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -674,6 +679,7 @@ async def gettech(
 async def getbuild(
     name: str | None = None,
     category: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -774,9 +780,9 @@ async def getbuild(
 
     """
     if name:
-        item = await Q.get_build(db, name)
+        item = await Q.get_build(db, name, lang=lang)
     elif category:
-        item = await Q.get_build_by_category(db, category)
+        item = await Q.get_build_by_category(db, category, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -808,6 +814,7 @@ async def getbuild(
 )
 async def getelixir(
     name: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -898,7 +905,7 @@ async def getelixir(
 
     """
     if name:
-        item = await Q.get_elixir(db, name)
+        item = await Q.get_elixir(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -2,7 +2,7 @@ import os
 from typing import Union
 
 import models.models as M
-from fastapi import APIRouter, Depends, Security, status
+from fastapi import APIRouter, Depends, Query, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils.auth import get_current_active_user
@@ -48,6 +48,7 @@ router = APIRouter(
 )
 async def getall(
     category: M.APIModels,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -114,7 +115,7 @@ async def getall(
             )
 
     """
-    item = await Q.get_all(db, category.value)
+    item = await Q.get_all(db, category.value, lang=lang)
     if len(item.items) != 0:
         return item
     else:
@@ -137,6 +138,7 @@ async def getall(
 )
 async def getnpc(
     name: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -258,7 +260,7 @@ async def getnpc(
 
     """
     if name:
-        item = await Q.get_npc(db, name)
+        item = await Q.get_npc(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,

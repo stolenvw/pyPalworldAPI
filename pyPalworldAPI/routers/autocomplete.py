@@ -1,7 +1,7 @@
 import os
 
 import models.models as M
-from fastapi import APIRouter, Depends, Security, status
+from fastapi import APIRouter, Depends, Query, Security, status
 from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
 from utils.auth import get_current_active_user
@@ -33,6 +33,7 @@ router = APIRouter(
 async def getautocomplete(
     category: M.AutoCompleteModels,
     name: str | None = "%",
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -114,7 +115,7 @@ async def getautocomplete(
             )
 
     """
-    item = await Q.get_autocomplete(db, category.value, name)
+    item = await Q.get_autocomplete(db, category.value, name, lang=lang)
     if len(item.items) != 0:
         return item
     else:

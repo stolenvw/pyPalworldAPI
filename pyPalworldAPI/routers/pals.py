@@ -37,6 +37,7 @@ async def getpal(
     suitability: str | None = None,
     drop: str | None = None,
     skill: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     nocturnal: bool | None = Query(
         None, description="False for day Pals, True for night Pals."
     ),
@@ -219,7 +220,7 @@ async def getpal(
 
     """
     params = request.query_params
-    item = await Q.get_pals(db, params)
+    item = await Q.get_pals(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
@@ -247,6 +248,7 @@ async def getbosspal(
     suitability: str | None = None,
     drop: str | None = None,
     skill: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     nocturnal: bool | None = Query(
         None, description="False for day Pals, True for night Pals."
     ),
@@ -423,7 +425,7 @@ async def getbosspal(
 
     """
     params = request.query_params
-    item = await Q.get_bosspal(db, params)
+    item = await Q.get_bosspal(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
@@ -446,6 +448,7 @@ async def getbosspal(
 )
 async def getbreeding(
     name: str,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -529,7 +532,7 @@ async def getbreeding(
 
     """
     if name:
-        item = await Q.get_breeding(db, name)
+        item = await Q.get_breeding(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -561,6 +564,7 @@ async def getbreeding(
 )
 async def getsickness(
     name: str,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -648,7 +652,7 @@ async def getsickness(
 
     """
     if name:
-        item = await Q.get_sickness(db, name)
+        item = await Q.get_sickness(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -680,6 +684,7 @@ async def getsickness(
 )
 async def getpassive(
     name: str | None = None,
+    lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -766,7 +771,7 @@ async def getpassive(
 
     """
     if name:
-        item = await Q.get_passive(db, name)
+        item = await Q.get_passive(db, name, lang=lang)
     else:
         raise APIException(
             status_code=status.HTTP_400_BAD_REQUEST,
