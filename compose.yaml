@@ -1,7 +1,7 @@
 services:
   palapidb:
     container_name: palapidb
-    image: mysql:8.0.36
+    image: mysql:latest
     restart: unless-stopped
     environment:
       - MYSQL_USER=${MYSQL_USER}
@@ -23,7 +23,7 @@ services:
 
   palapiuserdb:
     container_name: palapiuserdb
-    image: mysql:8.0.36
+    image: mysql:latest
     restart: unless-stopped
     profiles: [USE_OAUTH2]
     environment:
@@ -46,10 +46,10 @@ services:
   pypalworldapi:
     depends_on:
       palapidb:
-        condition: "service_started"
+        condition: "service_healthy"
         required: true
       palapiuserdb:
-        condition: "service_started"
+        condition: "service_healthy"
         required: false
     container_name: pypalworldapi
     environment:
@@ -78,7 +78,7 @@ services:
     #ports:
     #  - ${HTTP_PORT}:${HTTP_PORT}
     healthcheck:
-      test: ["CMD-SHELL", "curl -i http://localhost:${HTTP_PORT}/health 2>/dev/null || exit 1"]
+      test: ["CMD-SHELL", "python -c \"import os, urllib.request; urllib.request.urlopen('http://localhost:{}/health'.format(os.environ['HTTP_PORT']))\" || exit 1"]
       interval: 1m30s
       timeout: 5s
       retries: 3
