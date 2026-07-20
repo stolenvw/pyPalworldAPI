@@ -1,5 +1,7 @@
+"""Store OpenAPI description metadata."""
+
 description = """
-For all your Palworld data.
+A Palworld data API for apps and bots, with pals, items, breeding, and optional OAuth2.
 
 ### Note: _Some Null items will not be in json response_
 

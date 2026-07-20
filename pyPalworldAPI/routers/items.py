@@ -1,19 +1,22 @@
+r"""Provide items helpers."""
+
 import os
 
-import models.models as M
 from fastapi import APIRouter, Depends, Query, Request, Security, status
-from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils.auth import get_current_active_user
-from utils.customexception import APIException
-from utils.custompage import Page
-from utils.customresponses import pyPalworldAPIErrorResponses
-from utils.database import get_session
-from utils.examples import pyPalworldAPIExamples
+
+from pyPalworldAPI.models import models
+from pyPalworldAPI.query import palapi as palapi_query
+from pyPalworldAPI.utils.auth import get_current_active_user
+from pyPalworldAPI.utils.customexception import APIError
+from pyPalworldAPI.utils.custompage import Page
+from pyPalworldAPI.utils.customresponses import PalworldAPIErrorResponses
+from pyPalworldAPI.utils.database import get_session
+from pyPalworldAPI.utils.examples import PalworldAPIExamples
 
 router = APIRouter(
     tags=["Items"],
-    responses=pyPalworldAPIErrorResponses.responses_400_401_404,
+    responses=PalworldAPIErrorResponses.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -24,10 +27,10 @@ router = APIRouter(
 
 @router.get(
     "/items/",
-    response_model=Page[M.Items],
+    response_model=Page[models.Items],
     response_model_exclude_none=True,
     summary="Lookup Items Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.items},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.items},
 )
 async def getitems(
     request: Request,
@@ -36,9 +39,10 @@ async def getitems(
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look up items.
-    \f
+    r"""Look up items.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -52,7 +56,7 @@ async def getitems(
 
 
     .. note:: Need to supply one of the ``name`` or ``type`` parameters.
-    
+
     Returns
     -------
     json
@@ -96,18 +100,18 @@ async def getitems(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/items/?name=arrow&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/items/?name=arrow&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -139,13 +143,14 @@ async def getitems(
         if __name__ == "__main__":
             asyncio.run(get_items(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
 
+
     """
     params = request.query_params
-    item = await Q.get_item(db, params, lang=lang)
+    item = await palapi_query.get_item(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -157,19 +162,20 @@ async def getitems(
 
 @router.get(
     "/crafting/",
-    response_model=Page[M.Crafting],
+    response_model=Page[models.Crafting],
     response_model_exclude_none=True,
     summary="Lookup Crafting Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.crafting},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.crafting},
 )
 async def getcrafting(
     name: str = Query(None, description="Item you want to make."),
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look up materials to craft item.
-    \f
+    r"""Look up materials to craft item.
+
+    \f.
+
     Parameters
     ----------
     name : str
@@ -178,7 +184,7 @@ async def getcrafting(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -206,18 +212,18 @@ async def getcrafting(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -251,11 +257,12 @@ async def getcrafting(
                 get_crafting(name="arrow", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_crafting(db, name, lang=lang)
+        item = await palapi_query.get_crafting(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -266,7 +273,7 @@ async def getcrafting(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -278,19 +285,20 @@ async def getcrafting(
 
 @router.get(
     "/gear/",
-    response_model=Page[M.Gear],
+    response_model=Page[models.Gear],
     response_model_exclude_none=True,
     summary="Lookup Gear Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.gear},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.gear},
 )
 async def getgear(
     name: str,
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look gear stats.
-    \f
+    r"""Look gear stats.
+
+    \f.
+
     Parameters
     ----------
     name : str
@@ -299,7 +307,7 @@ async def getgear(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -345,18 +353,18 @@ async def getgear(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -390,11 +398,12 @@ async def getgear(
                 get_gear(name="cloth outfit", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_gear(db, name, lang=lang)
+        item = await palapi_query.get_gear(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -405,7 +414,7 @@ async def getgear(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -417,19 +426,20 @@ async def getgear(
 
 @router.get(
     "/foodeffect/",
-    response_model=Page[M.FoodEffect],
+    response_model=Page[models.FoodEffect],
     response_model_exclude_none=True,
     summary="Lookup Food Effects Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.foodeffect},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.foodeffect},
 )
 async def getfoodeffect(
     name: str,
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup effect for food.
-    \f
+    r"""Lookup effect for food.
+
+    \f.
+
     Parameters
     ----------
     name : str
@@ -438,7 +448,7 @@ async def getfoodeffect(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -467,18 +477,18 @@ async def getfoodeffect(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -512,11 +522,12 @@ async def getfoodeffect(
                 get_foodeffect(name="salad", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_foodeffects(db, name, lang=lang)
+        item = await palapi_query.get_foodeffects(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -527,7 +538,7 @@ async def getfoodeffect(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -539,10 +550,10 @@ async def getfoodeffect(
 
 @router.get(
     "/tech/",
-    response_model=Page[M.TechTree],
+    response_model=Page[models.TechTree],
     response_model_exclude_none=True,
     summary="Lookup Tech Tree Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.tech},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.tech},
 )
 async def gettech(
     name: str | None = None,
@@ -550,9 +561,10 @@ async def gettech(
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup level and cost to unlock tech tree item.
-    \f
+    r"""Lookup level and cost to unlock tech tree item.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -566,7 +578,7 @@ async def gettech(
 
 
     .. note:: Need to supply one of the ``name`` or ``level`` parameters.
-    
+
     Returns
     -------
     json
@@ -599,18 +611,18 @@ async def gettech(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -642,13 +654,14 @@ async def gettech(
         if __name__ == "__main__":
             asyncio.run(get_tech(name="Nail", access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
 
+
     """
     if name:
-        item = await Q.get_tech(db, name, lang=lang)
+        item = await palapi_query.get_tech(db, name, lang=lang)
     elif level:
-        item = await Q.get_tech_by_level(db, level, lang=lang)
+        item = await palapi_query.get_tech_by_level(db, level, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -659,7 +672,7 @@ async def gettech(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -671,10 +684,10 @@ async def gettech(
 
 @router.get(
     "/build/",
-    response_model=Page[M.BuildObjects],
+    response_model=Page[models.BuildObjects],
     response_model_exclude_none=True,
     summary="Lookup Build Objects Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.build},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.build},
 )
 async def getbuild(
     name: str | None = None,
@@ -682,9 +695,10 @@ async def getbuild(
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup material needed to build item.
-    \f
+    r"""Lookup material needed to build item.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -698,7 +712,7 @@ async def getbuild(
 
 
     .. note:: Need to supply one of the ``name`` or ``category`` parameters.
-    
+
     Returns
     -------
     json
@@ -733,18 +747,18 @@ async def getbuild(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -778,13 +792,14 @@ async def getbuild(
                 get_build(name="Campfire", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_build(db, name, lang=lang)
+        item = await palapi_query.get_build(db, name, lang=lang)
     elif category:
-        item = await Q.get_build_by_category(db, category, lang=lang)
+        item = await palapi_query.get_build_by_category(db, category, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -795,7 +810,7 @@ async def getbuild(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -807,19 +822,20 @@ async def getbuild(
 
 @router.get(
     "/elixir/",
-    response_model=Page[M.Elixir],
+    response_model=Page[models.Elixir],
     response_model_exclude_none=True,
     summary="Lookup Elixir Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.elixir},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.elixir},
 )
 async def getelixir(
     name: str | None = None,
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup elixir status.
-    \f
+    r"""Lookup elixir status.
+
+    \f.
+
     Parameters
     ----------
     name : str
@@ -828,7 +844,7 @@ async def getelixir(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -856,29 +872,29 @@ async def getelixir(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
 
         import asyncio
         import json
-        
+
         import aiohttp
         from aiohttp.client_exceptions import ClientConnectorError
-        
-        
+
+
         async def get_elixir(name: str, access_token: str):
             url = "http://127.0.0.0/elixir/"
             headers = {
@@ -894,8 +910,8 @@ async def getelixir(
                 print(f"ClientConnectorError: {e}")
             else:
                 print(json.dumps(data, indent=2))
-        
-        
+
+
         if __name__ == "__main__":
             asyncio.run(
                 get_elixir(
@@ -903,11 +919,12 @@ async def getelixir(
                 )
             )
 
+
     """
     if name:
-        item = await Q.get_elixir(db, name, lang=lang)
+        item = await palapi_query.get_elixir(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -918,7 +935,7 @@ async def getelixir(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,

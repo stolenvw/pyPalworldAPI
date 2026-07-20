@@ -1,7 +1,15 @@
-from fastapi_pagination.ext.sqlmodel import paginate
-from models.models import (
+"""Provide palapi helpers."""
+
+from fastapi_pagination.ext.sqlmodel import apaginate
+from sqlalchemy import and_, bindparam, func, literal_column, or_, true
+from sqlalchemy import column as sql_column
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.sql.functions import FunctionElement
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from pyPalworldAPI.models.models import (
     NPC,
-    NPCI18n,
     BossPals,
     BossPalsI18n,
     Breeding,
@@ -18,6 +26,8 @@ from models.models import (
     GearI18n,
     Items,
     ItemsI18n,
+    MapLocations,
+    NPCI18n,
     Pals,
     PalsI18n,
     PassiveSkills,
@@ -26,24 +36,70 @@ from models.models import (
     TechTree,
     TechTreeI18n,
 )
-from sqlalchemy import and_, bindparam, column as sql_column, func, literal_column, true
-from sqlmodel import select
-from sqlmodel.ext.asyncio.session import AsyncSession
-
 
 LOCALIZATION_CONFIG = {
-    "pals": (PalsI18n, "PalsID", ("Name", "Types", "Suitability", "Drops", "Aura", "Description", "Skills", "FirstDefeatRewardItemID")),
-    "bosspals": (BossPalsI18n, "BossPalsID", ("Name", "Types", "Suitability", "Drops", "Aura", "Description", "Skills", "FirstDefeatRewardItemID")),
+    "pals": (
+        PalsI18n,
+        "PalsID",
+        (
+            "Name",
+            "Types",
+            "Suitability",
+            "Drops",
+            "Aura",
+            "Description",
+            "Skills",
+            "FirstDefeatRewardItemID",
+        ),
+    ),
+    "bosspals": (
+        BossPalsI18n,
+        "BossPalsID",
+        (
+            "Name",
+            "Types",
+            "Suitability",
+            "Drops",
+            "Aura",
+            "Description",
+            "Skills",
+            "FirstDefeatRewardItemID",
+        ),
+    ),
     "items": (ItemsI18n, "ItemID", ("Name", "Description", "PassiveSkills")),
-    "buildobjects": (BuildObjectsI18n, "BuildObjectsID", ("Name", "Description", "Material", "Category")),
+    "buildobjects": (
+        BuildObjectsI18n,
+        "BuildObjectsID",
+        ("Name", "Description", "Material", "Category"),
+    ),
     "crafting": (CraftingI18n, "CraftingID", ("Name", "Material")),
     "foodeffect": (FoodEffectI18n, "FoodEffectID", ("Name",)),
     "gear": (GearI18n, "GearID", ("Name",)),
     "sickpal": (SickPalI18n, "SickPalID", ("Name", "Description")),
-    "techtree": (TechTreeI18n, "TechTreeID", ("Name", "UnlockBuildObjects", "UnlockItemRecipes", "Description", "RequireTechnology")),
+    "techtree": (
+        TechTreeI18n,
+        "TechTreeID",
+        ("Name", "UnlockBuildObjects", "UnlockItemRecipes", "Description", "RequireTechnology"),
+    ),
     "npc": (NPCI18n, "NPCID", ("Name", "Weapon", "Suitability")),
     "elixir": (ElixirI18n, "ElixirID", ("Name", "Description")),
 }
+
+
+class _SkillJsonTable(FunctionElement):
+    inherit_cache = True
+    name = "JSON_TABLE"
+
+
+@compiles(_SkillJsonTable, "mysql")
+def _compile_skill_json_table(element, compiler, **kw):
+    json_column, path = list(element.clauses)
+    return (
+        "JSON_TABLE("
+        f"{compiler.process(json_column, **kw)}, "
+        f"{compiler.process(path, **kw)} "
+        "COLUMNS(skill_name VARCHAR(255) PATH '$.Name'))"
+    )
 
 
 def _json_search(column, bind_name: str, value: str):
@@ -67,9 +123,7 @@ async def _apply_localization(db: AsyncSession, page, category: str, lang: str):
         getattr(i18n_model, parent_field).in_(item_ids),
         i18n_model.LanguageCode == lang,
     )
-    localizations = {
-        getattr(row, parent_field): row for row in (await db.exec(statement)).all()
-    }
+    localizations = {getattr(row, parent_field): row for row in (await db.exec(statement)).all()}
     for item in page.items:
         row = localizations.get(item.ID)
         if row is None:
@@ -97,11 +151,12 @@ async def _paginate_with_localization(
     category: str,
     lang: str,
 ):
-    page = await paginate(db, statement)
+    page = await apaginate(db, statement)
     return await _apply_localization(db, page, category, lang)
 
 
 async def get_pals(db: AsyncSession, params, lang: str = "en"):
+    """Run the get pals operation."""
     localized = lang != "en"
     wheres = select(Pals)
     if localized:
@@ -134,12 +189,15 @@ async def get_pals(db: AsyncSession, params, lang: str = "en"):
             )
         elif parm == "skill":
             wheres = wheres.where(
-                _json_search(PalsI18n.Skills if localized else Pals.Skills, "skill_name", params[parm])
+                _json_search(
+                    PalsI18n.Skills if localized else Pals.Skills, "skill_name", params[parm]
+                )
             )
     return await _paginate_with_localization(db, wheres, "pals", lang)
 
 
 async def get_bosspal(db: AsyncSession, params, lang: str = "en"):
+    """Run the get bosspal operation."""
     localized = lang != "en"
     wheres = select(BossPals)
     if localized:
@@ -190,6 +248,7 @@ async def get_bosspal(db: AsyncSession, params, lang: str = "en"):
 
 
 async def get_item(db: AsyncSession, params, lang: str = "en"):
+    """Run the get item operation."""
     localized = lang != "en"
     wheres = select(Items)
     if localized:
@@ -204,7 +263,17 @@ async def get_item(db: AsyncSession, params, lang: str = "en"):
     return await _paginate_with_localization(db, wheres, "items", lang)
 
 
-async def _get_by_name(db: AsyncSession, *, base_model, i18n_model, parent_field: str, category: str, field_name: str, name: str, lang: str):
+async def _get_by_name(
+    db: AsyncSession,
+    *,
+    base_model,
+    i18n_model,
+    parent_field: str,
+    category: str,
+    field_name: str,
+    name: str,
+    lang: str,
+):
     wheres = select(base_model)
     if lang != "en":
         wheres = _localized_join(wheres, base_model, i18n_model, parent_field, lang)
@@ -215,6 +284,7 @@ async def _get_by_name(db: AsyncSession, *, base_model, i18n_model, parent_field
 
 
 async def get_crafting(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get crafting operation."""
     return await _get_by_name(
         db,
         base_model=Crafting,
@@ -228,6 +298,7 @@ async def get_crafting(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_gear(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get gear operation."""
     return await _get_by_name(
         db,
         base_model=Gear,
@@ -241,6 +312,7 @@ async def get_gear(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_foodeffects(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get foodeffects operation."""
     return await _get_by_name(
         db,
         base_model=FoodEffect,
@@ -253,9 +325,38 @@ async def get_foodeffects(db: AsyncSession, name: str, lang: str = "en"):
     )
 
 
-async def get_breeding(db: AsyncSession, name: str, lang: str = "en"):
-    pal_id = await _get_pal_id(db, name, lang)
-    statement = select(BreedingRecord).where(BreedingRecord.EggPalID == pal_id)
+async def get_breeding(
+    db: AsyncSession,
+    name: str | None = None,
+    *,
+    egg: str | None = None,
+    p1: str | None = None,
+    p2: str | None = None,
+    lang: str = "en",
+):
+    """Run the get breeding operation."""
+    statement = select(BreedingRecord)
+
+    egg_name = egg or name
+    if egg_name:
+        pal_id = await _get_pal_id(db, egg_name, lang)
+        statement = statement.where(BreedingRecord.EggPalID == pal_id)
+
+    if p1 and p2:
+        p1_id = await _get_pal_id(db, p1, lang)
+        p2_id = await _get_pal_id(db, p2, lang)
+        statement = statement.where(
+            or_(
+                and_(BreedingRecord.P1PalID == p1_id, BreedingRecord.P2PalID == p2_id),
+                and_(BreedingRecord.P1PalID == p2_id, BreedingRecord.P2PalID == p1_id),
+            )
+        )
+    elif p1 or p2:
+        parent_id = await _get_pal_id(db, p1 or p2, lang)
+        statement = statement.where(
+            or_(BreedingRecord.P1PalID == parent_id, BreedingRecord.P2PalID == parent_id)
+        )
+
     return await _paginate_breeding(db, statement, lang)
 
 
@@ -263,18 +364,20 @@ async def _paginate_breeding(db: AsyncSession, statement, lang: str):
     """Resolve relationship rows before Page[Breeding] validates them."""
 
     async def transform(rows):
+        """Run the transform operation."""
         return await _resolve_breeding_names(db, rows, lang)
 
-    return await paginate(db, statement, transformer=transform)
+    return await apaginate(db, statement, transformer=transform)
 
 
 async def _paginate_scalar_autocomplete(db: AsyncSession, statement):
     """Flatten single-column row results before AutoCompletePage[str] validation."""
 
     async def transform(rows):
+        """Run the transform operation."""
         return [row[0] for row in rows]
 
-    return await paginate(db, statement, transformer=transform)
+    return await apaginate(db, statement, transformer=transform)
 
 
 async def _get_pal_id(db: AsyncSession, name: str, lang: str) -> int | None:
@@ -290,36 +393,40 @@ async def _get_pal_id(db: AsyncSession, name: str, lang: str) -> int | None:
 
 
 async def _resolve_breeding_names(db: AsyncSession, rows, lang: str):
-    pal_ids = {
-        pal_id
-        for row in rows
-        for pal_id in (row.EggPalID, row.P1PalID, row.P2PalID)
-    }
+    pal_ids = {pal_id for row in rows for pal_id in (row.EggPalID, row.P1PalID, row.P2PalID)}
     if not pal_ids:
         return []
 
-    base_statement = select(Pals.ID, Pals.Name).where(Pals.ID.in_(pal_ids))
-    names = dict((await db.exec(base_statement)).all())
+    base_statement = select(Pals.ID, Pals.Name, Pals.DexKey).where(Pals.ID.in_(pal_ids))
+    pal_data = {
+        row[0]: {"Name": row[1], "DexKey": row[2]} for row in (await db.exec(base_statement)).all()
+    }
     if lang != "en":
         localized_statement = (
             select(Pals.ID, PalsI18n.Name)
             .join(PalsI18n, PalsI18n.PalsID == Pals.ID)
             .where(Pals.ID.in_(pal_ids), PalsI18n.LanguageCode == lang)
         )
-        names.update((await db.exec(localized_statement)).all())
+        for pal_id, localized_name in (await db.exec(localized_statement)).all():
+            if pal_id in pal_data:
+                pal_data[pal_id]["Name"] = localized_name
 
     return [
         Breeding(
             ID=row.ID,
-            Egg=names.get(row.EggPalID, str(row.EggPalID)),
-            P1=names.get(row.P1PalID, str(row.P1PalID)),
-            P2=names.get(row.P2PalID, str(row.P2PalID)),
+            Egg=pal_data.get(row.EggPalID, {}).get("Name", str(row.EggPalID)),
+            EggDexKey=pal_data.get(row.EggPalID, {}).get("DexKey", str(row.EggPalID)),
+            P1=pal_data.get(row.P1PalID, {}).get("Name", str(row.P1PalID)),
+            P1DexKey=pal_data.get(row.P1PalID, {}).get("DexKey", str(row.P1PalID)),
+            P2=pal_data.get(row.P2PalID, {}).get("Name", str(row.P2PalID)),
+            P2DexKey=pal_data.get(row.P2PalID, {}).get("DexKey", str(row.P2PalID)),
         )
         for row in rows
     ]
 
 
 async def get_sickness(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get sickness operation."""
     return await _get_by_name(
         db,
         base_model=SickPal,
@@ -333,6 +440,7 @@ async def get_sickness(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_tech(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get tech operation."""
     return await _get_by_name(
         db,
         base_model=TechTree,
@@ -346,6 +454,7 @@ async def get_tech(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_tech_by_level(db: AsyncSession, level: int, lang: str = "en"):
+    """Run the get tech by level operation."""
     return await _paginate_with_localization(
         db,
         select(TechTree).where(TechTree.LevelCap == level),
@@ -355,6 +464,7 @@ async def get_tech_by_level(db: AsyncSession, level: int, lang: str = "en"):
 
 
 async def get_build(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get build operation."""
     return await _get_by_name(
         db,
         base_model=BuildObjects,
@@ -368,6 +478,7 @@ async def get_build(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_build_by_category(db: AsyncSession, category: str, lang: str = "en"):
+    """Run the get build by category operation."""
     wheres = select(BuildObjects)
     if lang != "en":
         wheres = _localized_join(wheres, BuildObjects, BuildObjectsI18n, "BuildObjectsID", lang)
@@ -378,10 +489,12 @@ async def get_build_by_category(db: AsyncSession, category: str, lang: str = "en
 
 
 async def get_passive(db: AsyncSession, name: str, lang: str = "en"):
-    return await paginate(db, select(PassiveSkills).where(PassiveSkills.Name == name))
+    """Run the get passive operation."""
+    return await apaginate(db, select(PassiveSkills).where(PassiveSkills.Name == name))
 
 
 async def get_npc(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get npc operation."""
     return await _get_by_name(
         db,
         base_model=NPC,
@@ -395,6 +508,7 @@ async def get_npc(db: AsyncSession, name: str, lang: str = "en"):
 
 
 async def get_elixir(db: AsyncSession, name: str, lang: str = "en"):
+    """Run the get elixir operation."""
     return await _get_by_name(
         db,
         base_model=Elixir,
@@ -407,7 +521,22 @@ async def get_elixir(db: AsyncSession, name: str, lang: str = "en"):
     )
 
 
+async def get_map_locations(
+    db: AsyncSession,
+    category: str | None = None,
+    map_name: str | None = None,
+):
+    """Run the get map locations operation."""
+    statement = select(MapLocations)
+    if category:
+        statement = statement.where(MapLocations.Category == category)
+    if map_name:
+        statement = statement.where(MapLocations.Map == map_name)
+    return await apaginate(db, statement)
+
+
 async def get_all(db: AsyncSession, name, lang: str = "en"):
+    """Run the get all operation."""
     model_map = {
         "pals": Pals,
         "bosspals": BossPals,
@@ -422,17 +551,19 @@ async def get_all(db: AsyncSession, name, lang: str = "en"):
         "passiveskills": PassiveSkills,
         "npc": NPC,
         "elixir": Elixir,
+        "maplocations": MapLocations,
     }
     model = model_map.get(name)
     if model is None:
         return
     if name == "breeding":
         return await _paginate_breeding(db, select(model), lang)
-    page = await paginate(db, select(model))
+    page = await apaginate(db, select(model))
     return await _apply_localization(db, page, name, lang)
 
 
 async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str = "en"):
+    """Run the get autocomplete operation."""
     localized_map = {
         "palname": (PalsI18n, PalsI18n.Name),
         "bossname": (BossPalsI18n, BossPalsI18n.Name),
@@ -449,10 +580,9 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
     }
     if category == "skill":
         source_model = PalsI18n if lang != "en" else Pals
-        skill_table = func.JSON_TABLE(
+        skill_table = _SkillJsonTable(
             source_model.Skills,
             literal_column("'$[*]'"),
-            literal_column("COLUMNS(skill_name VARCHAR(255) PATH '$.Name')"),
         ).table_valued(sql_column("skill_name"))
         statement = (
             select(skill_table.c.skill_name)
@@ -591,9 +721,6 @@ async def get_autocomplete(db: AsyncSession, category: str, name: str, lang: str
     elif category == "npc":
         return await _paginate_scalar_autocomplete(
             db,
-            select(NPC.Name)
-            .where(NPC.Name.like(f"{name}%"))
-            .order_by(NPC.Name.asc())
-            .distinct(),
+            select(NPC.Name).where(NPC.Name.like(f"{name}%")).order_by(NPC.Name.asc()).distinct(),
         )
     return

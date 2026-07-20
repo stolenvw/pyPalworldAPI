@@ -1,14 +1,14 @@
-"""
-pyPalworldAPI usage examples for `/redoc`.
+"""Define OpenAPI usage examples for Redoc."""
 
-"""
 
-class pyPalworldAPIExamples:
+class PalworldAPIExamples:
+    """Store OpenAPI usage examples."""
+
     pals = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -43,9 +43,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -86,8 +86,8 @@ if __name__ == "__main__":
     boss_pals = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -122,9 +122,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -165,8 +165,8 @@ if __name__ == "__main__":
     breeding = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/breeding/?p1=Lamball&p2=Cattiva&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -179,12 +179,12 @@ import aiohttp
 from aiohttp.client_exceptions import ClientConnectorError
 
 
-async def get_breeding(name: str):
+async def get_breeding(p1: str, p2: str):
     url = "http://127.0.0.0/breeding/"
     headers = {
         "Accept": "application/json",
     }
-    params = {"name": name, "page": 1, "size": 50}
+    params = {"p1": p1, "p2": p2, "page": 1, "size": 50}
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers, params=params) as result:
@@ -196,14 +196,14 @@ async def get_breeding(name: str):
 
 
 if __name__ == "__main__":
-    asyncio.run(get_breeding(name="Anubis"))""",
+    asyncio.run(get_breeding(p1="Lamball", p2="Cattiva"))""",
             "label": "Python",
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/breeding/?p1=Lamball&p2=Cattiva&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -216,13 +216,13 @@ import aiohttp
 from aiohttp.client_exceptions import ClientConnectorError
 
 
-async def get_breeding(name: str, access_token: str):
+async def get_breeding(p1: str, p2: str, access_token: str):
     url = "http://127.0.0.0/breeding/"
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {access_token}",
     }
-    params = {"name": name, "page": 1, "size": 50}
+    params = {"p1": p1, "p2": p2, "page": 1, "size": 50}
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers, params=params) as result:
@@ -235,7 +235,11 @@ async def get_breeding(name: str, access_token: str):
 
 if __name__ == "__main__":
     asyncio.run(
-        get_breeding(name="Anubis", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+        get_breeding(
+            p1="Lamball",
+            p2="Cattiva",
+            access_token="kajfe0983qjaf309ajj3w8j3aij3a3",
+        )
     )""",
             "label": "Python OAuth",
         },
@@ -244,8 +248,8 @@ if __name__ == "__main__":
     sickness = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -280,9 +284,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -323,8 +327,8 @@ if __name__ == "__main__":
     items = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/items/?name=arrow&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/items/?name=arrow&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -359,9 +363,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/items/?name=arrow&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/items/?name=arrow&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -400,8 +404,8 @@ if __name__ == "__main__":
     crafting = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -436,9 +440,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/crafting/?name=arrow&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -479,8 +483,8 @@ if __name__ == "__main__":
     gear = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -515,9 +519,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/gear/?name=cloth%20outfit&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -558,8 +562,8 @@ if __name__ == "__main__":
     foodeffect = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -594,9 +598,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/foodeffect/?name=salad&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -637,8 +641,8 @@ if __name__ == "__main__":
     tech = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -673,9 +677,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/tech/?name=Nail&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -714,8 +718,8 @@ if __name__ == "__main__":
     build = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -750,9 +754,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/build/?name=Campfire&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -793,8 +797,8 @@ if __name__ == "__main__":
     passive = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -829,9 +833,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -872,8 +876,8 @@ if __name__ == "__main__":
     npc = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -908,9 +912,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/npc/?name=Wandering%20Merchant&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -953,8 +957,8 @@ if __name__ == "__main__":
     elixir = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -989,9 +993,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/elixir/?name=Speed%20Elixir&page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -1034,8 +1038,8 @@ if __name__ == "__main__":
     alls = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/all/pals?page=1&size=50' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/all/pals?page=1&size=50' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -1070,9 +1074,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/all/pals?page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/all/pals?page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -1113,8 +1117,8 @@ if __name__ == "__main__":
     autocomplete = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=25' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=25' \\
     -H 'Accept: application/json'""",
             "label": "Curl",
         },
@@ -1149,9 +1153,9 @@ if __name__ == "__main__":
         },
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=25' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/autocomplete/palname/?name=la&page=1&size=25' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl OAuth",
         },
@@ -1194,10 +1198,10 @@ if __name__ == "__main__":
     login = [
         {
             "lang": "Curl",
-            "source": """curl -X 'POST' \ 
-    'http://127.0.0.0/oauth2/login/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            "source": """curl -X 'POST' \\
+    'http://127.0.0.0/oauth2/login/' \\
+    -H 'Accept: application/json' \\
+    -H 'Content-Type: application/x-www-form-urlencoded' \\
     -d 'username=Bob123&password=SomePass'""",
             "label": "Curl",
         },
@@ -1236,10 +1240,10 @@ if __name__ == "__main__":
     refresh = [
         {
             "lang": "Curl",
-            "source": """curl -X 'POST' \ 
-    'http://127.0.0.0/oauth2/refresh/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            "source": """curl -X 'POST' \\
+    'http://127.0.0.0/oauth2/refresh/' \\
+    -H 'Accept: application/json' \\
+    -H 'Content-Type: application/x-www-form-urlencoded' \\
     -d 'token=kafaj083209jq904j8qjiaf39&grant_type=refresh_token'""",
             "label": "Curl",
         },
@@ -1278,11 +1282,11 @@ if __name__ == "__main__":
     user_change_password = [
         {
             "lang": "Curl",
-            "source": """curl -X 'PUT' \ 
-    'http://127.0.0.0/user/changepassword/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-    -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            "source": """curl -X 'PUT' \\
+    'http://127.0.0.0/user/changepassword/' \\
+    -H 'Accept: application/json' \\
+    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+    -H 'Content-Type: application/x-www-form-urlencoded' \\
     -d 'current_password=SomePass&new_password=SomeNewPass'""",
             "label": "Curl",
         },
@@ -1330,9 +1334,9 @@ if __name__ == "__main__":
     me = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/user/me/' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/user/me/' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl",
         },
@@ -1370,11 +1374,11 @@ if __name__ == "__main__":
     add_user = [
         {
             "lang": "Curl",
-            "source": """curl -X 'Post' \ 
-    'http://127.0.0.0/admin/adduser/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-    -H 'Content-Type: application/json' \ 
+            "source": """curl -X 'Post' \\
+    'http://127.0.0.0/admin/adduser/' \\
+    -H 'Accept: application/json' \\
+    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+    -H 'Content-Type: application/json' \\
     -d '{
           "username": "Bob123",
           "password": "SomePass",
@@ -1437,11 +1441,11 @@ if __name__ == "__main__":
     admin_change_password = [
         {
             "lang": "Curl",
-            "source": """curl -X 'PUT' \ 
-    'http://127.0.0.0/admin/chpass/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-    -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            "source": """curl -X 'PUT' \\
+    'http://127.0.0.0/admin/chpass/' \\
+    -H 'Accept: application/json' \\
+    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+    -H 'Content-Type: application/x-www-form-urlencoded' \\
     -d 'username=Bob123&new_password=SomeNewPass'""",
             "label": "Curl",
         },
@@ -1489,9 +1493,9 @@ if __name__ == "__main__":
     delete_user = [
         {
             "lang": "Curl",
-            "source": """curl -X 'PUT' \ 
-    'http://127.0.0.0/admin/deleteuser/?username=Bob123' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'PUT' \\
+    'http://127.0.0.0/admin/deleteuser/?username=Bob123' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl",
         },
@@ -1534,9 +1538,9 @@ if __name__ == "__main__":
     list_users = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/admin/users/?page=1&size=50' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/admin/users/?page=1&size=50' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl",
         },
@@ -1575,11 +1579,11 @@ if __name__ == "__main__":
     user_disable = [
         {
             "lang": "Curl",
-            "source": """curl -X 'PUT' \ 
-    'http://127.0.0.0/admin/userdisable/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-    -H 'Content-Type: application/x-www-form-urlencoded' \ 
+            "source": """curl -X 'PUT' \\
+    'http://127.0.0.0/admin/userdisable/' \\
+    -H 'Accept: application/json' \\
+    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+    -H 'Content-Type: application/x-www-form-urlencoded' \\
     -d 'username=Bob123&disabled=True'""",
             "label": "Curl",
         },
@@ -1625,11 +1629,11 @@ if __name__ == "__main__":
     change_scopes = [
         {
             "lang": "Curl",
-            "source": """curl -X 'PUT' \ 
-    'http://127.0.0.0/admin/chscope/' \ 
-    -H 'Accept: application/json' \ 
-    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-    -H 'Content-Type: application/json' \ 
+            "source": """curl -X 'PUT' \\
+    'http://127.0.0.0/admin/chscope/' \\
+    -H 'Accept: application/json' \\
+    -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+    -H 'Content-Type: application/json' \\
     -d '{
           "username": "Bob123",
           "scopes": [
@@ -1684,9 +1688,9 @@ if __name__ == "__main__":
     validate = [
         {
             "lang": "Curl",
-            "source": """curl -X 'GET' \ 
-    'http://127.0.0.0/oauth2/validate' \ 
-    -H 'Accept: application/json' \ 
+            "source": """curl -X 'GET' \\
+    'http://127.0.0.0/oauth2/validate' \\
+    -H 'Accept: application/json' \\
     -H 'Authorization: OAuth kajfe0983qjaf309ajj3w8j3aij3a3'""",
             "label": "Curl",
         },

@@ -1,9 +1,9 @@
-"""
-pyPalworldAPI HTTP 40* error responses examples.
+"""Define OpenAPI error response examples."""
 
-"""
 
-class pyPalworldAPIErrorResponses:
+class PalworldAPIErrorResponses:
+    """Store OpenAPI error response examples."""
+
     response_401_409 = {
         409: {
             "description": "Conflict",

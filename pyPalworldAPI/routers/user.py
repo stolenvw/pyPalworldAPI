@@ -1,23 +1,26 @@
+r"""Provide user helpers."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form, Security, status
-from models import auth_models as AuthModel
-from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils.auth import (
+
+from pyPalworldAPI.models import auth_models
+from pyPalworldAPI.query import auth as auth_query
+from pyPalworldAPI.utils.auth import (
     get_auth_session,
     get_current_active_user,
     get_password_hash,
     verify_password,
 )
-from utils.customexception import APIException
-from utils.customresponses import pyPalworldAPIErrorResponses
-from utils.examples import pyPalworldAPIExamples
+from pyPalworldAPI.utils.customexception import APIError
+from pyPalworldAPI.utils.customresponses import PalworldAPIErrorResponses
+from pyPalworldAPI.utils.examples import PalworldAPIExamples
 
 router = APIRouter(
     prefix="/user",
     tags=["User"],
-    responses=pyPalworldAPIErrorResponses.response_400_401,
+    responses=PalworldAPIErrorResponses.response_400_401,
 )
 
 
@@ -25,32 +28,30 @@ router = APIRouter(
     "/changepassword/",
     status_code=status.HTTP_202_ACCEPTED,
     summary="Change your password.",
-    response_model=AuthModel.MessageStatus,
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.user_change_password},
+    response_model=auth_models.MessageStatus,
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.user_change_password},
 )
 async def change_own_password(
     current_user: Annotated[
-        AuthModel.User,
-        Security(
-            get_current_active_user, scopes=["APIUser:Read", "APIUser:ChangePassword"]
-        ),
+        auth_models.User,
+        Security(get_current_active_user, scopes=["APIUser:Read", "APIUser:ChangePassword"]),
     ],
     current_password: str = Form(),
     new_password: str = Form(max_length=256, min_length=6),
     db: AsyncSession = Depends(get_auth_session),
 ):
-    """
-    Change your password.
+    r"""Change your password.
 
     .. important:: Changing your password will make all your access/refresh invalid.
     \f
+
     Parameters
     ----------
     current_password : str
         Your current password
     new_password : str
         Your new password
-    
+
     Returns
     -------
     json
@@ -63,20 +64,20 @@ async def change_own_password(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'PUT' \ 
-            'http://127.0.0.0/user/changepassword/' \ 
-            -H 'Accept: application/json' \ 
-            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \ 
-            -H 'Content-Type: application/x-www-form-urlencoded' \ 
+        curl -X 'PUT' \\
+            'http://127.0.0.0/user/changepassword/' \\
+            -H 'Accept: application/json' \\
+            -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3' \\
+            -H 'Content-Type: application/x-www-form-urlencoded' \\
             -d 'current_password=SomePass&new_password=SomeNewPass'
 
     Python::
@@ -117,9 +118,10 @@ async def change_own_password(
                 )
             )
 
+
     """
     if not await verify_password(current_password, current_user.password):
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -128,8 +130,8 @@ async def change_own_password(
             headers=None,
         )
     hashed_password = await get_password_hash(new_password)
-    user = await AuthQuery.get_user(db, current_user.username)
-    await AuthQuery.change_password(db=db, user=user, new_password=hashed_password)
+    user = await auth_query.get_user(db, current_user.username)
+    await auth_query.change_password(db=db, user=user, new_password=hashed_password)
     return {
         "message": "Password Changed Successfully.",
         "status": status.HTTP_202_ACCEPTED,
@@ -138,18 +140,19 @@ async def change_own_password(
 
 @router.get(
     "/me/",
-    response_model=AuthModel.UserResponse,
+    response_model=auth_models.UserResponse,
     summary="List User Info",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.me},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.me},
 )
 async def get_user(
     current_user: Annotated[
-        AuthModel.User, Security(get_current_active_user, scopes=["APIUser:Read"])
+        auth_models.User, Security(get_current_active_user, scopes=["APIUser:Read"])
     ],
 ):
-    """
-    List all users.
-    \f
+    r"""List all users.
+
+    \f.
+
     Returns
     -------
     json
@@ -175,29 +178,29 @@ async def get_user(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/user/me/' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/user/me/' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
 
         import asyncio
         import json
-        
+
         import aiohttp
         from aiohttp.client_exceptions import ClientConnectorError
-        
-        
+
+
         async def get_user_me(access_token: str):
             url = f"http://127.0.0.0/user/me/"
             headers = {
@@ -212,10 +215,11 @@ async def get_user(
                 print(f"ClientConnectorError: {e}")
             else:
                 print(json.dumps(data, indent=2))
-        
-        
+
+
         if __name__ == "__main__":
             asyncio.run(get_user_me(access_token="kajfe0983qjaf309ajj3w8j3aij3a3"))
+
 
     """
     return current_user

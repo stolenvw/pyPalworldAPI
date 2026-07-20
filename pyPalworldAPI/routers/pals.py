@@ -1,19 +1,22 @@
+r"""Provide pals helpers."""
+
 import os
 
-import models.models as M
 from fastapi import APIRouter, Depends, Query, Request, Security, status
-from query import palapi as Q
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils.auth import get_current_active_user
-from utils.customexception import APIException
-from utils.custompage import Page
-from utils.customresponses import pyPalworldAPIErrorResponses
-from utils.database import get_session
-from utils.examples import pyPalworldAPIExamples
+
+from pyPalworldAPI.models import models
+from pyPalworldAPI.query import palapi as palapi_query
+from pyPalworldAPI.utils.auth import get_current_active_user
+from pyPalworldAPI.utils.customexception import APIError
+from pyPalworldAPI.utils.custompage import Page
+from pyPalworldAPI.utils.customresponses import PalworldAPIErrorResponses
+from pyPalworldAPI.utils.database import get_session
+from pyPalworldAPI.utils.examples import PalworldAPIExamples
 
 router = APIRouter(
     tags=["Pals"],
-    responses=pyPalworldAPIErrorResponses.responses_400_401_404,
+    responses=PalworldAPIErrorResponses.responses_400_401_404,
     dependencies=(
         [Security(get_current_active_user, scopes=["APIUser:Read"])]
         if os.getenv("COMPOSE_PROFILES") == "USE_OAUTH2"
@@ -24,10 +27,10 @@ router = APIRouter(
 
 @router.get(
     "/pals/",
-    response_model=Page[M.Pals],
+    response_model=Page[models.Pals],
     response_model_exclude_none=True,
     summary="Lookup Pal[s] Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.pals},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.pals},
 )
 async def getpal(
     request: Request,
@@ -38,14 +41,13 @@ async def getpal(
     drop: str | None = None,
     skill: str | None = None,
     lang: str = Query("en", description="Localized text language code."),
-    nocturnal: bool | None = Query(
-        None, description="False for day Pals, True for night Pals."
-    ),
+    nocturnal: bool | None = Query(None, description="False for day Pals, True for night Pals."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup pal info.
-    \f
+    r"""Lookup pal info.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -69,7 +71,7 @@ async def getpal(
 
 
     .. note:: Need to supply at lest one of the ``name``, ``dexkey``, ``type``, ``suitability``, ``drop``, ``skill``, ``nocturnal`` parameters.
-    
+
     Returns
     -------
     json
@@ -173,18 +175,18 @@ async def getpal(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/pals/?name=lamball&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -218,13 +220,14 @@ async def getpal(
                 get_pals(name="lamball", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     params = request.query_params
-    item = await Q.get_pals(db, params, lang=lang)
+    item = await palapi_query.get_pals(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -236,10 +239,10 @@ async def getpal(
 
 @router.get(
     "/bosspals/",
-    response_model=Page[M.BossPals],
+    response_model=Page[models.BossPals],
     response_model_exclude_none=True,
     summary="Lookup Boss Pal[s] Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.boss_pals},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.boss_pals},
 )
 async def getbosspal(
     request: Request,
@@ -249,14 +252,13 @@ async def getbosspal(
     drop: str | None = None,
     skill: str | None = None,
     lang: str = Query("en", description="Localized text language code."),
-    nocturnal: bool | None = Query(
-        None, description="False for day Pals, True for night Pals."
-    ),
+    nocturnal: bool | None = Query(None, description="False for day Pals, True for night Pals."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Lookup boss pal info.
-    \f
+    r"""Lookup boss pal info.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -278,7 +280,7 @@ async def getbosspal(
 
 
     .. note:: Need to supply at lest one of the ``name``, ``type``, ``suitability``, ``drop``, ``skill``, ``nocturnal`` parameters.
-    
+
     Returns
     -------
     json
@@ -378,18 +380,18 @@ async def getbosspal(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/bosspals/?name=Mammorest&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -423,13 +425,14 @@ async def getbosspal(
                 get_bosspals(name="Mammorest", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     params = request.query_params
-    item = await Q.get_bosspal(db, params, lang=lang)
+    item = await palapi_query.get_bosspal(db, params, lang=lang)
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -441,28 +444,42 @@ async def getbosspal(
 
 @router.get(
     "/breeding/",
-    response_model=Page[M.Breeding],
+    response_model=Page[models.Breeding],
     response_model_exclude_none=True,
     summary="Lookup Breeding Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.breeding},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.breeding},
 )
 async def getbreeding(
-    name: str,
+    name: str | None = Query(
+        None,
+        description="Legacy alias for egg. Pal name you want to get from breeding.",
+        deprecated=True,
+    ),
+    egg: str | None = Query(None, description="Egg Pal name to find parent pairs for."),
+    p1: str | None = Query(None, description="First parent Pal name."),
+    p2: str | None = Query(None, description="Second parent Pal name."),
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look up breeding pair to get pal your looking for.
-    \f
+    r"""Look up breeding pairs by egg or parent Pal names.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
+        Deprecated legacy alias for egg. This will be removed in the future; use egg instead
+    egg : str, optional
         Pal name you want to get from breeding
+    p1 : str, optional
+        Parent Pal name
+    p2 : str, optional
+        Parent Pal name
     page : int, default: 1
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -473,8 +490,11 @@ async def getbreeding(
             {
               "ID": 0,
               "Egg": "string",
+              "EggDexKey": "string",
               "P1": "string",
-              "P2": "string"
+              "P1DexKey": "string",
+              "P2": "string",
+              "P2DexKey": "string"
             }
           ],
           "total": 0,
@@ -485,18 +505,18 @@ async def getbreeding(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/breeding/?name=Anubis&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/breeding/?p1=Lamball&p2=Cattiva&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -508,13 +528,13 @@ async def getbreeding(
         from aiohttp.client_exceptions import ClientConnectorError
 
 
-        async def get_breeding(name: str, access_token: str):
+        async def get_breeding(p1: str, p2: str, access_token: str):
             url = "http://127.0.0.0/breeding/"
             headers = {
                 "Accept": "application/json",
                 "Authorization": f"Bearer {access_token}",
             }
-            params = {"name": name, "page": 1, "size": 50}
+            params = {"p1": p1, "p2": p2, "page": 1, "size": 50}
             try:
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url, headers=headers, params=params) as result:
@@ -527,25 +547,30 @@ async def getbreeding(
 
         if __name__ == "__main__":
             asyncio.run(
-                get_breeding(name="Anubis", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
+                get_breeding(
+                    p1="Lamball",
+                    p2="Cattiva",
+                    access_token="kajfe0983qjaf309ajj3w8j3aij3a3",
+                )
             )
 
+
     """
-    if name:
-        item = await Q.get_breeding(db, name, lang=lang)
+    if name or egg or p1 or p2:
+        item = await palapi_query.get_breeding(db, name, egg=egg, p1=p1, p2=p2, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
-                "message": "Missing one of the (name) params.",
+                "message": "Missing one of the (name, egg, p1, p2) params.",
             },
             headers=None,
         )
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -557,19 +582,20 @@ async def getbreeding(
 
 @router.get(
     "/sickness/",
-    response_model=Page[M.SickPal],
+    response_model=Page[models.SickPal],
     response_model_exclude_none=True,
     summary="Lookup Sickness Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.sickness},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.sickness},
 )
 async def getsickness(
     name: str,
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look up sickness effects.
-    \f
+    r"""Look up sickness effects.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -578,7 +604,7 @@ async def getsickness(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -605,18 +631,18 @@ async def getsickness(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/sickness/?name=ulcer&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
@@ -650,11 +676,12 @@ async def getsickness(
                 get_sickness(name="ulcer", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_sickness(db, name, lang=lang)
+        item = await palapi_query.get_sickness(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -665,7 +692,7 @@ async def getsickness(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,
@@ -677,19 +704,20 @@ async def getsickness(
 
 @router.get(
     "/passive/",
-    response_model=Page[M.PassiveSkills],
+    response_model=Page[models.PassiveSkills],
     response_model_exclude_none=True,
     summary="Lookup Passive Skills Information",
-    openapi_extra={"x-codeSamples": pyPalworldAPIExamples.passive},
+    openapi_extra={"x-codeSamples": PalworldAPIExamples.passive},
 )
 async def getpassive(
     name: str | None = None,
     lang: str = Query("en", description="Localized text language code."),
     db: AsyncSession = Depends(get_session),
 ):
-    """
-    Look up passive skill effects.
-    \f
+    r"""Look up passive skill effects.
+
+    \f.
+
     Parameters
     ----------
     name : str, optional
@@ -698,7 +726,7 @@ async def getpassive(
         Page number to return
     size: int, default: 50
         Items to return on the page
-    
+
     Returns
     -------
     json
@@ -724,29 +752,29 @@ async def getpassive(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
     RequestValidationError
         When a request contains invalid data.
-        
+
     Examples
-    -------
+    --------
     Curl::
 
-        curl -X 'GET' \ 
-            'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \ 
-            -H 'Accept: application/json' \ 
+        curl -X 'GET' \\
+            'http://127.0.0.0/passive/?name=Brave&page=1&size=50' \\
+            -H 'Accept: application/json' \\
             -H 'Authorization: Bearer kajfe0983qjaf309ajj3w8j3aij3a3'
 
     Python::
 
         import asyncio
         import json
-        
+
         import aiohttp
         from aiohttp.client_exceptions import ClientConnectorError
-        
-        
+
+
         async def get_passive(name: str, access_token: str):
             url = "http://127.0.0.0/passive/"
             headers = {
@@ -762,18 +790,19 @@ async def getpassive(
                 print(f"ClientConnectorError: {e}")
             else:
                 print(json.dumps(data, indent=2))
-        
-        
+
+
         if __name__ == "__main__":
             asyncio.run(
                 get_passive(name="Brave", access_token="kajfe0983qjaf309ajj3w8j3aij3a3")
             )
 
+
     """
     if name:
-        item = await Q.get_passive(db, name, lang=lang)
+        item = await palapi_query.get_passive(db, name, lang=lang)
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -784,7 +813,7 @@ async def getpassive(
     if len(item.items) != 0:
         return item
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "status": status.HTTP_404_NOT_FOUND,

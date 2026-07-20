@@ -1,18 +1,15 @@
-"""
-Auth SQL querys
+"""Query authentication tables."""
 
-"""
-
-from fastapi_pagination.ext.sqlmodel import paginate
-from models.auth_models import RefreshToken, Token, User
+from fastapi_pagination.ext.sqlmodel import apaginate
 from sqlalchemy.engine.result import ScalarResult
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from pyPalworldAPI.models.auth_models import RefreshToken, Token, User
+
 
 async def get_user(db: AsyncSession, username: str) -> User | None:
-    """
-    Gets username info from the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """Gets username info from the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
 
     Parameters
     ----------
@@ -30,8 +27,7 @@ async def get_user(db: AsyncSession, username: str) -> User | None:
 
 
 async def refresh_token_delete(db: AsyncSession, user_id: int) -> RefreshToken | None:
-    """
-    Gets refresh token info from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table by `user_id`.
+    """Gets refresh token info from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table by `user_id`.
 
     Parameters
     ----------
@@ -50,8 +46,7 @@ async def refresh_token_delete(db: AsyncSession, user_id: int) -> RefreshToken |
 
 
 async def check_refresh_token(db: AsyncSession, user_name: str) -> RefreshToken | None:
-    """
-    Gets refresh token info from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table by `username`.
+    """Gets refresh token info from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table by `username`.
 
     Parameters
     ----------
@@ -64,16 +59,13 @@ async def check_refresh_token(db: AsyncSession, user_name: str) -> RefreshToken 
         Users refreshtoken from SQL table
 
     """
-    result = await db.exec(
-        select(RefreshToken).join(User).where(User.username == user_name)
-    )
+    result = await db.exec(select(RefreshToken).join(User).where(User.username == user_name))
     refresh_token_check = result.first()
     return refresh_token_check
 
 
 async def store_token(db: AsyncSession, user_id: int, token: str) -> None:
-    """
-    Stores access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
+    """Stores access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
 
     Parameters
     ----------
@@ -98,8 +90,7 @@ async def store_token(db: AsyncSession, user_id: int, token: str) -> None:
 
 
 async def token_valid(db: AsyncSession, token: str) -> bool:
-    """
-    Checks if access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table is revoked.
+    """Checks if access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table is revoked.
 
     Parameters
     ----------
@@ -123,8 +114,7 @@ async def token_valid(db: AsyncSession, token: str) -> bool:
 
 
 async def list_tokens(db: AsyncSession) -> ScalarResult[Token]:
-    """
-    List all access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
+    """List all access token in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
 
     Returns
     -------
@@ -137,8 +127,7 @@ async def list_tokens(db: AsyncSession) -> ScalarResult[Token]:
 
 
 async def list_users(db: AsyncSession):
-    """
-    List all users in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """List all users in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
 
     Returns
     -------
@@ -146,12 +135,12 @@ async def list_users(db: AsyncSession):
         All users from SQL table
 
     """
-    return await paginate(db, select(User))
+    return await apaginate(db, select(User))
 
 
 async def change_password(db: AsyncSession, user: User, new_password: str) -> None:
-    """
-    Changes user password in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """Changes user password in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+
     Also removes the users current refresh token from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table.
     Set all current access tokens for the user in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table to revoked.
 
@@ -181,8 +170,8 @@ async def change_password(db: AsyncSession, user: User, new_password: str) -> No
 
 
 async def delete_user(db: AsyncSession, user: User) -> None:
-    """
-    Deletes user in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """Deletes user in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+
     Also removes the users refresh token from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table.
     Set all access tokens for the user in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table to revoked.
 
@@ -209,8 +198,8 @@ async def delete_user(db: AsyncSession, user: User) -> None:
 
 
 async def change_user_status(db: AsyncSession, user: User, disabled: bool) -> None:
-    """
-    Changes the disabled status for user in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """Changes the disabled status for user in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+
     Also removes the users refresh token from the :py:class:`~pyPalworldAPI.models.auth_models.RefreshToken` SQL table.
     Set all access tokens for the user in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table to revoked.
 
@@ -240,8 +229,7 @@ async def change_user_status(db: AsyncSession, user: User, disabled: bool) -> No
 
 
 async def delete_old_tokens(db: AsyncSession, tokens: list) -> None:
-    """
-    Removes expired access tokens from the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
+    """Removes expired access tokens from the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table.
 
     Parameters
     ----------
@@ -262,8 +250,8 @@ async def delete_old_tokens(db: AsyncSession, tokens: list) -> None:
 
 
 async def change_scope(db: AsyncSession, user: User, new_scope: list) -> None:
-    """
-    Changes the users scopes in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+    """Changes the users scopes in the :py:class:`~pyPalworldAPI.models.auth_models.User` SQL table.
+
     Also set all access tokens for the user in the :py:class:`~pyPalworldAPI.models.auth_models.Token` SQL table to revoked.
 
     Parameters

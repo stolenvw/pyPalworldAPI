@@ -1,7 +1,4 @@
-"""
-Custom FastAPI Pagination Page for pyPalworldAPI to change size limit to `200`,
-
-"""
+"""Define custom pagination pages for API responses."""
 
 from __future__ import annotations
 
@@ -16,18 +13,21 @@ from typing import Any, Generic, Optional, Sequence, TypeVar
 
 from fastapi import Query
 from fastapi_pagination.bases import AbstractParams, BasePage, RawParams
+from fastapi_pagination.pydantic import create_pydantic_model
 from fastapi_pagination.types import GreaterEqualOne, GreaterEqualZero
-from fastapi_pagination.utils import create_pydantic_model
 from pydantic import BaseModel
 
 T = TypeVar("T")
 
 
 class Params(BaseModel, AbstractParams):
+    """Represent pagination request parameters."""
+
     page: int = Query(1, ge=1, description="Page number")
     size: int = Query(50, ge=1, le=200, description="Page size")
 
     def to_raw_params(self) -> RawParams:
+        """Return raw pagination parameters."""
         return RawParams(
             limit=self.size,
             offset=self.size * (self.page - 1),
@@ -35,10 +35,13 @@ class Params(BaseModel, AbstractParams):
 
 
 class OptionalParams(Params):
+    """Represent optional pagination request parameters."""
+
     page: Optional[int] = Query(None, ge=1, description="Page number")  # type: ignore[assignment]
     size: Optional[int] = Query(None, ge=1, le=200, description="Page size")  # type: ignore[assignment]
 
     def to_raw_params(self) -> RawParams:
+        """Return raw pagination parameters."""
         return RawParams(
             limit=self.size if self.size is not None else None,
             offset=(
@@ -50,6 +53,8 @@ class OptionalParams(Params):
 
 
 class Page(BasePage[T], Generic[T]):
+    """Represent a paginated response page."""
+
     page: Optional[GreaterEqualOne]
     size: Optional[GreaterEqualOne]
     pages: Optional[GreaterEqualZero] = None
@@ -65,6 +70,7 @@ class Page(BasePage[T], Generic[T]):
         total: Optional[int] = None,
         **kwargs: Any,
     ) -> Page[T]:
+        """Create a paginated response page."""
         if not isinstance(params, Params):
             raise TypeError("Page should be used with Params")
 

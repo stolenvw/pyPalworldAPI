@@ -1,7 +1,4 @@
-"""
-SQL table and data verification models for oauth system.
-
-"""
+"""SQL table and data verification models for OAuth data."""
 
 from datetime import datetime, timezone
 from typing import Optional
@@ -12,6 +9,8 @@ from sqlmodel import JSON, Field, Relationship, SQLModel
 
 
 class User(SQLModel, AsyncAttrs, table=True):
+    """Represent an authenticated API user."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     username: str = Field(index=True, unique=True)
@@ -29,6 +28,8 @@ class User(SQLModel, AsyncAttrs, table=True):
 
 
 class RefreshToken(SQLModel, table=True):
+    """Represent a stored refresh token."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     user_id: int | None = Field(default=None, foreign_key="user.ID", unique=True)
@@ -41,6 +42,8 @@ class RefreshToken(SQLModel, table=True):
 
 
 class Token(SQLModel, table=True):
+    """Represent a stored access token."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     user_id: Optional[int] | None = Field(default=None, foreign_key="user.ID")
@@ -56,16 +59,22 @@ class Token(SQLModel, table=True):
 
 
 class TokenData(SQLModel):
+    """Represent decoded token payload data."""
+
     username: Optional[str] = None
     scopes: list[str] = []
     exp: int
 
 
 class UserName(SQLModel):
+    """Represent a username payload."""
+
     username: str
 
 
 class UserInput(SQLModel):
+    """Represent user registration input."""
+
     username: str
     password: str = Field(max_length=256, min_length=6)
     """min_length=``6``, max_length=``256``"""
@@ -75,6 +84,8 @@ class UserInput(SQLModel):
 
 
 class UserResponse(SQLModel):
+    """Represent public user response data."""
+
     username: str
     disabled: bool
     created_at: datetime
@@ -82,22 +93,30 @@ class UserResponse(SQLModel):
 
 
 class RegistrationUserResponse(SQLModel):
+    """Represent a successful user registration response."""
+
     message: str
     data: UserResponse
 
 
 class AccessTokenInfo(SQLModel):
+    """Represent access token response data."""
+
     token_type: str
     access_token: str
     expires_in: int
 
 
 class RefreshTokenInfo(SQLModel):
+    """Represent refresh token response data."""
+
     token: str
     expires_in: int
 
 
 class LoginResponse(SQLModel):
+    """Represent a successful login response."""
+
     message: str
     access_token: str
     token_type: str
@@ -108,28 +127,38 @@ class LoginResponse(SQLModel):
 
 
 class RefreshResponse(SQLModel):
+    """Represent a refreshed token response."""
+
     access_token: AccessTokenInfo
     refresh_token: RefreshTokenInfo
     status: int
 
 
 class PassReset(SQLModel):
+    """Represent a password reset request."""
+
     username: str
     new_password: str = Field(max_length=256, min_length=6)
     """min_length=``6``, max_length=``256``"""
 
 
 class MessageStatus(SQLModel):
+    """Represent a status message response."""
+
     message: str
     status: int
 
 
 class UserScopeChange(SQLModel):
+    """Represent a user scope update request."""
+
     username: str
     scopes: list[str]
 
 
 class ValidateResponse(SQLModel):
+    """Represent token validation response data."""
+
     username: str
     scopes: list[str]
     expires_in: int

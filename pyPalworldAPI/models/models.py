@@ -1,7 +1,4 @@
-"""
-SQL table and data verification models for api data.
-
-"""
+"""SQL table and response models for API data."""
 
 from enum import Enum
 from typing import Optional
@@ -12,10 +9,14 @@ from sqlmodel import JSON, Field, SQLModel, Text
 
 
 class HealthCheck(SQLModel):
+    """Represent health-check response data."""
+
     status: str = "OK"
 
 
 class ItemPassive(SQLModel):
+    """Represent item passive skill slots."""
+
     PassiveSkill1: str
     PassiveSkill2: str
     PassiveSkill3: str
@@ -23,6 +24,8 @@ class ItemPassive(SQLModel):
 
 
 class Items(SQLModel, table=True):
+    """Represent an item database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     Name: str = Field(index=True, sa_type=String(50))
@@ -48,6 +51,8 @@ class Items(SQLModel, table=True):
 
 
 class Crafting(SQLModel, table=True):
+    """Represent a crafting recipe database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     SourceKey: str = Field(sa_type=String(80), exclude=True)
@@ -59,6 +64,8 @@ class Crafting(SQLModel, table=True):
 
 
 class Gear(SQLModel, table=True):
+    """Represent a gear database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     SourceKey: str = Field(sa_type=String(50), exclude=True)
@@ -71,17 +78,23 @@ class Gear(SQLModel, table=True):
 
 
 class PalTypes(SQLModel):
+    """Represent a Pal element type."""
+
     Name: str
     Image: str
 
 
 class PalSuitability(SQLModel):
+    """Represent a Pal work suitability entry."""
+
     Name: str
     Image: str
     Level: int
 
 
 class PalAura(SQLModel):
+    """Represent a Pal aura entry."""
+
     Name: str
     Description: str = Field(sa_column=Column(Text))
     Image: Optional[str]
@@ -89,6 +102,8 @@ class PalAura(SQLModel):
 
 
 class PalSkills(SQLModel):
+    """Represent a Pal skill entry."""
+
     Name: str
     Type: str
     Description: str = Field(sa_column=Column(Text))
@@ -98,17 +113,23 @@ class PalSkills(SQLModel):
 
 
 class StatsAttack(SQLModel):
+    """Represent attack stat values."""
+
     Melee: int
     Ranged: int
 
 
 class StatsSpeed(SQLModel):
+    """Represent movement speed stat values."""
+
     Walk: int
     Run: int
     Ride: int
 
 
 class PalStats(SQLModel):
+    """Represent Pal stat values."""
+
     HP: int
     Attack: SerializeAsAny[StatsAttack]
     Defense: int
@@ -124,24 +145,33 @@ class PalStats(SQLModel):
 
 
 class PalBreeding(SQLModel):
+    """Represent Pal breeding metadata."""
+
     Rank: int = Field(description="CombiRank")
     Order: int
     MaleProbability: float = Field(description="MaleProbability")
 
 
 class PalDrops(SQLModel):
+    """Represent a Pal drop entry."""
+
     Name: str
     Rate: float
     Min: int
     Max: int
 
+
 class DefeatRewardItem(SQLModel):
+    """Represent a first-defeat reward item."""
+
     Name: Optional[str]
     Image: Optional[str]
     Description: Optional[str] = Field(sa_column=Column(Text))
 
 
 class Pals(SQLModel, table=True):
+    """Represent a Pal database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     DevName: str = Field(sa_type=String(50), exclude=True)
@@ -175,6 +205,8 @@ class Pals(SQLModel, table=True):
 
 
 class BossPals(SQLModel, table=True):
+    """Represent a boss Pal database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     DevName: str = Field(sa_type=String(50), exclude=True)
@@ -208,10 +240,10 @@ class BossPals(SQLModel, table=True):
 
 
 class BreedingRecord(SQLModel, table=True):
+    """Represent a raw breeding database record."""
+
     __tablename__ = "breeding"
-    __table_args__ = (
-        UniqueConstraint("EggPalID", "P1PalID", "P2PalID", name="uq_breeding_pair"),
-    )
+    __table_args__ = (UniqueConstraint("EggPalID", "P1PalID", "P2PalID", name="uq_breeding_pair"),)
 
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
@@ -221,13 +253,20 @@ class BreedingRecord(SQLModel, table=True):
 
 
 class Breeding(SQLModel):
+    """Represent a breeding response record."""
+
     ID: int
     Egg: str
+    EggDexKey: str = Field(sa_type=String(4))
     P1: str = Field(sa_type=String(50))
+    P1DexKey: str = Field(sa_type=String(4))
     P2: str = Field(sa_type=String(50))
+    P2DexKey: str = Field(sa_type=String(4))
 
 
 class PassiveSkills(SQLModel, table=True):
+    """Represent a passive skill database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     Name: str = Field(index=True, sa_type=String(50))
@@ -239,12 +278,16 @@ class PassiveSkills(SQLModel, table=True):
 
 
 class FoodEffects(SQLModel):
+    """Represent a food effect value."""
+
     Name: str
     Value: int
     Interaval: int
 
 
 class FoodEffect(SQLModel, table=True):
+    """Represent a food effect database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     SourceKey: str = Field(sa_type=String(80), exclude=True)
@@ -254,6 +297,8 @@ class FoodEffect(SQLModel, table=True):
 
 
 class TechTree(SQLModel, table=True):
+    """Represent a technology tree database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     DevName: str = Field(sa_type=String(80), exclude=True)
@@ -269,6 +314,8 @@ class TechTree(SQLModel, table=True):
 
 
 class SickPal(SQLModel, table=True):
+    """Represent a Pal sickness database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     DevName: str = Field(sa_type=String(50), exclude=True)
@@ -282,11 +329,15 @@ class SickPal(SQLModel, table=True):
 
 
 class BuildMaterial(SQLModel):
+    """Represent a build material requirement."""
+
     Name: str = Field(sa_type=String(50))
     Amount: int
 
 
 class BuildObjects(SQLModel, table=True):
+    """Represent a build object database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     DevName: str = Field(sa_type=String(80), exclude=True)
@@ -304,6 +355,8 @@ class BuildObjects(SQLModel, table=True):
 
 
 class APIModels(str, Enum):
+    """Enumerate API data model categories."""
+
     pals = "pals"
     bosspals = "bosspals"
     items = "items"
@@ -317,9 +370,12 @@ class APIModels(str, Enum):
     passiveskills = "passiveskills"
     npc = "npc"
     elixir = "elixir"
+    maplocations = "maplocations"
 
 
 class NPC(SQLModel, table=True):
+    """Represent an NPC database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     Name: str = Field(index=True, sa_type=String(50))
@@ -340,6 +396,8 @@ class NPC(SQLModel, table=True):
 
 
 class Elixir(SQLModel, table=True):
+    """Represent an elixir database record."""
+
     ID: Optional[int] = Field(default=None, primary_key=True)
     """Auto incremented database primary key."""
     Name: str = Field(index=True, sa_type=String(50))
@@ -352,7 +410,31 @@ class Elixir(SQLModel, table=True):
     maxInventoryWeight: int
 
 
+class MapLocations(SQLModel, table=True):
+    """Represent a map location database record."""
+
+    ID: Optional[int] = Field(default=None, primary_key=True)
+    """Auto incremented database primary key."""
+    Category: str = Field(index=True, sa_type=String(50))
+    Name: str = Field(index=True, sa_type=String(100))
+    DevName: str = Field(sa_type=String(150))
+    Type: str = Field(index=True, sa_type=String(80))
+    ActorLabel: str = Field(sa_type=String(80))
+    InstanceId: Optional[str] = Field(sa_type=String(100))
+    Map: str = Field(index=True, sa_type=String(10))
+    WorldX: float
+    WorldY: float
+    WorldZ: float
+    MapX: int
+    MapY: int
+    Image: str = Field(sa_type=String(100))
+    MapImage: str = Field(sa_type=String(100))
+    Metadata: dict = Field(sa_column=Column(JSON))
+
+
 class AutoCompleteModels(str, Enum):
+    """Enumerate autocomplete categories."""
+
     palname = "palname"
     paldexkey = "paldexkey"
     bossname = "bossname"
@@ -372,6 +454,8 @@ class AutoCompleteModels(str, Enum):
 
 
 class ItemsI18n(SQLModel, table=True):
+    """Represent localized item data."""
+
     __table_args__ = (
         UniqueConstraint("ItemID", "LanguageCode", name="uq_itemsi18n_parent_language"),
         Index("ix_itemsi18n_language_name", "LanguageCode", "Name"),
@@ -386,6 +470,8 @@ class ItemsI18n(SQLModel, table=True):
 
 
 class CraftingI18n(SQLModel, table=True):
+    """Represent localized crafting recipe data."""
+
     __table_args__ = (
         UniqueConstraint("CraftingID", "LanguageCode", name="uq_craftingi18n_parent_language"),
         Index("ix_craftingi18n_language_name", "LanguageCode", "Name"),
@@ -399,6 +485,8 @@ class CraftingI18n(SQLModel, table=True):
 
 
 class GearI18n(SQLModel, table=True):
+    """Represent localized gear data."""
+
     __table_args__ = (
         UniqueConstraint("GearID", "LanguageCode", name="uq_geari18n_parent_language"),
         Index("ix_geari18n_language_name", "LanguageCode", "Name"),
@@ -411,6 +499,8 @@ class GearI18n(SQLModel, table=True):
 
 
 class PalsI18n(SQLModel, table=True):
+    """Represent localized Pal data."""
+
     __table_args__ = (
         UniqueConstraint("PalsID", "LanguageCode", name="uq_palsi18n_parent_language"),
         Index("ix_palsi18n_language_name", "LanguageCode", "Name"),
@@ -430,6 +520,8 @@ class PalsI18n(SQLModel, table=True):
 
 
 class BossPalsI18n(SQLModel, table=True):
+    """Represent localized boss Pal data."""
+
     __table_args__ = (
         UniqueConstraint("BossPalsID", "LanguageCode", name="uq_bosspalsi18n_parent_language"),
         Index("ix_bosspalsi18n_language_name", "LanguageCode", "Name"),
@@ -449,6 +541,8 @@ class BossPalsI18n(SQLModel, table=True):
 
 
 class PassiveSkillsI18n(SQLModel, table=True):
+    """Represent localized passive skill data."""
+
     __table_args__ = (
         UniqueConstraint(
             "PassiveSkillsID",
@@ -466,6 +560,8 @@ class PassiveSkillsI18n(SQLModel, table=True):
 
 
 class FoodEffectI18n(SQLModel, table=True):
+    """Represent localized food effect data."""
+
     __table_args__ = (
         UniqueConstraint(
             "FoodEffectID",
@@ -482,6 +578,8 @@ class FoodEffectI18n(SQLModel, table=True):
 
 
 class TechTreeI18n(SQLModel, table=True):
+    """Represent localized technology tree data."""
+
     __table_args__ = (
         UniqueConstraint("TechTreeID", "LanguageCode", name="uq_techtreei18n_parent_language"),
         Index("ix_techtreei18n_language_name", "LanguageCode", "Name"),
@@ -498,6 +596,8 @@ class TechTreeI18n(SQLModel, table=True):
 
 
 class SickPalI18n(SQLModel, table=True):
+    """Represent localized Pal sickness data."""
+
     __table_args__ = (
         UniqueConstraint("SickPalID", "LanguageCode", name="uq_sickpali18n_parent_language"),
         Index("ix_sickpali18n_language_name", "LanguageCode", "Name"),
@@ -511,6 +611,8 @@ class SickPalI18n(SQLModel, table=True):
 
 
 class BuildObjectsI18n(SQLModel, table=True):
+    """Represent localized build object data."""
+
     __table_args__ = (
         UniqueConstraint(
             "BuildObjectsID",
@@ -531,6 +633,8 @@ class BuildObjectsI18n(SQLModel, table=True):
 
 
 class NPCI18n(SQLModel, table=True):
+    """Represent localized NPC data."""
+
     __table_args__ = (
         UniqueConstraint("NPCID", "LanguageCode", name="uq_npci18n_parent_language"),
         Index("ix_npci18n_language_name", "LanguageCode", "Name"),
@@ -545,6 +649,8 @@ class NPCI18n(SQLModel, table=True):
 
 
 class ElixirI18n(SQLModel, table=True):
+    """Represent localized elixir data."""
+
     __table_args__ = (
         UniqueConstraint("ElixirID", "LanguageCode", name="uq_elixiri18n_parent_language"),
         Index("ix_elixiri18n_language_name", "LanguageCode", "Name"),

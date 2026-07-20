@@ -1,3 +1,5 @@
+"""Provide authentication helpers for the API."""
+
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Optional
@@ -8,12 +10,13 @@ from dotenv import load_dotenv
 from fastapi import Depends, Request, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
-from models.auth_models import TokenData, User
 from pydantic import ValidationError
-from query import auth as AuthQuery
 from sqlmodel.ext.asyncio.session import AsyncSession
-from utils.customexception import APIException
-from utils.database import auth_engine
+
+from pyPalworldAPI.models.auth_models import TokenData, User
+from pyPalworldAPI.query import auth as auth_query
+from pyPalworldAPI.utils.customexception import APIError
+from pyPalworldAPI.utils.database import auth_engine
 
 load_dotenv(dotenv_path=".env")
 
@@ -29,13 +32,13 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 
 async def get_auth_session():
+    """Yield an authentication database session."""
     async with AsyncSession(auth_engine) as auth_session:
         yield auth_session
 
 
 async def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """
-    Check if users supplied password matches with there stored hashed password.
+    """Check if users supplied password matches with there stored hashed password.
 
     Parameters
     ----------
@@ -51,14 +54,11 @@ async def verify_password(plain_password: str, hashed_password: str) -> bool:
 
     """
     password_byte_enc = plain_password.encode("utf-8")
-    return bcrypt.checkpw(
-        password=password_byte_enc, hashed_password=str.encode(hashed_password)
-    )
+    return bcrypt.checkpw(password=password_byte_enc, hashed_password=str.encode(hashed_password))
 
 
 async def get_password_hash(password: str) -> bytes:
-    """
-    Convert users supplied password to a hashed password.
+    """Convert users supplied password to a hashed password.
 
     Parameters
     ----------
@@ -78,8 +78,7 @@ async def get_password_hash(password: str) -> bytes:
 
 
 async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """
-    Create a users access token.
+    """Create a users access token.
 
     Parameters
     ----------
@@ -105,8 +104,7 @@ async def create_access_token(data: dict, expires_delta: Optional[timedelta] = N
 
 
 async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """
-    Create a users refresh token.
+    """Create a users refresh token.
 
     Parameters
     ----------
@@ -132,8 +130,7 @@ async def create_refresh_token(data: dict, expires_delta: Optional[timedelta] = 
 
 
 async def verify_refresh_token(db: AsyncSession, token: str) -> TokenData:
-    """
-    Verify a users refresh token.
+    """Verify a users refresh token.
 
     Parameters
     ----------
@@ -147,11 +144,11 @@ async def verify_refresh_token(db: AsyncSession, token: str) -> TokenData:
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
 
     """
-    credential_exception = APIException(
+    credential_exception = APIError(
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={
             "status": status.HTTP_401_UNAUTHORIZED,
@@ -165,12 +162,12 @@ async def verify_refresh_token(db: AsyncSession, token: str) -> TokenData:
         scopes: str = payload.get("scopes")
         exp: str = payload.get("exp")
         if username is None:
-            raise credentials_exception
+            raise credential_exception
         token_data = TokenData(username=username, scopes=scopes, exp=exp)
-    except InvalidTokenError:
-        raise credential_exception
+    except InvalidTokenError as err:
+        raise credential_exception from err
     else:
-        token_valid = await AuthQuery.check_refresh_token(db, username)
+        token_valid = await auth_query.check_refresh_token(db, username)
         if not token_valid or token != token_valid.refresh_token:
             raise credential_exception
     return token_data
@@ -181,8 +178,7 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_auth_session),
 ) -> User:
-    """
-    Get current logged in user from access token.
+    """Get current logged in user from access token.
 
     Parameters
     ----------
@@ -198,7 +194,7 @@ async def get_current_user(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
 
     """
@@ -206,7 +202,7 @@ async def get_current_user(
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
         authenticate_value = "Bearer"
-    credentials_exception = APIException(
+    credentials_exception = APIError(
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={
             "status": status.HTTP_401_UNAUTHORIZED,
@@ -222,17 +218,17 @@ async def get_current_user(
         token_scopes = payload.get("scopes", [])
         exp: str = payload.get("exp")
         token_data = TokenData(scopes=token_scopes, username=username, exp=exp)
-    except (InvalidTokenError, ValidationError):
-        raise credentials_exception
-    user = await AuthQuery.get_user(db, username=token_data.username)
+    except (InvalidTokenError, ValidationError) as err:
+        raise credentials_exception from err
+    user = await auth_query.get_user(db, username=token_data.username)
     if user is None:
         raise credentials_exception
-    token_valid = await AuthQuery.token_valid(db=db, token=token)
+    token_valid = await auth_query.token_valid(db=db, token=token)
     if not token_valid:
         raise credentials_exception
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
-            raise APIException(
+            raise APIError(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={
                     "status": status.HTTP_401_UNAUTHORIZED,
@@ -246,8 +242,7 @@ async def get_current_user(
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> User:
-    """
-    Get current logged in user from access token.
+    """Get current logged in user from access token.
 
     Parameters
     ----------
@@ -261,12 +256,12 @@ async def get_current_active_user(
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
 
     """
     if current_user.disabled:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={
                 "status": status.HTTP_401_UNAUTHORIZED,
@@ -278,8 +273,7 @@ async def get_current_active_user(
 
 
 async def remove_old_tokens(db: AsyncSession) -> None:
-    """
-    Checks for and removes access tokens that have expired from the Tokens table.
+    """Checks for and removes access tokens that have expired from the Tokens table.
 
     Parameters
     ----------
@@ -291,7 +285,7 @@ async def remove_old_tokens(db: AsyncSession) -> None:
     None
 
     """
-    token_list = await AuthQuery.list_tokens(db=db)
+    token_list = await auth_query.list_tokens(db=db)
     delete_tokens_list = []
     for token in token_list:
         try:
@@ -299,13 +293,12 @@ async def remove_old_tokens(db: AsyncSession) -> None:
         except ExpiredSignatureError:
             delete_tokens_list.append(token)
     if delete_tokens_list:
-        await AuthQuery.delete_old_tokens(db=db, tokens=delete_tokens_list)
+        await auth_query.delete_old_tokens(db=db, tokens=delete_tokens_list)
     await db.close()
 
 
 async def verify_token(request: Request) -> TokenData:
-    """
-    Verify access token is still valid.
+    """Verify access token is still valid.
 
     Parameters
     ----------
@@ -319,7 +312,7 @@ async def verify_token(request: Request) -> TokenData:
 
     Raises
     ------
-    APIException
+    APIError
         HTTP responses with errors.
 
     """
@@ -328,7 +321,7 @@ async def verify_token(request: Request) -> TokenData:
     if "authorization" in request.headers:
         auth_type, _, token = request.headers["authorization"].partition(" ")
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
@@ -344,19 +337,19 @@ async def verify_token(request: Request) -> TokenData:
                 scopes=payload.get("scopes"),
                 exp=payload.get("exp"),
             )
-        except (InvalidTokenError, ValidationError):
-            raise APIException(
+        except (InvalidTokenError, ValidationError) as err:
+            raise APIError(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={
                     "status": status.HTTP_401_UNAUTHORIZED,
                     "message": "Invalid access token.",
                 },
                 headers=None,
-            )
+            ) from err
         else:
             return token_data
     else:
-        raise APIException(
+        raise APIError(
             status_code=status.HTTP_400_BAD_REQUEST,
             content={
                 "status": status.HTTP_400_BAD_REQUEST,
