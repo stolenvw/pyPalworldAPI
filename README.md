@@ -1,12 +1,12 @@
 <div align="center"><h1>Palworld API</h1>
 
-More than just a paldex, includes a lot of game data.  
+A Palworld data API for apps and bots, with pals, items, breeding, and optional OAuth2. 
 
 ![GitHub Release](https://img.shields.io/github/v/release/stolenvw/pyPalworldAPI)
 ![GitHub top language](https://img.shields.io/github/languages/top/stolenvw/pyPalworldAPI)
 ![GitHub repo size](https://img.shields.io/github/repo-size/stolenvw/pyPalworldAPI)
 ![GitHub License](https://img.shields.io/github/license/stolenvw/pyPalworldAPI)
-![Static Badge](https://img.shields.io/badge/3.10.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
+![Static Badge](https://img.shields.io/badge/%3E%3D3.12-gray?logo=python&label=Python&labelColor=gray&color=purple)
 ![Static Badge](https://img.shields.io/badge/v1.0.1.100619-gray?label=Game%20Data&labelColor=gray&color=blue)
 </div>
 
@@ -24,40 +24,45 @@ Release-by-release changes live in [CHANGELOG.md](CHANGELOG.md).
 2. Choose whether you want OAuth enabled.
    Set `COMPOSE_PROFILES=USE_OAUTH2` to enable `/oauth2/*`, `/user/*`, and `/admin/*`.
    Leave it blank to run the API without those routes.
-3. Start with Docker:
+3. If you are not running behind a reverse proxy, uncomment the `ports` section for `pypalworldapi` in [compose.yaml](compose.yaml).
+4. Start with Docker:
 
 ```bash
 docker compose up
 ```
 
-4. Open the API at `http://127.0.0.1:<HTTP_PORT>`.
+5. Open the API at `http://127.0.0.1:<HTTP_PORT>`.
+
+> [!TIP]
+> Use `docker compose up --build` after changing the Dockerfile, Python dependencies, or application code that needs a fresh image build.
 
 ### Run Locally
 
-If you want to run without Docker, import [PalAPI.sql](mysqldb/PalAPI.sql) into MySQL, move `.env` into the `pyPalworldAPI` folder, and run:
+If you want to run without Docker, install [uv](https://docs.astral.sh/uv/), import [PalAPI.sql](mysqldb/PalAPI.sql) into MySQL, keep `.env` in the project root, and run:
 
 ```bash
-pip install -r requirements.txt
-cd pyPalworldAPI
-uvicorn mainapi:app --host 0.0.0.0 --port 8000
+uv sync --no-dev
+uv run --no-sync uvicorn pyPalworldAPI.mainapi:app --host 0.0.0.0 --port 8000
 ```
+
+> [!TIP]
+> This project now ships with [pyproject.toml](pyproject.toml) and [uv.lock](uv.lock), so `uv sync` is the supported way to install the locked dependencies.
 
 ## Features
 
-- Palworld data API for pals, boss pals, breeding, items, crafting, gear, food effects, tech tree data, NPCs, passive skills, and elixirs
-- Optional OAuth2 authentication with user and admin management
-- Localized responses with English and Simplified Chinese support
-- Autocomplete endpoints for bot and app integrations
-- Built-in interactive docs when enabled
-- MySQL-backed data store
-- Case-insensitive lookups and paginated responses
+- Broad Palworld data coverage for pals, boss pals, breeding, items, crafting, gear, food effects, tech tree data, passive skills, NPCs, elixirs, and map locations
+- Optional OAuth2 authentication with built-in user and admin management routes
+- Localized responses with English and included `zh-Hans` (Simplified Chinese) data
+- Autocomplete helpers for bot commands, app search boxes, and other lightweight integrations
+- Built-in Swagger UI and ReDoc when those routes are enabled in `.env`
+- MySQL-backed data storage with paginated, case-insensitive lookups
 
 ## API Availability
 
 > [!IMPORTANT]
 > OAuth, user, and admin routes are available only when `COMPOSE_PROFILES=USE_OAUTH2`.
 
-- Core data routes are always available: `/pals/`, `/bosspals/`, `/breeding/`, `/sickness/`, `/items/`, `/crafting/`, `/gear/`, `/foodeffect/`, `/tech/`, `/build/`, `/passive/`, `/npc/`, `/elixir/`, `/all/{category}`, `/autocomplete/{category}/`, and `/health`.
+- Core data routes are always available: `/pals/`, `/bosspals/`, `/breeding/`, `/sickness/`, `/items/`, `/crafting/`, `/gear/`, `/foodeffect/`, `/tech/`, `/build/`, `/passive/`, `/npc/`, `/elixir/`, `/map-locations/`, `/all/{category}`, `/autocomplete/{category}/`, and `/health`.
 - OAuth and user-management routes are available when `COMPOSE_PROFILES=USE_OAUTH2`: `/oauth2/*`, `/user/*`, and `/admin/*`.
 - Built-in docs are optional. `/docs` and `/redoc` are controlled by `.env` and may be disabled, so this README includes a compact route reference and [examples/](examples/README.md) includes longer request examples.
 
@@ -85,6 +90,9 @@ uvicorn mainapi:app --host 0.0.0.0 --port 8000
 
 Examples below use `http://127.0.0.1` as the local base URL.
 
+> [!TIP]
+> If you expose the API on a non-default port, use `http://127.0.0.1:<HTTP_PORT>` instead.
+
 `/health` returns:
 
 ```json
@@ -111,7 +119,7 @@ Examples below use `http://127.0.0.1` as the local base URL.
 | :---- | :------ | :--------------- |
 | `/pals/` | Look up pals | `name`, `dexkey`, `type`, `suitability`, `drop`, `skill`, `nocturnal`, `lang`, `page`, `size` |
 | `/bosspals/` | Look up boss pals | `name`, `type`, `suitability`, `drop`, `skill`, `nocturnal`, `lang`, `page`, `size` |
-| `/breeding/` | Find breeding combinations by result pal | `name`, `lang`, `page`, `size` |
+| `/breeding/` | Find breeding combinations by egg pal or parent pair | `egg` or `p1`+`p2`, `lang`, `page`, `size` |
 | `/sickness/` | Look up sickness data | `name`, `lang`, `page`, `size` |
 | `/items/` | Look up items | `name`, `type`, `lang`, `page`, `size` |
 | `/crafting/` | Look up crafting recipes | `name`, `lang`, `page`, `size` |
@@ -122,13 +130,22 @@ Examples below use `http://127.0.0.1` as the local base URL.
 | `/passive/` | Look up passive skills | `name`, `lang`, `page`, `size` |
 | `/npc/` | Look up NPCs | `name`, `lang`, `page`, `size` |
 | `/elixir/` | Look up elixirs | `name`, `lang`, `page`, `size` |
+| `/map-locations/` | Look up map locations | `category`, `map`, `page`, `size` |
 | `/all/{category}` | Paginate a full category | `lang`, `page`, `size` |
 | `/autocomplete/{category}/` | Autocomplete helper | `name`, `lang`, `page`, `size` |
 | `/health` | Health check | none |
 
+### `map-locations` Values
+
+- `map`: `world`, `tree`
+- Current shipped `category` values: `dungeon`, `fast_travel`, `lifmunk_effigy`, `note`, `tower`, `treasure_map`
+
+> [!WARNING]
+> `/breeding/` still accepts the legacy `name` query parameter as an alias for `egg`, but it is marked deprecated in the shipped API and will be removed in a future version. Prefer `egg`, or use `p1` and `p2` for parent-pair lookups.
+
 ### `all/{category}` Values
 
-`pals`, `bosspals`, `items`, `breeding`, `buildobjects`, `crafting`, `foodeffect`, `gear`, `sickpal`, `techtree`, `passiveskills`, `npc`, `elixir`
+`pals`, `bosspals`, `items`, `breeding`, `buildobjects`, `crafting`, `foodeffect`, `gear`, `sickpal`, `techtree`, `passiveskills`, `npc`, `elixir`, `maplocations`
 
 ### `autocomplete/{category}` Values
 
@@ -158,6 +175,9 @@ These routes are available when `COMPOSE_PROFILES=USE_OAUTH2`.
 - Use [examples/http.md](examples/http.md) for `curl` examples.
 - Use [examples/python.md](examples/python.md) for `aiohttp` examples.
 
+> [!NOTE]
+> The example files include both open routes and OAuth-protected routes. If `COMPOSE_PROFILES` is blank, only the open-route examples will apply.
+
 ## Deployment
 
 ### Docker
@@ -176,6 +196,7 @@ To create `SECRET_KEY`:
 Additional notes:
 - Leave `COMPOSE_PROFILES` blank if you do not want OAuth, user, or admin routes.
 - Keep `DOCS_URL` and `REDOC_URL` set if you want `/docs` or `/redoc`. Leave either blank to disable it.
+- The current container image installs dependencies from [pyproject.toml](pyproject.toml) and [uv.lock](uv.lock) with `uv`.
 
 4. Edit [compose.yaml](compose.yaml).
 
@@ -194,13 +215,13 @@ Uncomment:
 Uncomment this line:
 
 ```dockerfile
-# CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT"]
+# CMD ["sh", "-c", "uv run uvicorn pyPalworldAPI.mainapi:app --host 0.0.0.0 --port $HTTP_PORT"]
 ```
 
 Comment this line:
 
 ```dockerfile
-CMD ["sh", "-c", "uvicorn mainapi:app --host 0.0.0.0 --port $HTTP_PORT --proxy-headers --forwarded-allow-ips='*'"]
+CMD ["sh", "-c", "uv run uvicorn pyPalworldAPI.mainapi:app --host 0.0.0.0 --port $HTTP_PORT --proxy-headers --forwarded-allow-ips='*'"]
 ```
 </details>
 
@@ -215,27 +236,27 @@ docker compose up
 You will need your own MySQL server.
 
 1. Follow the setup steps above.
-2. Optionally set up a Python virtual environment.
-3. Move the `.env` file into the `pyPalworldAPI` folder before running `uvicorn` from that directory.
-4. Install Python requirements:
+2. Install [uv](https://docs.astral.sh/uv/).
+3. Keep `.env` in the project root.
+4. Install locked production dependencies:
 
 ```bash
-pip install -r requirements.txt
+uv sync --no-dev
 ```
 
 5. Import [PalAPI.sql](mysqldb/PalAPI.sql) into your MySQL server.
-6. Run the following commands from the `pyPalworldAPI` folder.
+6. Run the following commands from the project root.
 
 If not using a reverse proxy:
 
 ```bash
-uvicorn mainapi:app --host 0.0.0.0 --port 8000
+uv run --no-sync uvicorn pyPalworldAPI.mainapi:app --host 0.0.0.0 --port 8000
 ```
 
 If you are using a reverse proxy:
 
 ```bash
-uvicorn mainapi:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'
+uv run --no-sync uvicorn pyPalworldAPI.mainapi:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips='*'
 ```
 
 ## Environment Variables
@@ -268,7 +289,7 @@ These values are used when OAuth is enabled. In the current release, the OAuth d
 | `REFRESH_TOKEN_EXPIRE_DAYS` | Yes | Refresh token lifetime in days. |
 | `ADMIN_NAME` | OAuth only | Admin username created on first startup when the auth tables do not already exist. |
 | `MYSQL_USER_DATABASE` | Yes | MySQL database name used for the OAuth user and token connection. This value still needs to be present in the current release, even if OAuth routes are disabled. |
-| `SQL_USER_HOST` | Yes | MySQL host used for the OAuth user and token connection. This value still needs to be present in the current release, even if OAuth routes are disabled. |
+| `SQL_USER_HOST` | Yes | MySQL host used for the OAuth user and token connection. |
 
 ## Tech Stack
 
@@ -276,7 +297,11 @@ These values are used when OAuth is enabled. In the current release, the OAuth d
 - [SQLModel](https://sqlmodel.tiangolo.com/) for database models and queries
 - [MySQL](https://www.mysql.com/) for Palworld data and OAuth user storage
 - [Docker](https://www.docker.com/) and Docker Compose for deployment
+- [uv](https://docs.astral.sh/uv/) for Python dependency management
 - [FastAPI Pagination](https://uriyyo-fastapi-pagination.netlify.app/) for paginated responses
+
+> [!NOTE]
+> The current repo metadata targets Python `>=3.12`, and the Docker image currently builds on Astral's `uv` Python 3.14 base image.
 
 ## Acknowledgements
 

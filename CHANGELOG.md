@@ -10,6 +10,26 @@ and may be less complete than newer releases.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-20
+
+### Added
+
+- Added `/map-locations/` for bundled world and tree map location lookups, with `category` and `map` filters.
+- Added `maplocations` support to `/all/{category}`.
+- Added the shipped `maplocations` SQL table plus bundled map-location overlay images and icon assets.
+- Added checked-in Python project metadata and lockfiles for `uv`-managed installs.
+
+### Changed
+
+- Updated Docker and local-run setup to install locked dependencies with `uv` and run the packaged app as `pyPalworldAPI.mainapi:app`.
+- Updated Compose health checks so the API waits for healthy MySQL services instead of only started containers.
+- Updated FastAPI/OpenAPI version metadata to read from the project version in `pyproject.toml`.
+- Refreshed bundled Pal map images alongside the new map-location asset set.
+
+### Deprecated
+
+- The legacy `/breeding/?name=...` query parameter alias is deprecated and will be removed in a future version. Use `egg`, or use `p1` and `p2` for parent-pair lookups.
+
 ## [0.1.2] - 2026-07-18
 
 ### Fixed

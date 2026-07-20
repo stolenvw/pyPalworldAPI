@@ -1,6 +1,13 @@
 # HTTP Examples
 
+Examples below use `http://127.0.0.1` as the base URL. If your API is exposed on another host or port, replace that part of each request first.
+
+> [!TIP]
+> If your API is running on another port, update the examples to use a base URL such as `http://127.0.0.1:8000`.
+
 ## Data Routes
+
+If OAuth is disabled, these requests can be sent as shown below. If OAuth is enabled, send the same requests with `Authorization: Bearer ACCESS-TOKEN`.
 
 ### Pals
 
@@ -33,6 +40,17 @@ curl -X 'GET' \
   'http://127.0.0.1/items/?name=Arrow&page=1&size=50' \
   -H 'Accept: application/json'
 ```
+
+### Breeding by egg name
+
+```bash
+curl -X 'GET' \
+  'http://127.0.0.1/breeding/?egg=Anubis&lang=en&page=1&size=50' \
+  -H 'Accept: application/json'
+```
+
+> [!WARNING]
+> The legacy `/breeding/?name=...` alias is deprecated in the shipped API and will be removed in a future version. Use `egg`, or use `p1` and `p2` for parent-pair lookups.
 
 ### Crafting
 
@@ -74,6 +92,14 @@ curl -X 'GET' \
   -H 'Accept: application/json'
 ```
 
+### Map locations
+
+```bash
+curl -X 'GET' \
+  'http://127.0.0.1/map-locations/?category=fast_travel&map=world&page=1&size=50' \
+  -H 'Accept: application/json'
+```
+
 ### Autocomplete
 
 ```bash
@@ -106,9 +132,37 @@ curl -X 'GET' \
   -H 'Accept: application/json'
 ```
 
+## Data Routes With OAuth
+
+These are a small sample of the same data endpoints shown above, this time with the auth header required when `COMPOSE_PROFILES=USE_OAUTH2`. The other data-route examples above also support `Authorization: Bearer ACCESS-TOKEN` when OAuth is enabled.
+
+> [!IMPORTANT]
+> The examples in this section are only samples. The other data-route examples above also become protected when OAuth is enabled.
+
+### Pals with Bearer token
+
+```bash
+curl -X 'GET' \
+  'http://127.0.0.1/pals/?name=Lamball&page=1&size=50' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer ACCESS-TOKEN'
+```
+
+### Map locations with Bearer token
+
+```bash
+curl -X 'GET' \
+  'http://127.0.0.1/map-locations/?category=fast_travel&map=world&page=1&size=50' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer ACCESS-TOKEN'
+```
+
 ## OAuth Routes
 
 These routes are available when `COMPOSE_PROFILES=USE_OAUTH2`.
+
+> [!WARNING]
+> `/oauth2/validate` does not use the normal Bearer format. It expects `Authorization: OAuth ACCESS-TOKEN`.
 
 ### Login
 
@@ -137,15 +191,6 @@ curl -X 'GET' \
   'http://127.0.0.1/oauth2/validate' \
   -H 'Accept: application/json' \
   -H 'Authorization: OAuth ACCESS-TOKEN'
-```
-
-## Protected Route Example
-
-```bash
-curl -X 'GET' \
-  'http://127.0.0.1/pals/?name=Lamball&page=1&size=50' \
-  -H 'Accept: application/json' \
-  -H 'Authorization: Bearer ACCESS-TOKEN'
 ```
 
 ## User Routes

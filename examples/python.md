@@ -2,6 +2,11 @@
 
 These examples use `aiohttp`.
 
+Set `BASE_URL` to match where your API is running, such as `http://127.0.0.1:8000`.
+
+> [!TIP]
+> Update `BASE_URL` first before trying the examples, especially if you are using a custom port or reverse proxy.
+
 ## Shared helpers
 
 ```python
@@ -34,6 +39,8 @@ async def get_json(method: str, path: str, *, headers=None, params=None, data=No
 ```
 
 ## Data Routes
+
+If OAuth is disabled, these requests can be sent as shown below. If OAuth is enabled, send the same requests with `Authorization: Bearer ACCESS-TOKEN`.
 
 ### Pals
 
@@ -80,6 +87,23 @@ async def get_items():
 asyncio.run(get_items())
 ```
 
+### Breeding by egg name
+
+```python
+async def get_breeding_by_egg():
+    await get_json(
+        "GET",
+        "/breeding/",
+        headers={"Accept": "application/json"},
+        params={"egg": "Anubis", "lang": "en", "page": 1, "size": 50},
+    )
+
+
+asyncio.run(get_breeding_by_egg())
+```
+
+The legacy `/breeding/?name=...` alias is deprecated in the shipped API and will be removed in a future version. Use `egg`, or use `p1` and `p2` for parent-pair lookups.
+
 ### Full category pagination
 
 ```python
@@ -93,6 +117,21 @@ async def get_all_pals():
 
 
 asyncio.run(get_all_pals())
+```
+
+### Map locations
+
+```python
+async def get_map_locations():
+    await get_json(
+        "GET",
+        "/map-locations/",
+        headers={"Accept": "application/json"},
+        params={"category": "fast_travel", "map": "world", "page": 1, "size": 50},
+    )
+
+
+asyncio.run(get_map_locations())
 ```
 
 ### Autocomplete
@@ -140,10 +179,55 @@ async def get_npc_autocomplete():
 asyncio.run(get_npc_autocomplete())
 ```
 
+## Data Routes With OAuth
+
+These are a small sample of the same data endpoints shown above, this time with the auth header required when `COMPOSE_PROFILES=USE_OAUTH2`. The other data-route examples above also support `Authorization: Bearer ACCESS-TOKEN` when OAuth is enabled.
+
+> [!IMPORTANT]
+> The examples in this section are only samples. The other data-route examples above also become protected when OAuth is enabled.
+
+### Pals with Bearer token
+
+```python
+async def get_pals_with_token():
+    await get_json(
+        "GET",
+        "/pals/",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer ACCESS-TOKEN",
+        },
+        params={"name": "Lamball", "page": 1, "size": 50},
+    )
+
+
+asyncio.run(get_pals_with_token())
+```
+
+### Map locations with Bearer token
+
+```python
+async def get_map_locations_with_token():
+    await get_json(
+        "GET",
+        "/map-locations/",
+        headers={
+            "Accept": "application/json",
+            "Authorization": "Bearer ACCESS-TOKEN",
+        },
+        params={"category": "fast_travel", "map": "world", "page": 1, "size": 50},
+    )
+
+
+asyncio.run(get_map_locations_with_token())
+```
 
 ## OAuth Routes
 
 These routes are available when `COMPOSE_PROFILES=USE_OAUTH2`.
+
+> [!WARNING]
+> `/oauth2/validate` does not use the normal Bearer format. It expects `Authorization: OAuth ACCESS-TOKEN`.
 
 ### Login
 
@@ -196,24 +280,6 @@ async def validate_token():
 
 
 asyncio.run(validate_token())
-```
-
-## Protected Route Example
-
-```python
-async def get_pals_with_token():
-    await get_json(
-        "GET",
-        "/pals/",
-        headers={
-            "Accept": "application/json",
-            "Authorization": "Bearer ACCESS-TOKEN",
-        },
-        params={"name": "Lamball", "page": 1, "size": 50},
-    )
-
-
-asyncio.run(get_pals_with_token())
 ```
 
 ## User Routes
