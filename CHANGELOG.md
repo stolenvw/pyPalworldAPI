@@ -10,6 +10,10 @@ and may be less complete than newer releases.
 
 ## [Unreleased]
 
+### Changed
+
+- Updated dev dependencies: `aiohttp` from `3.10.0` to `3.14.2` and `pytest` from `8.3.2` to `9.1.1`.
+
 ## [0.2.0] - 2026-07-20
 
 ### Added
